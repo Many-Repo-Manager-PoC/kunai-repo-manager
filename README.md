@@ -1,4 +1,6 @@
-# Qwik City App ⚡️
+# Kunai Repository manager
+## A Qwik City App ⚡️
+
 
 - [Qwik Docs](https://qwik.dev/)
 - [Discord](https://qwik.dev/chat)
@@ -21,29 +23,25 @@ Inside your project, you'll see the following directory structure:
     ├── components/
     │   └── ...
     └── routes/
-        └── ...
+    |   └── ...
+    ├── db/
+    │   └── ...
 ```
 
 - `src/routes`: Provides the directory-based routing, which can include a hierarchy of `layout.tsx` layout files, and an `index.tsx` file as the page. Additionally, `index.ts` files are endpoints. Please see the [routing docs](https://qwik.dev/qwikcity/routing/overview/) for more info.
 
 - `src/components`: Recommended directory for components.
 
+- `src/db`: Recommended directory for database models, database connections, and database queries.
+
 - `public`: Any static assets, like images, can be placed in the public directory. Please see the [Vite public directory](https://vitejs.dev/guide/assets.html#the-public-directory) for more info.
 
-## Add Integrations and deployment
-
-Use the `npm run qwik add` command to add additional integrations. Some examples of integrations includes: Cloudflare, Netlify or Express Server, and the [Static Site Generator (SSG)](https://qwik.dev/qwikcity/guides/static-site-generation/).
-
-```shell
-npm run qwik add # or `yarn qwik add`
-```
-
-## Development
+## Development (we use pnpm)
 
 Development mode uses [Vite's development server](https://vitejs.dev/). The `dev` command will server-side render (SSR) the output during development.
 
 ```shell
-npm start # or `yarn start`
+pnpm start # or `yarn start`
 ```
 
 > Note: during dev mode, Vite may request a significant number of `.js` files. This does not represent a Qwik production build.
@@ -53,7 +51,7 @@ npm start # or `yarn start`
 The preview command will create a production build of the client modules, a production build of `src/entry.preview.tsx`, and run a local server. The preview server is only for convenience to preview a production build locally and should not be used as a production server.
 
 ```shell
-npm run preview # or `yarn preview`
+pnpm run preview # or `yarn preview`
 ```
 
 ## Production
@@ -61,26 +59,38 @@ npm run preview # or `yarn preview`
 The production build will generate client and server modules by running both client and server build commands. The build command will use Typescript to run a type check on the source code.
 
 ```shell
-npm run build # or `yarn build`
+pnpm run build # or `yarn build`
 ```
+
+
+Basic setup to get the app running locally:
+
+```
+pnpm install
+pnpm run build
+pnpm run dev
+```
+
 
 ## Cloudflare Pages
 
 Cloudflare's [wrangler](https://github.com/cloudflare/wrangler) CLI can be used to preview a production build locally. To start a local server, run:
 
 ```
-npm run serve
+pnpm run serve
 ```
 
-Then visit [http://localhost:8787/](http://localhost:8787/)
+Then visit [http://localhost:5173/](http://localhost:5173/)
 
 ### Deployments
 
-[Cloudflare Pages](https://pages.cloudflare.com/) are deployable through their [Git provider integrations](https://developers.cloudflare.com/pages/platform/git-integration/).
+- deploy to cloudflare pages
 
-If you don't already have an account, then [create a Cloudflare account here](https://dash.cloudflare.com/sign-up/pages). Next go to your dashboard and follow the [Cloudflare Pages deployment guide](https://developers.cloudflare.com/pages/framework-guides/deploy-anything/).
+```
+pnpm run build
+pnpm run deploy
+```
 
-Within the projects "Settings" for "Build and deployments", the "Build command" should be `npm run build`, and the "Build output directory" should be set to `dist`.
 
 ### Function Invocation Routes
 
@@ -110,3 +120,37 @@ By default, the Cloudflare pages adaptor _does not_ include a `public/_routes.js
 In the above example, it's saying _all_ pages should be SSR'd. However, the root static files such as `/favicon.ico` and any static assets in `/build/*` should be excluded from the Functions, and instead treated as a static file.
 
 In most cases the generated `dist/_routes.json` file is ideal. However, if you need more granular control over each path, you can instead provide you're own `public/_routes.json` file. When the project provides its own `public/_routes.json` file, then the Cloudflare adaptor will not auto-generate the routes config and instead use the committed one within the `public` directory.
+
+
+## How to build onto this project for your own use 
+
+So you have the project running locally, 
+lets make sure we have the right setup for your own use.
+setup with your own github oAath app, env variables, etc.
+
+### Follow these steps:
+
+### Step 1: Set up your Github OAuth App or add your own private key to an existing one
+
+Go to https://github.com/settings/developers and create a new OAuth App.
+
+***Make sure that the authorization callback URL is set to** `"homepage URL" + /auth/callback/github` i.e. 
+
+homepage URL = `http://localhost:1000/`
+
+then
+
+authorization callback URL = `http://localhost:1000/auth/callback/github`
+
+* If your org already has an oauth app setup, you can add your own private key to it, and put the client id and secret in the repo secrets. *
+
+***MAKE SURE TO COPY THE CLIENT SECRET PROVIDED ONCE YOU CREATE THE OAUTH APP**
+
+### Step 3: Add client id/client secret to your .ENV file .ENV.local file
+
+```
+AUTH_GITHUB_ID=your_client_id
+AUTH_GITHUB_SECRET=your_client_secret
+```
+
+### Reach out in #open-source with any questions, or to @nabrams-kunaico or @benjamin-kunai for help. ! 
