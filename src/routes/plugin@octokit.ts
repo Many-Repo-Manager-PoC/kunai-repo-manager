@@ -26,11 +26,16 @@ export const onRequest: RequestHandler = async ({ sharedMap }) => {
 
   if (session?.accessToken) {
     // Create the Octokit client
-    const octokit = new Octokit({
-      auth: session.accessToken,
-    });
+    try {
+      const octokit = new Octokit({
+        auth: session.accessToken,
+      });
 
-    // Store it in the shared map for the duration of the request
-    sharedMap.set(OCTOKIT_KEY, octokit);
+      // Store it in the shared map for the duration of the request
+      sharedMap.set(OCTOKIT_KEY, octokit);
+    } catch (error) {
+      console.error("Failed to initialize Octokit client:", error);
+      // Optionally: Add fallback behavior or error reporting
+    }
   }
 };
