@@ -65,6 +65,8 @@ pnpm run build # or `yarn build`
 
 Basic setup to get the app running locally:
 
+** We use a private package for our styling @kunai-design-system(https://github.com/kunai-consulting/kunai-design-system), so, please reach out to @PatrickJS @PatrickJS-kunaico to be added to the kunai-consulting npm organization. **THE APP WILL NOT WORK IF YOU DO NOT HAVE ACCESS TO THE PRIVATE REGISTRY.** **
+
 ```
 pnpm install
 pnpm run build
