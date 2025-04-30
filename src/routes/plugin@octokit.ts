@@ -18,7 +18,7 @@ import { Octokit } from "octokit";
 import type { RequestHandler } from "@builder.io/qwik-city";
 import type { Session } from "@auth/qwik";
 
-export const OCTOKIT_KEY = "octokit_client";
+export const OCTOKIT_CLIENT = "octokit_client";
 
 export const onRequest: RequestHandler = async ({ sharedMap }) => {
   // Get the session from the shared map (assuming it's already set by the auth plugin)
@@ -32,7 +32,7 @@ export const onRequest: RequestHandler = async ({ sharedMap }) => {
       });
 
       // Store it in the shared map for the duration of the request
-      sharedMap.set(OCTOKIT_KEY, octokit);
+      sharedMap.set(OCTOKIT_CLIENT, octokit);
     } catch (error) {
       console.error("Failed to initialize Octokit client:", error);
       // Optionally: Add fallback behavior or error reporting
