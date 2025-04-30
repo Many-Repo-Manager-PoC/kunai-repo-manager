@@ -1,12 +1,7 @@
 import { component$ } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
 import { Form } from "@builder.io/qwik-city";
-import { useSignIn } from "./plugin@auth";
-
-import Counter from "../components/starter/counter/counter";
-import Hero from "../components/starter/hero/hero";
-import Infobox from "../components/starter/infobox/infobox";
-import Starter from "../components/starter/next-steps/next-steps";
+import { useSignIn } from "~/routes/plugin@auth";
 import { Button } from "@kunai-consulting/kunai-design-system";
 
 export default component$(() => {
@@ -21,7 +16,7 @@ export default component$(() => {
           name="options.redirectTo"
           value="/"
         />
-        <Button>Sign In</Button>
+        <Button kind="primary">Sign In</Button>
       </Form>
     </>
   );

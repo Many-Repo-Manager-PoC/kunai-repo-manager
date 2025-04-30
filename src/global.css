@@ -4,7 +4,7 @@
  */
 
  @import 'tailwindcss';
- @config "./tailwind.config.js";
+ @config "../tailwind.config.js";
  
  @font-face {
    font-family: "Warnock Pro";
@@ -53,7 +53,7 @@
  /* font syntax highlighting */
  @font-face {
    font-family: "Monaspace";
-   src: url("./fonts/syntax-highlight.woff2") format("woff2");
+   src: url("./fonts/syntax-highlight/syntax-highlight.woff2") format("woff2");
  }
  
  @font-palette-values --kung-fury {

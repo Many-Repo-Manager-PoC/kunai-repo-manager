@@ -46,6 +46,7 @@
 		"wrangler": "^3.0.0"
 	},
 	"dependencies": {
+		"@fontsource-variable/work-sans": "^5.2.5",
 		"@tailwindcss/vite": "^4.1.4",
 		"octokit": "^4.1.3",
 		"semver": "^7.7.1",
