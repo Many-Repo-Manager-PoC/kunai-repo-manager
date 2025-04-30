@@ -3,12 +3,15 @@ import metadata from "./metadata.json";
 import type { Octokit } from "octokit";
 import { OCTOKIT_CLIENT } from "../routes/plugin@octokit";
 
-// gets all repos from the given owner and given list of repos in metadata.json
+/**
+ * Gets all repositories from the given owner and list of repositories in metadata.json
+ * @param event - Qwik event object containing Octokit client
+ * @returns Array of repository data or empty array if error occurs
+ */
 // eslint-disable-next-line qwik/loader-location
 export const useGetRepos = routeLoader$(async (event) => {
   try {
     const octokit: Octokit = event.sharedMap.get(OCTOKIT_CLIENT);
-    console.log(octokit);
     
     // Set initial state in shared map
     event.sharedMap.set('repos', metadata.repositories);
