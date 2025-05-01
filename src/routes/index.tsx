@@ -1,12 +1,14 @@
 import { component$ } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
-import { Form } from "@builder.io/qwik-city";
+import { Form, useLocation } from "@builder.io/qwik-city";
 import { useSignIn } from "~/routes/plugin@auth";
 import { Button } from "@kunai-consulting/kunai-design-system";
 
 export default component$(() => {
   const signInSig = useSignIn();
-
+  const location = useLocation();
+  const owner = location.params.owner;
+  const repoName = location.params.repoName;
   return (
     <>
       <Form action={signInSig}>
@@ -18,6 +20,24 @@ export default component$(() => {
         />
         <Button kind="primary">Sign In</Button>
       </Form>
+      <p>
+        <a href="/dashboard">Dashboard</a>
+      </p>
+      <p>
+        <a href="/createRepositories">Create Repositories</a>
+      </p>
+      <p>
+        <a href="/error404">Error 404</a>
+      </p>
+      <p>
+        <a href="/home/login">Login</a>
+      </p>
+      <p>
+        <a href={`/allRepositories/${owner}/${repoName}`}>Repository Details</a>
+      </p>
+      <p>
+        <a href="/allRepositories">All Repositories</a>
+      </p>
     </>
   );
 });
