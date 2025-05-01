@@ -8,9 +8,9 @@ importers:
 
   .:
     dependencies:
-      '@kunai-consulting/kunai-design-system':
-        specifier: ^0.0.8
-        version: 0.0.8(@builder.io/qwik@1.13.0(vite@5.3.5(@types/node@20.14.11)(lightningcss@1.29.2)))
+      '@fontsource-variable/work-sans':
+        specifier: ^5.2.5
+        version: 5.2.5
       '@tailwindcss/vite':
         specifier: ^4.1.4
         version: 4.1.4(vite@5.3.5(@types/node@20.14.11)(lightningcss@1.29.2))
@@ -36,6 +36,9 @@ importers:
       '@cloudflare/workers-types':
         specifier: ^4.20250429.0
         version: 4.20250429.0
+      '@kunai-consulting/kunai-design-system':
+        specifier: ^0.0.8
+        version: 0.0.8(@builder.io/qwik@1.13.0(vite@5.3.5(@types/node@20.14.11)(lightningcss@1.29.2)))
       '@kunai-consulting/qwik':
         specifier: ^0.0.10
         version: 0.0.10
@@ -472,6 +475,9 @@ packages:
 
   '@floating-ui/utils@0.2.9':
     resolution: {integrity: sha512-MDWhGtE+eHw5JW7lq4qhc5yRLS11ERl1c7Z6Xd0a58DozHES6EnNNwUWbMiG4J9Cgj053Bhk8zvlhFYKVhULwg==}
+
+  '@fontsource-variable/work-sans@5.2.5':
+    resolution: {integrity: sha512-zvoUtTMsk0c0Iygz8DAWrSdVgQvcIMxRtLS7a1H3tFuUHIOAN0NHRrwONyeebDuzXrgAUmSrDOAxOz5D+pn6nw==}
 
   '@humanwhocodes/config-array@0.11.14':
     resolution: {integrity: sha512-3T8LkOmg45BV5FICb15QQMsyUSWrQ8AygVfC7ZG32zOalnqrilm018ZVCw0eapXux8FtA33q8PSRSstjee3jSg==}
@@ -2903,6 +2909,8 @@ snapshots:
       '@floating-ui/utils': 0.2.9
 
   '@floating-ui/utils@0.2.9': {}
+
+  '@fontsource-variable/work-sans@5.2.5': {}
 
   '@humanwhocodes/config-array@0.11.14':
     dependencies:

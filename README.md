@@ -155,4 +155,14 @@ AUTH_GITHUB_ID=your_client_id
 AUTH_GITHUB_SECRET=your_client_secret
 ```
 
+
+### Kunai NPM Organization
+
+In order to install certain dependencies in this project you must be added to the Kunai NPM Organization. Reach out to **@PatrickJS** for an invite.
+Next, create an access token in NPM: https://docs.npmjs.com/creating-and-viewing-access-tokens
+Save this to your local environment as `NPM_TOKEN` 
+This specific process will vary depending on your OS.  
+For example, for Mac, you can edit your `~/.zshrc`: `export NPM_TOKEN=xxxx`
+
+
 ### Reach out in #open-source with any questions, or to @nabrams-kunaico or @benjamin-kunai for help. ! 
