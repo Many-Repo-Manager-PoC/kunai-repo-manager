@@ -30,6 +30,7 @@
 		"@builder.io/qwik": "^1.13.0",
 		"@builder.io/qwik-city": "^1.13.0",
 		"@cloudflare/workers-types": "^4.20250429.0",
+		"@kunai-consulting/kunai-design-system": "^0.0.8",
 		"@kunai-consulting/qwik": "^0.0.10",
 		"@types/eslint": "8.56.10",
 		"@types/node": "20.14.11",
@@ -45,6 +46,7 @@
 		"wrangler": "^3.0.0"
 	},
 	"dependencies": {
+		"@fontsource-variable/work-sans": "^5.2.5",
 		"@tailwindcss/vite": "^4.1.4",
 		"octokit": "^4.1.3",
 		"semver": "^7.7.1",

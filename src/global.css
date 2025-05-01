@@ -1,46 +1,86 @@
 /**
- * WHAT IS THIS FILE?
- *
- * Globally applied styles. No matter which components are in the page or matching route,
- * the styles in here will be applied to the Document, without any sort of CSS scoping.
- *
+ * Tailwind CSS imports
+ * View the full documentation at https://tailwindcss.com
  */
 
-:root {
-  --qwik-dark-blue: #006ce9;
-  --qwik-light-blue: #18b6f6;
-  --qwik-light-purple: #ac7ff4;
-  --qwik-dark-purple: #713fc2;
-  --qwik-dirty-black: #1d2033;
-  --qwik-dark-background: #151934;
-  --qwik-dark-text: #ffffff;
-}
-
-html {
-  line-height: 1;
-  -webkit-text-size-adjust: 100%;
-  -moz-tab-size: 4;
-  -o-tab-size: 4;
-  tab-size: 4;
-  font-family:
-    ui-sans-serif,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    Roboto,
-    "Helvetica Neue",
-    Arial,
-    "Noto Sans",
-    sans-serif,
-    "Apple Color Emoji",
-    "Segoe UI Emoji",
-    "Segoe UI Symbol",
-    "Noto Color Emoji";
-}
-
-body {
-  padding: 0;
-  margin: 0;
-  line-height: inherit;
-}
+ @import 'tailwindcss';
+ @config "../tailwind.config.js";
+ 
+ @font-face {
+   font-family: "Warnock Pro";
+   src: url("./fonts/warnock-pro/WarnockPro-Regular.woff2");
+   font-weight: 400;
+   font-style: normal;
+ }
+ 
+ /* very large font sizes */
+ @font-face {
+   font-family: "Warnock Pro";
+   src: url("./fonts/warnock-pro/WarnockPro-SemiboldCapt.woff2");
+   font-weight: 600;
+   font-style: normal;
+ }
+ 
+ @font-face {
+   font-family: "Warnock Pro";
+   src: url("./fonts/warnock-pro/WarnockPro-Regular.woff2");
+   font-weight: 700;
+   font-style: normal;
+ }
+ 
+ @layer base {
+   html {
+     scroll-behavior: smooth;
+   }
+ 
+   body {
+     font-family: "Work Sans Variable", sans-serif;
+   }
+ }
+ 
+ @layer utilities {
+   .text-5xl,
+   .text-6xl {
+     font-family: "Warnock Pro", sans-serif;
+   }
+ 
+   .text-5xl.font-semibold,
+   .text-6xl.font-semibold {
+     font-family: "Warnock Pro", sans-serif;
+   }
+ }
+ 
+ /* font syntax highlighting */
+ @font-face {
+   font-family: "Monaspace";
+   src: url("./fonts/syntax-highlight/syntax-highlight.woff2") format("woff2");
+ }
+ 
+ @font-palette-values --kung-fury {
+   font-family: "Monaspace";
+   override-colors:
+     0 #c8d2ef /* curlies and tags */,
+     1 hsl(250 100% 80%) /* ? */,
+     2 #acbbe7 /* function */,
+     3 hsl(188 100% 75%) /* ? */,
+     4 #ff7777 /* () */,
+     5 #fff /* property name */,
+     6 hsl(210 40% 80%) /* ? */,
+     7 #fda4a4 /* numbers */,
+     8 #f3f4f6 /* angle brackets */;
+ }
+ 
+ pre > code {
+   font-family: "Monaspace", monospace;
+   font-palette: --kung-fury;
+   border: none !important;
+   background: transparent !important;
+   color: white !important;
+ }
+ 
+ pre {
+   min-width: 0;
+   overflow-x: auto;
+   padding: 2ch;
+ }
+ 
