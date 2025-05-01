@@ -11,34 +11,7 @@ import {
   LuExternalLink,
 } from "@qwikest/icons/lucide";
 import { component$ } from "@builder.io/qwik";
-
-// TODO: Temporary type for the repository card for testing purposes
-export interface Repo {
-  id: number | null;
-  full_name: string | null;
-  name: string | null;
-  repo: string | null;
-  html_url: string | null;
-  url: string | null;
-  language: string | null;
-  description: string | null;
-  updated_at: string | null;
-  stargazers_count: number | null;
-  forks_count: number | null;
-  watchers_count: number | null;
-  homepage: string | null;
-  topics: string[] | null;
-  open_issues_count: number | null;
-  license: {
-    name: string | null;
-  } | null;
-  owner: {
-    login: string;
-    avatar_url: string;
-    html_url: string;
-    type: string;
-  };
-}
+import { Repo } from "~/db/types";
 
 export interface RepositoryCardProps {
   repo: Repo;
