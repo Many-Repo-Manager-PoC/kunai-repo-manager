@@ -1,5 +1,4 @@
 import {
-  Button,
   Card,
   Chip,
   Divider,
@@ -11,7 +10,7 @@ import {
   LuExternalLink,
 } from "@qwikest/icons/lucide";
 import { component$ } from "@builder.io/qwik";
-import { Repo } from "~/db/types";
+import type { Repo } from "~/db/types";
 
 export interface RepositoryCardProps {
   repo: Repo;

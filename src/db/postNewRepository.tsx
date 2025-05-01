@@ -3,7 +3,37 @@ import metadata from "./metadata.json";
 import { routeAction$, type JSONObject } from '@builder.io/qwik-city';
 import { OCTOKIT_CLIENT } from "~/routes/plugin@octokit";
 
-// Creates a new repository in the organization 
+/**
+ * Creates a new repository in the organization
+ * @param form - Form data containing repository configuration
+ * @param form.repoName - Name of the repository
+ * @param form.repoDescription - Description of the repository
+ * @param form.homepage - Repository homepage URL
+ * @param form.isPrivate - Whether the repository is private
+ * @param form.visibility - Repository visibility (private/public)
+ * @param form.hasIssues - Whether issues are enabled
+ * @param form.hasProjects - Whether projects are enabled
+ * @param form.hasWiki - Whether wiki is enabled
+ * @param form.hasDownloads - Whether downloads are enabled
+ * @param form.isTemplate - Whether repository is a template
+ * @param form.teamId - Team ID that owns the repository
+ * @param form.autoInit - Whether to initialize repository with README
+ * @param form.gitignoreTemplate - Gitignore template to use
+ * @param form.licenseTemplate - License template to use
+ * @param form.allowSquashMerge - Whether to allow squash merging
+ * @param form.allowMergeCommit - Whether to allow merge commits
+ * @param form.allowRebaseMerge - Whether to allow rebase merging
+ * @param form.allowAutoMerge - Whether to allow auto-merging
+ * @param form.deleteBranchOnMerge - Whether to delete branches after merging
+ * @param form.useSquashPrTitleAsDefault - Whether to use PR title as default squash commit title
+ * @param form.squashMergeCommitTitle - Title format for squash merge commits
+ * @param form.squashMergeCommitMessage - Message format for squash merge commits
+ * @param form.mergeCommitTitle - Title format for merge commits
+ * @param form.mergeCommitMessage - Message format for merge commits
+ * @param form.customProperties - Custom repository properties
+ * @param event - Qwik event object containing Octokit client
+ * @returns Success status and error message if applicable
+ */
 // eslint-disable-next-line qwik/loader-location
 export const usePostNewOrgRepository = routeAction$(async (form: JSONObject, event) => {
   try {
@@ -48,7 +78,36 @@ export const usePostNewOrgRepository = routeAction$(async (form: JSONObject, eve
   }
 });
 
-// Creates a new repository for a user
+/**
+ * Creates a new repository for a user
+ * @param form - Form data containing repository configuration
+ * @param form.repoName - Name of the repository
+ * @param form.repoDescription - Description of the repository
+ * @param form.homepage - Repository homepage URL
+ * @param form.isPrivate - Whether the repository is private
+ * @param form.hasIssues - Whether issues are enabled
+ * @param form.hasProjects - Whether projects are enabled
+ * @param form.hasWiki - Whether wiki is enabled
+ * @param form.hasDiscussions - Whether discussions are enabled
+ * @param form.teamId - Team ID that owns the repository
+ * @param form.autoInit - Whether to initialize repository with README
+ * @param form.gitignoreTemplate - Gitignore template to use
+ * @param form.licenseTemplate - License template to use
+ * @param form.hasDownloads - Whether downloads are enabled
+ * @param form.isTemplate - Whether repository is a template
+ * @param form.allowSquashMerge - Whether to allow squash merging
+ * @param form.allowMergeCommit - Whether to allow merge commits
+ * @param form.allowRebaseMerge - Whether to allow rebase merging
+ * @param form.allowAutoMerge - Whether to allow auto-merging
+ * @param form.deleteBranchOnMerge - Whether to delete branches after merging
+ * @param form.useSquashPrTitleAsDefault - Whether to use PR title as default squash commit title
+ * @param form.squashMergeCommitTitle - Title format for squash merge commits
+ * @param form.squashMergeCommitMessage - Message format for squash merge commits
+ * @param form.mergeCommitTitle - Title format for merge commits
+ * @param form.mergeCommitMessage - Message format for merge commits
+ * @param event - Qwik event object containing Octokit client
+ * @returns Success status and error message if applicable
+ */
 // eslint-disable-next-line qwik/loader-location
 export const usePostNewUserRepository = routeAction$(async (form: JSONObject, event) => {
   try {
