@@ -14,11 +14,7 @@ export default component$(() => {
     <>
       <Form action={signInSig}>
         <input type="hidden" name="providerId" value="github" />
-        <input
-          type="hidden"
-          name="options.redirectTo"
-          value="/"
-        />
+        <input type="hidden" name="options.redirectTo" value="/" />
         <Button kind="primary">Sign In</Button>
       </Form>
       <p>
@@ -39,32 +35,34 @@ export default component$(() => {
       <p>
         <a href="/allRepositories">All Repositories</a>
       </p>
-      <RepositoryCard repo={{
-        id: 1,
-        full_name: "kunai-consulting/kunai-design-system",
-        name: "kunai-design-system",
-        repo: "kunai-design-system",
-        html_url: "https://github.com/kunai-consulting/kunai-design-system",
-        url: "https://github.com/kunai-consulting/kunai-design-system",
-        language: "TypeScript",
-        description: "Kunai Design System",
-        updated_at: "2021-01-01",
-        stargazers_count: 100,
-        forks_count: 100,
-        watchers_count: 100,
-        homepage: "https://kunai-design-system.com",
-        topics: ["design-system", "typescript", "react"],
-        open_issues_count: 100,
-        license: {
-          name: "MIT",
-        },
-        owner: {
-          login: "kunai-consulting",
-          avatar_url: "https://github.com/kunai-consulting.png",
-          html_url: "https://github.com/kunai-consulting",
-          type: "Organization",
-        },
-      }} />
+      <RepositoryCard
+        repo={{
+          id: 1,
+          full_name: "kunai-consulting/kunai-design-system",
+          name: "kunai-design-system",
+          repo: "kunai-design-system",
+          html_url: "https://github.com/kunai-consulting/kunai-design-system",
+          url: "https://github.com/kunai-consulting/kunai-design-system",
+          language: "TypeScript",
+          description: "Kunai Design System",
+          updated_at: "2021-01-01",
+          stargazers_count: 100,
+          forks_count: 100,
+          watchers_count: 100,
+          homepage: "https://kunai-design-system.com",
+          topics: ["design-system", "typescript", "react"],
+          open_issues_count: 100,
+          license: {
+            name: "MIT",
+          },
+          owner: {
+            login: "kunai-consulting",
+            avatar_url: "https://github.com/kunai-consulting.png",
+            html_url: "https://github.com/kunai-consulting",
+            type: "Organization",
+          },
+        }}
+      />
     </>
   );
 });

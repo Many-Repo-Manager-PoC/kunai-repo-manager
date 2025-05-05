@@ -1,6 +1,6 @@
 # Kunai Repository manager
-## A Qwik City App ⚡️
 
+## A Qwik City App ⚡️
 
 - [Qwik Docs](https://qwik.dev/)
 - [Discord](https://qwik.dev/chat)
@@ -62,17 +62,15 @@ The production build will generate client and server modules by running both cli
 pnpm run build # or `yarn build`
 ```
 
-
 Basic setup to get the app running locally:
 
-** We use a private package for our styling @kunai-design-system(https://github.com/kunai-consulting/kunai-design-system), so, please reach out to @PatrickJS @PatrickJS-kunaico to be added to the kunai-consulting npm organization. **THE APP WILL NOT WORK IF YOU DO NOT HAVE ACCESS TO THE PRIVATE REGISTRY.** **
+** We use a private package for our styling @kunai-design-system(https://github.com/kunai-consulting/kunai-design-system), so, please reach out to @PatrickJS @PatrickJS-kunaico to be added to the kunai-consulting npm organization. **THE APP WILL NOT WORK IF YOU DO NOT HAVE ACCESS TO THE PRIVATE REGISTRY.\*\* \*\*
 
 ```
 pnpm install
 pnpm run build
 pnpm run dev
 ```
-
 
 ## Cloudflare Pages
 
@@ -92,7 +90,6 @@ Then visit [http://localhost:5173/](http://localhost:5173/)
 pnpm run build
 pnpm run deploy
 ```
-
 
 ### Function Invocation Routes
 
@@ -123,10 +120,9 @@ In the above example, it's saying _all_ pages should be SSR'd. However, the root
 
 In most cases the generated `dist/_routes.json` file is ideal. However, if you need more granular control over each path, you can instead provide you're own `public/_routes.json` file. When the project provides its own `public/_routes.json` file, then the Cloudflare adaptor will not auto-generate the routes config and instead use the committed one within the `public` directory.
 
+## How to build onto this project for your own use
 
-## How to build onto this project for your own use 
-
-So you have the project running locally, 
+So you have the project running locally,
 lets make sure we have the right setup for your own use.
 setup with your own github oAath app, env variables, etc.
 
@@ -136,7 +132,7 @@ setup with your own github oAath app, env variables, etc.
 
 Go to https://github.com/settings/developers and create a new OAuth App.
 
-***Make sure that the authorization callback URL is set to** `"homepage URL" + /auth/callback/github` i.e. 
+**\*Make sure that the authorization callback URL is set to** `"homepage URL" + /auth/callback/github` i.e.
 
 homepage URL = `http://localhost:1000/`
 
@@ -144,9 +140,9 @@ then
 
 authorization callback URL = `http://localhost:1000/auth/callback/github`
 
-* If your org already has an oauth app setup, you can add your own private key to it, and put the client id and secret in the repo secrets. *
+- If your org already has an oauth app setup, you can add your own private key to it, and put the client id and secret in the repo secrets. \*
 
-***MAKE SURE TO COPY THE CLIENT SECRET PROVIDED ONCE YOU CREATE THE OAUTH APP**
+**\*MAKE SURE TO COPY THE CLIENT SECRET PROVIDED ONCE YOU CREATE THE OAUTH APP**
 
 ### Step 3: Add client id/client secret to your .ENV file .ENV.local file
 
@@ -155,14 +151,12 @@ AUTH_GITHUB_ID=your_client_id
 AUTH_GITHUB_SECRET=your_client_secret
 ```
 
-
 ### Kunai NPM Organization
 
 In order to install certain dependencies in this project you must be added to the Kunai NPM Organization. Reach out to **@PatrickJS** for an invite.
 Next, create an access token in NPM: https://docs.npmjs.com/creating-and-viewing-access-tokens
-Save this to your local environment as `NPM_TOKEN` 
+Save this to your local environment as `NPM_TOKEN`
 This specific process will vary depending on your OS.  
 For example, for Mac, you can edit your `~/.zshrc`: `export NPM_TOKEN=xxxx`
 
-
-### Reach out in #open-source with any questions, or to @nabrams-kunaico or @benjamin-kunai for help. ! 
+### Reach out in #open-source with any questions, or to @nabrams-kunaico or @benjamin-kunai for help. !

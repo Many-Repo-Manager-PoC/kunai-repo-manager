@@ -1,5 +1,5 @@
 import metadata from "./metadata.json";
-import { routeAction$ } from '@builder.io/qwik-city';
+import { routeAction$ } from "@builder.io/qwik-city";
 import type { Octokit } from "octokit";
 import { OCTOKIT_CLIENT } from "~/routes/plugin@octokit";
 
@@ -24,12 +24,11 @@ export const usePutTopics = routeAction$(async (data, event) => {
     });
 
     return { success: true };
-
   } catch (error) {
     console.error("Error updating topics:", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Unknown error occurred"
+      error: error instanceof Error ? error.message : "Unknown error occurred",
     };
   }
 });
@@ -47,24 +46,25 @@ export const usePutBulkTopics = routeAction$(async (data, event) => {
 
   try {
     const octokit: Octokit = event.sharedMap.get(OCTOKIT_CLIENT);
-    
-    await Promise.all(repos.map(async (repo) => {
-      console.log(`Updating repo ${repo} with topics:`, reposTopics[repo]);
-      
-      await octokit.rest.repos.replaceAllTopics({
-        owner: metadata.owner,
-        repo: repo,
-        names: reposTopics[repo],
-      });
-    }));
+
+    await Promise.all(
+      repos.map(async (repo) => {
+        console.log(`Updating repo ${repo} with topics:`, reposTopics[repo]);
+
+        await octokit.rest.repos.replaceAllTopics({
+          owner: metadata.owner,
+          repo: repo,
+          names: reposTopics[repo],
+        });
+      }),
+    );
 
     return { success: true };
-
   } catch (error) {
     console.error("Error updating repo topics:", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Unknown error occurred"
+      error: error instanceof Error ? error.message : "Unknown error occurred",
     };
   }
 });

@@ -2,8 +2,8 @@ import { component$ } from "@builder.io/qwik";
 import { useForm } from "@modular-forms/qwik";
 import { z } from "zod";
 import { TextInput } from "~/components/formInputs/textInput";
-import { SelectInput } from "../formInputs/selectInput";
-import { CheckboxInput } from "../formInputs/checkboxInput";
+import { SelectInput } from "~/components/formInputs/selectInput";
+import { CheckboxInput } from "~/components/formInputs/checkboxInput";
 import { GithubLicenses } from "~/db/constants";
 import { Button } from "@kunai-consulting/kunai-design-system";
 

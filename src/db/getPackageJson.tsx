@@ -26,24 +26,25 @@ export const useGetPackageJson = routeLoader$(async (event) => {
             repo: path[0],
             path: path[1],
             mediaType: {
-              format: "object"
-            }
+              format: "object",
+            },
           });
           const content = atob((data as { content: string }).content || "");
           const packageJson = JSON.parse(content);
           return {
             repo: path[0],
             packageJson,
-            error: null
+            error: null,
           };
         } catch (error) {
           return {
             repo: path[0],
             packageJson: null,
-            error: error instanceof Error ? error.message : "Unknown error occurred"
+            error:
+              error instanceof Error ? error.message : "Unknown error occurred",
           };
         }
-      })
+      }),
     );
 
     return packageJsons;

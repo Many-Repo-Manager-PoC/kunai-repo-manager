@@ -33,5 +33,5 @@ export const TextInput = component$<TextInputProps>(
         )}
       </Field.Root>
     );
-  }
+  },
 );

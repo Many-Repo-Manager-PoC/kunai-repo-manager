@@ -49,5 +49,5 @@ export const SelectInput = component$<SelectInputProps>(
         )}
       </Select.Root>
     );
-  }
+  },
 );

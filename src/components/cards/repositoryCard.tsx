@@ -1,8 +1,4 @@
-import {
-  Card,
-  Chip,
-  Divider,
-} from "@kunai-consulting/kunai-design-system";
+import { Card, Chip, Divider } from "@kunai-consulting/kunai-design-system";
 import {
   LuStar,
   LuGitFork,

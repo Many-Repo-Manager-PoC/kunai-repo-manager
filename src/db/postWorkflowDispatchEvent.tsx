@@ -1,5 +1,5 @@
 import metadata from "./metadata.json";
-import { routeAction$ } from '@builder.io/qwik-city';
+import { routeAction$ } from "@builder.io/qwik-city";
 import type { Octokit } from "octokit";
 import { OCTOKIT_CLIENT } from "~/routes/plugin@octokit";
 
@@ -25,27 +25,26 @@ export const postWorkflowDispatchEvent = routeAction$(async (data, event) => {
     await octokit.rest.actions.createWorkflowDispatch({
       owner: metadata.owner,
       repo: repo,
-      workflow_id: 'update-dependencies.yml',
-      ref: 'main',
+      workflow_id: "update-dependencies.yml",
+      ref: "main",
       inputs: {
         repo_name: data.repo_name as string,
         package_name: data.package_name as string,
         package_version: data.package_version as string,
         pr_title: data.pr_title as string,
         pr_body: data.pr_body as string,
-        owner: metadata.owner
-      }
+        owner: metadata.owner,
+      },
     });
 
     return {
-      success: true
+      success: true,
     };
-
   } catch (error) {
     console.error("Error dispatching workflow:", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Unknown error occurred"
+      error: error instanceof Error ? error.message : "Unknown error occurred",
     };
   }
 });

@@ -28,5 +28,5 @@ export const CheckboxInput = component$<CheckboxInputProps>(
         <Checkbox.Label>{label}</Checkbox.Label>
       </Checkbox.Root>
     );
-  }
+  },
 );

@@ -12,18 +12,18 @@ import { OCTOKIT_CLIENT } from "../routes/plugin@octokit";
 export const useGetRepos = routeLoader$(async (event) => {
   try {
     const octokit: Octokit = event.sharedMap.get(OCTOKIT_CLIENT);
-    
+
     // Set initial state in shared map
-    event.sharedMap.set('repos', metadata.repositories);
-    
+    event.sharedMap.set("repos", metadata.repositories);
+
     const repositories = await Promise.all(
       metadata.repositories.map(async (repoName) => {
         const { data } = await octokit.rest.repos.get({
           owner: metadata.owner,
-          repo: repoName
+          repo: repoName,
         });
         return data;
-      })
+      }),
     );
     return repositories;
   } catch (error) {
