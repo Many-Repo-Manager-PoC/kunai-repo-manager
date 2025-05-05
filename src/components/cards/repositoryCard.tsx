@@ -84,7 +84,7 @@ export const RepositoryCard = component$<RepositoryCardProps>(({ repo }) => {
         <div class="flex w-full flex-wrap items-center gap-2">
           {repo.topics && repo.topics.length > 0 ? (
             repo.topics.map((topic) => (
-              <Chip.Root variant="gold" key={topic}>
+              <Chip.Root variant="outline" key={topic}>
                 <span>{topic}</span>
               </Chip.Root>
             ))

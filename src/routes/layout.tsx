@@ -1,9 +1,27 @@
-import { component$, Slot } from "@builder.io/qwik";
+import {
+  component$,
+  Slot,
+  createContextId,
+  useContextProvider,
+} from "@builder.io/qwik";
 import { routeLoader$ } from "@builder.io/qwik-city";
 import type { RequestHandler } from "@builder.io/qwik-city";
 
-import Header from "~/components/starter/header/header";
-import Footer from "~/components/starter/footer/footer";
+import Header from "~/components/header/header";
+import Footer from "~/components/footer/footer";
+import Page from "~/components/page/page";
+
+export interface DarkModeContext {
+  darkMode: boolean;
+}
+
+export const darkModeContext = createContextId<DarkModeContext>("darkMode");
+
+export const useDarkModeLoader = routeLoader$(() => {
+  return {
+    darkMode: false,
+  };
+});
 
 export const onGet: RequestHandler = async ({ cacheControl }) => {
   // Control caching for this request for best performance and to reduce hosting costs:
@@ -23,13 +41,16 @@ export const useServerTimeLoader = routeLoader$(() => {
 });
 
 export default component$(() => {
+  const darkMode = useDarkModeLoader();
+  useContextProvider(darkModeContext, darkMode.value);
+
   return (
-    <>
+    <Page>
       <Header />
       <main>
         <Slot />
       </main>
       <Footer />
-    </>
+    </Page>
   );
 });
