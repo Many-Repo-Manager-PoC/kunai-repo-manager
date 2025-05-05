@@ -33,6 +33,7 @@
 		"@kunai-consulting/kunai-design-system": "^0.0.8",
 		"@kunai-consulting/qwik": "^0.0.10",
 		"@qwikest/icons": "^0.0.13",
+		"@qwik-ui/headless": "^0.6.7",
 		"@types/eslint": "8.56.10",
 		"@types/node": "20.14.11",
 		"@typescript-eslint/eslint-plugin": "7.16.1",
