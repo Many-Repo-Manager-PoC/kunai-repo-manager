@@ -6,9 +6,6 @@ import {
 } from "@builder.io/qwik";
 import { routeLoader$ } from "@builder.io/qwik-city";
 import type { RequestHandler } from "@builder.io/qwik-city";
-
-import Header from "~/components/header/header";
-import Footer from "~/components/footer/footer";
 import Page from "~/components/page/page";
 
 export interface DarkModeContext {
@@ -46,11 +43,9 @@ export default component$(() => {
 
   return (
     <Page>
-      <Header />
       <main>
         <Slot />
       </main>
-      <Footer />
     </Page>
   );
 });
