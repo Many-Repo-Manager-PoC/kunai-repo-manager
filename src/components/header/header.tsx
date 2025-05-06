@@ -6,9 +6,9 @@ export default component$(() => {
   const darkMode = useContext(darkModeContext);
 
   return (
-    <header>
+    <header class="fixed top-0 left-0 w-full z-50">
       <div class="container flex items-center justify-between">
-        <div class="inline-block pt-4">
+        <div class="inline-block py-4">
           <a href="/" title="kunai" class="block flex items-center gap-2">
             <KunaiLogo
               height={50}

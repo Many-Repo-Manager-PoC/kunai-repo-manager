@@ -1,17 +1,22 @@
-import { component$ } from "@builder.io/qwik";
-import { useServerTimeLoader } from "../../routes/layout";
-import styles from "./footer.module.css";
+import { component$, useContext } from "@builder.io/qwik";
+import { darkModeContext } from "~/routes/layout";
 
 export default component$(() => {
-  const serverTime = useServerTimeLoader();
-
+  const darkMode = useContext(darkModeContext);
   return (
-    <footer>
-      <div class="container">
-        <a href="https://www.builder.io/" target="_blank" class={styles.anchor}>
-          <span>Made with ♡ by Builder.io</span>
-          <span class={styles.spacer}>|</span>
-          <span>{serverTime.value.date}</span>
+    <footer class="fixed bottom-0 left-0 right-0 w-full">
+      <div
+        class={`w-full flex justify-center items-center ${
+          darkMode.darkMode ? "bg-kunai-blue-900" : "bg-kunai-blue-200"
+        }`}
+      >
+        <a
+          href="https://open-source.kunaico.com/"
+          class={`block text-sm text-center no-underline py-3 leading-relaxed md:[&>span]:inline [&>span]:block ${
+            darkMode.darkMode ? "text-white" : "text-kunai-blue-900"
+          }`}
+        >
+          a K U N A I Open Source Project
         </a>
       </div>
     </footer>
