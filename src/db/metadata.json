@@ -16,5 +16,69 @@
     ["mock-repo-with-no-dependencies", "package.json"],
     ["mock-repo-with-also-one-dependency", "package.json"],
     ["mock-repo-with-one-dependency", "package.json"]
-  ]
+  ],
+  "dummyRepos": [
+    {
+      "id": 1,
+      "full_name": "kunai-consulting/kunai-design-system",
+      "name": "kunai-design-system",
+      "repo": "kunai-design-system",
+      "html_url": "https://github.com/kunai-consulting/kunai-design-system",
+      "url": "https://github.com/kunai-consulting/kunai-design-system",
+      "language": "TypeScript",
+      "description": "Kunai Design System",
+      "updated_at": "2024-03-20",
+      "stargazers_count": 150,
+      "forks_count": 45,
+      "watchers_count": 200,
+      "homepage": "https://kunai-design-system.com",
+      "topics": ["design-system", "typescript", "react"],
+      "open_issues_count": 12,
+      "license": {
+        "name": "MIT"
+      },
+      "owner": {
+        "login": "kunai-consulting",
+        "avatar_url": "https://github.com/kunai-consulting.png",
+        "html_url": "https://github.com/kunai-consulting",
+        "type": "Organization"
+      }
+    },
+    {
+      "id": 2,
+      "full_name": "kunai-consulting/qwik-starter",
+      "name": "qwik-starter",
+      "repo": "qwik-starter",
+      "html_url": "https://github.com/kunai-consulting/qwik-starter",
+      "url": "https://github.com/kunai-consulting/qwik-starter",
+      "language": "JavaScript",
+      "description": "Qwik Starter Template",
+      "updated_at": "2024-03-19",
+      "stargazers_count": 75,
+      "forks_count": 30,
+      "watchers_count": 120,
+      "homepage": "https://qwik-starter.com",
+      "topics": ["qwik", "javascript", "starter"],
+      "open_issues_count": 5,
+      "license": {
+        "name": "Apache-2.0"
+      },
+      "owner": {
+        "login": "kunai-consulting",
+        "avatar_url": "https://github.com/kunai-consulting.png",
+        "html_url": "https://github.com/kunai-consulting",
+        "type": "Organization"
+      }
+    }
+  ],
+  "dummyRepoTopicsMap": {
+    "kunai-design-system": [
+      "design-system",
+      "typescript",
+      "react",
+      "ui",
+      "components"
+    ],
+    "qwik-starter": ["qwik", "javascript", "starter", "template", "boilerplate"]
+  }
 }

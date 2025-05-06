@@ -15,7 +15,7 @@ export interface RepositoryCardProps {
 export const RepositoryCard = component$<RepositoryCardProps>(({ repo }) => {
   return (
     <Card.Root
-      class="max-h-[32.5rem] max-w-[30rem] shadow-lg cursor-pointer hover:shadow-xl transition-shadow duration-300"
+      class="max-h-[32.5rem] max-w-[30rem] dark:bg-red-400 shadow-lg cursor-pointer hover:shadow-xl transition-shadow duration-300"
       tabIndex={0}
     >
       <div class="flex-grow gap-3 flex flex-col">
@@ -58,7 +58,7 @@ export const RepositoryCard = component$<RepositoryCardProps>(({ repo }) => {
           <span>{repo.updated_at}</span>
         </div>
 
-        <div class="flex gap-6 mt-4 text-sm bg-gray-50 p-3 rounded-md">
+        <div class="flex gap-6 mt-4 text-sm bg-gray-50 p-3 rounded-md dark:bg-red-200">
           <div class="flex items-center gap-1.5">
             <LuStar class="h-5 w-5 text-yellow-500" />
             <span>{repo.stargazers_count || 0}</span>
@@ -84,7 +84,7 @@ export const RepositoryCard = component$<RepositoryCardProps>(({ repo }) => {
         <div class="flex w-full flex-wrap items-center gap-2">
           {repo.topics && repo.topics.length > 0 ? (
             repo.topics.map((topic) => (
-              <Chip.Root variant="outline" key={topic}>
+              <Chip.Root class="dark:bg-red-300" variant="outline" key={topic}>
                 <span>{topic}</span>
               </Chip.Root>
             ))
