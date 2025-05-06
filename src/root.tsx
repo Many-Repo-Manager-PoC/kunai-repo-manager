@@ -20,6 +20,31 @@ export default component$(() => {
   return (
     <QwikCityProvider>
       <head>
+        <script
+          dangerouslySetInnerHTML={`
+        (function() {
+          function setTheme(theme) {
+            document.documentElement.classList.toggle('dark', theme === 'dark');
+
+          }
+          const theme = localStorage.getItem('theme');
+ 
+          if (theme) {
+            setTheme(theme);
+          } else {
+            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+              setTheme('dark');}
+              else {
+                setTheme('light');}}
+              
+        })();
+        window.addEventListener('load', function() {
+          const themeSwitch = document.getElementById('items');
+          themeSwitch.checked = localStorage.getItem('theme') === 'light'? true: false;
+        }
+        );
+      `}
+        ></script>
         <meta charset="utf-8" />
         {!isDev && (
           <link

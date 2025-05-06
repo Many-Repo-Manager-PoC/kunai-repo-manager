@@ -11,4 +11,6 @@ export default {
     "./node_modules/@kunai-consulting/kunai-design-system/src/**/*",
   ],
   presets: [kunai.tailwindConfig],
+  darkMode: "class",
+  theme: {},
 };
