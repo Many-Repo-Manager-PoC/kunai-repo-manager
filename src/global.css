@@ -6,6 +6,20 @@
 @import "tailwindcss";
 @config "../tailwind.config.js";
 
+@theme {
+  --background-image-gradient-light: radial-gradient(
+    57.58% 57.58% at 48.79% 42.42%,
+    rgba(232, 90, 81, 0.2) 10%,
+    rgba(191, 219, 254, 0) 63.22%
+  );
+
+  --background-image-gradient-dark: radial-gradient(
+    57.58% 57.58% at 48.79% 42.42%,
+    rgba(232, 90, 81, 0.5) 10%,
+    rgba(191, 219, 254, 0) 63.22%
+  );
+}
+
 @font-face {
   font-family: "Warnock Pro";
   src: url("./fonts/warnock-pro/WarnockPro-Regular.woff2");
@@ -82,20 +96,4 @@ pre {
   min-width: 0;
   overflow-x: auto;
   padding: 2ch;
-}
-
-.bg-gradient-dark {
-  background: radial-gradient(
-    57.58% 57.58% at 48.79% 42.42%,
-    rgba(232, 90, 81, 0.5) 10%,
-    rgba(191, 219, 254, 0) 63.22%
-  );
-}
-
-.bg-gradient-light {
-  background: radial-gradient(
-    57.58% 57.58% at 48.79% 42.42%,
-    rgba(232, 90, 81, 0.2) 10%,
-    rgba(191, 219, 254, 0) 63.22%
-  );
 }
