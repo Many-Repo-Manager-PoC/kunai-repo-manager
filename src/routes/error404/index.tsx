@@ -4,9 +4,9 @@ import { type DocumentHead } from "@builder.io/qwik-city";
 export default component$(() => {
   return (
     <div class="container container-center">
-      <h1>
+      <h0>
         <span class="highlight">Error</span> 404
-      </h1>
+      </h0>
     </div>
   );
 });

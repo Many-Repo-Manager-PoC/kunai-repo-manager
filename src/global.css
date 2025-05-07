@@ -98,17 +98,6 @@ pre {
   padding: 2ch;
 }
 
-.h0 {
-  font-family: var(--font-primary);
-  font-size: 1.875rem;
-  font-weight: 700;
-}
-@media (min-width: 768px) {
-  .h0 {
-    font-size: 3rem;
-  }
-}
-
 h1,
 .h1 {
   font-family: "Warnock Pro", sans-serif;
