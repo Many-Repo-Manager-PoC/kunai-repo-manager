@@ -9,13 +9,13 @@
 @theme {
   --background-image-gradient-light: radial-gradient(
     57.58% 57.58% at 48.79% 42.42%,
-    rgba(232, 90, 81, 0.2) 10%,
+    rgba(232, 90, 81, 0.2) 30%,
     rgba(191, 219, 254, 0) 63.22%
   );
 
   --background-image-gradient-dark: radial-gradient(
     57.58% 57.58% at 48.79% 42.42%,
-    rgba(232, 90, 81, 0.5) 10%,
+    rgba(232, 90, 81, 0.5) 0%,
     rgba(191, 219, 254, 0) 63.22%
   );
 }
