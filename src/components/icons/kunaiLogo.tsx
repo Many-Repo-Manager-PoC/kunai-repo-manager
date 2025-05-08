@@ -1,11 +1,13 @@
 export const KunaiLogo = ({
   width = 33,
   height = 40,
-  logoColor = "kunai-blue-900",
+  logoColor = "text-kunai-blue-900",
+  class: className,
 }: {
   width?: number;
   height?: number;
   logoColor?: string;
+  class?: string;
 }) => (
   <svg
     width={width}
@@ -21,6 +23,7 @@ export const KunaiLogo = ({
     <path
       d="M7.08327 4.32649L22.6841 19.912L7.08327 35.4976V4.32649ZM5.28906 0V39.8276L25.2224 19.9137L5.28906 0Z"
       fill={logoColor}
+      class={className}
     />
   </svg>
 );

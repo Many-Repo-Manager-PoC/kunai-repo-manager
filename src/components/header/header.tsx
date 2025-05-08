@@ -8,7 +8,12 @@ export default component$(() => {
       <div class="container flex items-center justify-between">
         <div class="inline-block py-4">
           <a href="/" title="kunai" class="block flex items-center gap-2">
-            <KunaiLogo height={50} width={143} logoColor="white" />
+            <KunaiLogo
+              height={50}
+              width={143}
+              logoColor="currentColor"
+              class="text-kunai-blue-900 dark:text-white"
+            />
             <span class="h-12 text-3xl dark:text-white text-kunai-blue-900">
               K &nbsp; U &nbsp; N &nbsp; A &nbsp; I
             </span>

@@ -8,6 +8,7 @@ export { useCreateRepository };
 export default component$(() => {
   return (
     <div class="container container-center">
+      <h1 class="text-center">Create a Repository</h1>
       <BaseCard divider={false}>
         <div q:slot="header">
           <h4>New Repository</h4>

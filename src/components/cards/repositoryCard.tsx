@@ -15,7 +15,7 @@ export interface RepositoryCardProps {
 
 export const RepositoryCard = component$<RepositoryCardProps>(({ repo }) => {
   return (
-    <BaseCard rootClassNames="max-h-[32.5rem] dark:bg-red-400 max-w-[30rem] cursor-pointer hover:shadow-xl transition-shadow duration-300">
+    <BaseCard rootClassNames="max-h-[32.5rem] dark:bg-kunai-blue-600 max-w-[30rem] cursor-pointer hover:shadow-xl transition-shadow duration-300">
       <div q:slot="header" class="flex items-center gap-2 w-full">
         <img
           src={repo.owner.avatar_url}
@@ -37,23 +37,25 @@ export const RepositoryCard = component$<RepositoryCardProps>(({ repo }) => {
         </a>
       </div>
       <div q:slot="body" class="flex flex-col gap-2">
-        <div class="flex-grow">
+        <div class="flex-grow dark:text-white">
           <Card.Description>
             {repo.description || "No description available"}
           </Card.Description>
         </div>
 
-        <div class="flex items-center gap-2">
-          <span class="font-bold text-gray-700">License:</span>
+        <div class="flex items-center gap-2 dark:text-white">
+          <span class="font-bold text-gray-700 dark:text-white">License:</span>
           <span>{repo.license?.name || "No license information"}</span>
         </div>
 
-        <div class="flex items-center gap-2">
-          <span class="font-bold text-gray-700">Last Updated:</span>
+        <div class="flex items-center gap-2 dark:text-white">
+          <span class="font-bold text-gray-700 dark:text-white">
+            Last Updated:
+          </span>
           <span>{repo.updated_at}</span>
         </div>
 
-        <div class="flex gap-6 mt-4 text-sm bg-gray-50 p-3 rounded-md dark:bg-red-200">
+        <div class="flex gap-6 mt-4 text-sm bg-gray-50 p-3 rounded-md dark:bg-kunai-blue-200">
           <div class="flex items-center gap-1.5">
             <LuStar class="h-5 w-5 text-yellow-500" />
             <span>{repo.stargazers_count || 0}</span>
@@ -73,7 +75,11 @@ export const RepositoryCard = component$<RepositoryCardProps>(({ repo }) => {
       <div q:slot="footer" class="flex w-full flex-wrap items-center gap-2">
         {repo.topics && repo.topics.length > 0 ? (
           repo.topics.map((topic) => (
-            <Chip.Root class="dark:bg-red-300" variant="outline" key={topic}>
+            <Chip.Root
+              class="dark:bg-kunai-blue-300"
+              variant="outline"
+              key={topic}
+            >
               <span>{topic}</span>
             </Chip.Root>
           ))
