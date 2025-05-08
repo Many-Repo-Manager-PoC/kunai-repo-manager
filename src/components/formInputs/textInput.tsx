@@ -21,7 +21,9 @@ export const TextInput = component$<TextInputProps>(
     const isInvalid = error && error.length > 0;
     return (
       <Field.Root>
-        <Field.Label for={name}>{label}</Field.Label>
+        <Field.Label class="mb-1" for={name}>
+          {label}
+        </Field.Label>
         <Field.Box>
           <Field.Input type={type} {...props} />
         </Field.Box>

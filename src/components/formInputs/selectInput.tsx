@@ -1,6 +1,9 @@
 import { component$, type QRL } from "@builder.io/qwik";
 import { Select } from "@kunai-consulting/kunai-design-system";
-import { HiChevronUpDownMini } from "@qwikest/icons/heroicons";
+import {
+  HiChevronUpDownMini,
+  HiExclamationTriangleMini,
+} from "@qwikest/icons/heroicons";
 
 export type SelectOption = {
   value: string;
@@ -26,7 +29,9 @@ export const SelectInput = component$<SelectInputProps>(
     const isInvalid = error && error.length > 0;
     return (
       <Select.Root>
-        <Select.Label>{label}</Select.Label>
+        <Select.Label class={isInvalid ? "text-red-500" : ""}>
+          {label}
+        </Select.Label>
         <Select.Trigger class="w-full">
           <Select.DisplayValue placeholder={placeholder} />
           <HiChevronUpDownMini class="h-5 w-5" />
@@ -34,7 +39,7 @@ export const SelectInput = component$<SelectInputProps>(
         <Select.Popover class="min-w-72 max-h-[400px]">
           <div class="max-h-[400px] overflow-y-auto">
             {options.map((option, index) => (
-              <Select.Item key={index}>
+              <Select.Item key={index} value={option.value}>
                 <Select.ItemLabel>{option.label}</Select.ItemLabel>
                 <Select.ItemIndicator />
               </Select.Item>
@@ -43,8 +48,9 @@ export const SelectInput = component$<SelectInputProps>(
         </Select.Popover>
         <Select.HiddenNativeSelect {...props} />
         {isInvalid && (
-          <Select.ErrorMessage class="text-small-1 text-interaction-red-50">
-            {error}
+          <Select.ErrorMessage class="flex items-center gap-1 text-sm font-[500] leading-5 text-red-500">
+            <HiExclamationTriangleMini class="h-4 w-4" />
+            <span>{error}</span>
           </Select.ErrorMessage>
         )}
       </Select.Root>
