@@ -1,41 +1,15 @@
 import { $, component$ } from "@builder.io/qwik";
 import { useForm, zodForm$, reset } from "@modular-forms/qwik";
-import { z } from "zod";
 import { TextInput } from "~/components/formInputs/textInput";
 import { SelectInput } from "~/components/formInputs/selectInput";
 import { CheckboxInput } from "~/components/formInputs/checkboxInput";
 import { GithubLicenses } from "~/db/constants";
 import { Button } from "@kunai-consulting/kunai-design-system";
-import { useCreateRepository } from "~/routes/createRepositories";
-
-export const createRepositorySchema = z.object({
-  repoType: z.enum(["user", "org"]).default("user"),
-  repoName: z.string().min(1, "Repository name is required"),
-  repoDescription: z.string().optional(),
-  homepage: z.string().url().optional(),
-  visibility: z.enum(["public", "private"]).default("public").optional(),
-  hasIssues: z.boolean().default(true).optional(),
-  hasProjects: z.boolean().default(true).optional(),
-  hasWiki: z.boolean().default(true).optional(),
-  hasDownloads: z.boolean().default(true).optional(),
-  isTemplate: z.boolean().default(false).optional(),
-  // teamId: z.number().optional(),
-  autoInit: z.boolean().default(false).optional(),
-  gitignoreTemplate: z.string().optional(),
-  licenseTemplate: z.string().optional(),
-  allowSquashMerge: z.boolean().default(true).optional(),
-  allowMergeCommit: z.boolean().default(true).optional(),
-  allowRebaseMerge: z.boolean().default(true).optional(),
-  allowAutoMerge: z.boolean().default(false).optional(),
-  deleteBranchOnMerge: z.boolean().default(false).optional(),
-  // useSquashPrTitleAsDefault: z.boolean().default(false).optional(),
-  // squashMergeCommitTitle: z.string().optional(),
-  // squashMergeCommitMessage: z.string().optional(),
-  // mergeCommitTitle: z.string().optional(),
-  // mergeCommitMessage: z.string().optional(),
-});
-
-export type CreateRepositoryFormType = z.infer<typeof createRepositorySchema>;
+import { useCreateRepository } from "~/routes/layout";
+import {
+  type CreateRepositoryFormType,
+  createRepositorySchema,
+} from "~/db/createRepository";
 
 export const CreateRepositoryForm = component$(() => {
   const createRepository = useCreateRepository();

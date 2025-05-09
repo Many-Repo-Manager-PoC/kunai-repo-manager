@@ -2,8 +2,6 @@ import { component$ } from "@builder.io/qwik";
 import { type DocumentHead } from "@builder.io/qwik-city";
 import { BaseCard } from "~/components/cards/baseCard";
 import { CreateRepositoryForm } from "~/components/forms/createRepoForm";
-import { useCreateRepository } from "~/db/createRepository";
-export { useCreateRepository };
 
 export default component$(() => {
   return (

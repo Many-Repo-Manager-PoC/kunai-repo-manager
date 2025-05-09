@@ -2,11 +2,37 @@ import type { Octokit } from "octokit";
 import metadata from "./metadata.json";
 import { OCTOKIT_CLIENT } from "~/routes/plugin@octokit";
 import { zodForm$ } from "@modular-forms/qwik";
-import {
-  createRepositorySchema,
-  type CreateRepositoryFormType,
-} from "~/components/forms/createRepoForm";
 import { formAction$ } from "@modular-forms/qwik";
+import { z } from "zod";
+
+export const createRepositorySchema = z.object({
+  repoType: z.enum(["user", "org"]).default("user"),
+  repoName: z.string().min(1, "Repository name is required"),
+  repoDescription: z.string().optional(),
+  homepage: z.string().url().optional(),
+  visibility: z.enum(["public", "private"]).default("public").optional(),
+  hasIssues: z.boolean().default(true).optional(),
+  hasProjects: z.boolean().default(true).optional(),
+  hasWiki: z.boolean().default(true).optional(),
+  hasDownloads: z.boolean().default(true).optional(),
+  isTemplate: z.boolean().default(false).optional(),
+  // teamId: z.number().optional(),
+  autoInit: z.boolean().default(false).optional(),
+  gitignoreTemplate: z.string().optional(),
+  licenseTemplate: z.string().optional(),
+  allowSquashMerge: z.boolean().default(true).optional(),
+  allowMergeCommit: z.boolean().default(true).optional(),
+  allowRebaseMerge: z.boolean().default(true).optional(),
+  allowAutoMerge: z.boolean().default(false).optional(),
+  deleteBranchOnMerge: z.boolean().default(false).optional(),
+  // useSquashPrTitleAsDefault: z.boolean().default(false).optional(),
+  // squashMergeCommitTitle: z.string().optional(),
+  // squashMergeCommitMessage: z.string().optional(),
+  // mergeCommitTitle: z.string().optional(),
+  // mergeCommitMessage: z.string().optional(),
+});
+
+export type CreateRepositoryFormType = z.infer<typeof createRepositorySchema>;
 
 /**
  * Creates a new GitHub repository based on the provided form data.
@@ -21,8 +47,6 @@ import { formAction$ } from "@modular-forms/qwik";
  */
 export const useCreateRepository = formAction$<CreateRepositoryFormType>(
   async (formData, event) => {
-    console.log(formData);
-
     try {
       const octokit: Octokit = event.sharedMap.get(OCTOKIT_CLIENT);
       const isOrg = formData.repoType === "org";
