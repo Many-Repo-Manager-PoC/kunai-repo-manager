@@ -9,12 +9,9 @@ import { Button, Chip } from "@kunai-consulting/kunai-design-system";
 import { useGetRepos } from "../../db/getRepositories";
 export { useGetRepos } from "../../db/getRepositories";
 import { TopicsModal } from "../../components/modals/topicsModal";
-<<<<<<< Updated upstream
 import { PageTitle } from "~/components/page/pageTitle";
-
-=======
 import { LuRotateCcw } from "@qwikest/icons/lucide";
->>>>>>> Stashed changes
+
 export default component$(() => {
   const serverData = useGetRepos();
   const searchQuery = useSignal("");
