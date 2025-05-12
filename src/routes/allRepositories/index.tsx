@@ -9,14 +9,20 @@ import { Button, Chip } from "@kunai-consulting/kunai-design-system";
 import { useGetRepos } from "../../db/getRepositories";
 export { useGetRepos } from "../../db/getRepositories";
 import { TopicsModal } from "../../components/modals/topicsModal";
+<<<<<<< Updated upstream
 import { PageTitle } from "~/components/page/pageTitle";
 
+=======
+import { LuRotateCcw } from "@qwikest/icons/lucide";
+>>>>>>> Stashed changes
 export default component$(() => {
   const serverData = useGetRepos();
   const searchQuery = useSignal("");
   const selectedTopic = useSignal("");
   const allTopics = [
-    ...new Set(serverData.value?.map((repo: Repo) => repo.topics) ?? []),
+    ...new Set(
+      serverData.value?.flatMap((repo: Repo) => repo.topics || []) ?? [],
+    ),
   ];
   const repoTopicsMap = serverData.value?.reduce(
     (acc: { [key: string]: string[] }, repo: Repo) => {
@@ -151,14 +157,15 @@ export default component$(() => {
                 (searchQuery.value = (ev.target as HTMLInputElement).value)
               }
               placeholder="Search repositories..."
-              class="flex-1"
+              class="pr-48"
             />
             <Button
               onClick$={handleClearFilters}
               variant="secondary"
               title="Clear filters"
+              class="bg-transparent rounded-full hover:bg-kunai-blue-100 dark:hover:bg-kunai-blue-700 transition-colors"
             >
-              ↻
+              <LuRotateCcw class="h-8 w-8 text-kunai-blue-700 dark:text-white" />
             </Button>
           </div>
         </div>
