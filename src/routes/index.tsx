@@ -13,7 +13,6 @@ export default component$(() => {
 
   return (
     <>
-      <h1 class="text-center">Dashboard</h1>
       <div class="absolute top-20 right-4">
         <Form action={signOutSig}>
           <Button
@@ -55,7 +54,7 @@ export default component$(() => {
 });
 
 export const head: DocumentHead = {
-  title: "Welcome to Qwik",
+  title: "Dashboard",
   meta: [
     {
       name: "description",

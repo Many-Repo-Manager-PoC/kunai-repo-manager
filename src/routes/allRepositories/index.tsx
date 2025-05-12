@@ -9,6 +9,7 @@ import { Button, Chip } from "@kunai-consulting/kunai-design-system";
 import { useGetRepos } from "../../db/getRepositories";
 export { useGetRepos } from "../../db/getRepositories";
 import { TopicsModal } from "../../components/modals/topicsModal";
+import { PageTitle } from "~/components/page/pageTitle";
 
 export default component$(() => {
   const serverData = useGetRepos();
@@ -98,15 +99,8 @@ export default component$(() => {
   // });
 
   return (
-    <div class="container mx-auto px-4 py-8">
-      <div
-        role="presentation"
-        class="h-1 bg-gradient-to-r from-kunai-blue-500 to-kunai-purple-500 rounded-full mb-8"
-      ></div>
-      <h1 class="text-3xl font-bold mb-8">
-        <span class="text-kunai-blue-500">All</span> Repositories
-      </h1>
-
+    <div class="container min-h-screen">
+      <PageTitle />
       <div class="space-y-6">
         <div class="space-y-4">
           <div class="flex gap-4">
