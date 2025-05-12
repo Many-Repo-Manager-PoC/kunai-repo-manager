@@ -24,7 +24,7 @@ export const RepositoryCard = component$<RepositoryCardProps>(({ repo }) => {
           height={40}
           class="h-10 w-10 rounded-full"
         />
-        <span>{repo.name}</span>
+        <span class="text-2xl">{repo.name}</span>
 
         <a
           href={repo.html_url || "#"}

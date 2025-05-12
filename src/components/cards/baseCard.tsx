@@ -11,7 +11,7 @@ export const BaseCard = component$<BaseCardProps>(
     return (
       <Card.Root class={`shadow-lg   ${rootClassNames}`}>
         <div class="flex-grow gap-3 flex flex-col">
-          <Card.Title class="mb-2 flex items-center text-2xl font-semibold">
+          <Card.Title class="mb-2 flex items-center font-semibold">
             <Slot name="header" />
           </Card.Title>
 
