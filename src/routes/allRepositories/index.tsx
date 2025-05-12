@@ -1,38 +1,41 @@
 import { component$, useSignal, $ } from "@builder.io/qwik";
 import { type DocumentHead } from "@builder.io/qwik-city";
-import { Chip, Field, Button } from "@kunai-consulting/kunai-design-system";
-import { LuRotateCcw } from "@qwikest/icons/lucide";
+import { RepositoryCard } from "../../components/cards/repositoryCard";
 import type { Repo } from "~/db/types";
-import { RepositoryCard } from "~/components/cards/repositoryCard";
-import { TopicsModal } from "~/components/modals/topicsModal";
-
-import { dummyRepos, dummyRepoTopicsMap } from "~/db/metadata.json";
-
-type RepoTopicsMap = {
-  [key: string]: string[];
-};
+// import { Modal } from "@qwik-ui/headless";
+// import { usePutBulkTopics } from "../../db/putTopics";
+// export { usePutBulkTopics } from "../../db/putTopics";
+import { Button, Chip } from "@kunai-consulting/kunai-design-system";
+import { useGetRepos } from "../../db/getRepositories";
+export { useGetRepos } from "../../db/getRepositories";
+import { TopicsModal } from "../../components/modals/topicsModal";
 
 export default component$(() => {
+  const serverData = useGetRepos();
   const searchQuery = useSignal("");
   const selectedTopic = useSignal("");
   const allTopics = [
-    ...new Set(Object.values(dummyRepoTopicsMap as RepoTopicsMap).flat()),
+    ...new Set(serverData.value?.map((repo: Repo) => repo.topics) ?? []),
   ];
+  const repoTopicsMap = serverData.value?.reduce(
+    (acc: { [key: string]: string[] }, repo: Repo) => {
+      acc[repo.name || ""] = repo.topics || [];
+      return acc;
+    },
+    {},
+  );
   const selectedRepos = useSignal<string[]>([]);
   const isShow = useSignal<boolean>(false);
-  // const isTopicsModalOpen = useSignal<boolean>(false);
+  // const action = usePutBulkTopics();
 
   const handleSelectAll = $(() => {
-    const filteredRepos = dummyRepos
-      .filter((repo) => {
+    const filteredRepos = serverData?.value
+      ?.filter((repo) => {
         const matchesSearch =
           !searchQuery.value ||
           repo.name?.toLowerCase().includes(searchQuery.value.toLowerCase());
         const matchesTopic =
-          !selectedTopic.value ||
-          (dummyRepoTopicsMap as RepoTopicsMap)[repo.name || ""]?.includes(
-            selectedTopic.value,
-          );
+          !selectedTopic.value || repo.topics?.includes(selectedTopic.value);
         return matchesSearch && matchesTopic;
       })
       .map((repo) => repo.name);
@@ -44,8 +47,11 @@ export default component$(() => {
     selectedRepos.value = [];
   });
 
-  const handleTopicClick = $((topic: string) => {
-    selectedTopic.value = selectedTopic.value === topic ? "" : topic;
+  const handleTopicClick = $((e: Event) => {
+    const target = e.target as HTMLElement;
+    if (target.tagName === "SPAN") {
+      selectedTopic.value = target.textContent || "";
+    }
   });
 
   const handleClearFilters = $(() => {
@@ -62,98 +68,117 @@ export default component$(() => {
     }
   });
 
+  // const handleSaveChanges = $(() => {
+  //   const updatedRepoTopics: { [key: string]: string[] } = {};
+  //   const inputEl = document.querySelector(".tagInput") as HTMLInputElement;
+  //   const newTags = inputEl.value
+  //     .split(",")
+  //     .map((t) => t.trim())
+  //     .filter(Boolean);
+  //   const checkedBoxes = document.querySelectorAll(".removeTag:checked");
+  //   const tagsToRemove = Array.from(checkedBoxes).map(
+  //     (box) => box.parentElement?.querySelector("span")?.textContent || "",
+  //   );
+
+  //   for (const repoName of selectedRepos.value) {
+  //     const currentTags = repoTopicsMap?.[repoName] ?? [];
+  //     const updatedTags = [
+  //       ...new Set([
+  //         ...currentTags.filter((t) => !tagsToRemove.includes(t)),
+  //         ...newTags,
+  //       ]),
+  //     ];
+  //     updatedRepoTopics[repoName] = updatedTags;
+  //   }
+
+  //   action.submit({
+  //     repos: selectedRepos.value,
+  //     reposTopics: updatedRepoTopics,
+  //   });
+  // });
+
   return (
-    <div class="container container-center flex">
-      <div class="flex-1 p-4">
-        <div class="flex flex-col items-center mb-8">
-          <h1 class="text-center mb-4">
-            <span class="highlight">All</span> Repositories
-          </h1>
-          <div class="flex flex-col gap-2 self-end">
-            <Button
-              onClick$={() => (isShow.value = !isShow.value)}
-              class="flex-1 bg-kunai-gray-100 text-kunai-gray-700 hover:bg-kunai-gray-200 dark:bg-kunai-gray-800 dark:text-kunai-gray-300 dark:hover:bg-kunai-gray-700 bg-kunai-blue-300 dark:bg-kunai-blue-600 mr-2 pl-2"
-            >
+    <div class="container mx-auto px-4 py-8">
+      <div
+        role="presentation"
+        class="h-1 bg-gradient-to-r from-kunai-blue-500 to-kunai-purple-500 rounded-full mb-8"
+      ></div>
+      <h1 class="text-3xl font-bold mb-8">
+        <span class="text-kunai-blue-500">All</span> Repositories
+      </h1>
+
+      <div class="space-y-6">
+        <div class="space-y-4">
+          <div class="flex gap-4">
+            <Button onClick$={() => (isShow.value = true)} variant="primary">
               Manage Tags
             </Button>
             {isShow.value && (
-              <div class="flex flex-col gap-2">
-                <h4 class="text-center">Actions:</h4>
-                <div class="flex gap-2">
-                  <Button
-                    onClick$={handleSelectAll}
-                    class="bg-kunai-gray-100 text-kunai-gray-700 hover:bg-kunai-gray-200 dark:bg-kunai-gray-800 dark:text-kunai-gray-300 dark:hover:bg-kunai-gray-700 bg-kunai-blue-300 dark:bg-kunai-blue-600"
-                  >
-                    Select All
-                  </Button>
-                  <Button
-                    onClick$={handleDeselectAll}
-                    class="bg-kunai-gray-100 text-kunai-gray-700 hover:bg-kunai-gray-200 dark:bg-kunai-gray-800 dark:text-kunai-gray-300 dark:hover:bg-kunai-gray-700 bg-kunai-blue-300 dark:bg-kunai-blue-600"
-                  >
-                    Deselect All
-                  </Button>
-                </div>
+              <>
+                <Button onClick$={handleSelectAll} variant="secondary">
+                  Select All
+                </Button>
+                <Button onClick$={handleDeselectAll} variant="secondary">
+                  Deselect All
+                </Button>
                 {selectedRepos.value.length > 0 && (
-                  <div class="flex justify-center">
-                    <TopicsModal
-                      // isOpen={isTopicsModalOpen.value}
-                      // onClose$={() => (isTopicsModalOpen.value = false)}
-                      selectedRepos={selectedRepos}
-                    />
-                  </div>
+                  <TopicsModal
+                    selectedRepos={selectedRepos}
+                    topicsMap={repoTopicsMap || {}}
+                  />
                 )}
-              </div>
+              </>
             )}
+          </div>
+          <div class="space-y-2">
+            <span class="text-sm font-medium">Tags:</span>
+            <div onClick$={handleTopicClick}>
+              <div class="flex flex-wrap gap-2">
+                {allTopics
+                  .flat()
+                  .filter((topic): topic is string => topic !== null)
+                  .map((topic) => (
+                    <Chip.Root
+                      key={topic}
+                      class="bg-kunai-blue-100 dark:bg-kunai-blue-300 text-xs"
+                      variant="outline"
+                    >
+                      <span class="truncate">{topic}</span>
+                    </Chip.Root>
+                  ))}
+              </div>
+            </div>
+          </div>
+          <div class="flex gap-2">
+            <input
+              type="text"
+              value={searchQuery.value}
+              onInput$={(ev) =>
+                (searchQuery.value = (ev.target as HTMLInputElement).value)
+              }
+              placeholder="Search repositories..."
+              class="flex-1"
+            />
+            <Button
+              onClick$={handleClearFilters}
+              variant="secondary"
+              title="Clear filters"
+            >
+              ↻
+            </Button>
           </div>
         </div>
 
-        <div class="flex flex-col gap-4">
-          <div class="flex items-center gap-1 flex-wrap">
-            <h4>Tags:</h4>
-            <div class="flex-1 flex items-center gap-1 flex-wrap">
-              {allTopics.map((topic) => (
-                <Chip.Root
-                  key={topic}
-                  onClick$={() => handleTopicClick(topic)}
-                  class={
-                    selectedTopic.value === topic
-                      ? "bg-kunai-blue-500 text-white"
-                      : ""
-                  }
-                >
-                  {topic}
-                </Chip.Root>
-              ))}
-            </div>
-          </div>
-
-          <div class="flex items-center gap-4 max-w-[75%]">
-            <Field.Root class="bg-white dark:bg-kunai-gray-800 rounded-lg flex-1">
-              <Field.Input
-                value={searchQuery.value}
-                onInput$={(ev) =>
-                  (searchQuery.value = (ev.target as HTMLInputElement).value)
-                }
-                placeholder="Search repositories..."
-                class="w-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-kunai-blue-500 rounded-lg"
-              />
-            </Field.Root>
-            <Button onClick$={handleClearFilters}>
-              <LuRotateCcw class="h-5 w-5" />
-            </Button>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {dummyRepos
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {serverData?.value &&
+            serverData.value
               .filter(
                 (repo: Repo) =>
                   repo.name
                     ?.toLowerCase()
                     .includes(searchQuery.value.toLowerCase()) &&
                   (!selectedTopic.value ||
-                    (dummyRepoTopicsMap as RepoTopicsMap)[
-                      repo.name || ""
-                    ]?.includes(selectedTopic.value)),
+                    (repo.topics && repo.topics.includes(selectedTopic.value))),
               )
               .map((repo: Repo) => (
                 <div key={repo.id} class="relative">
@@ -161,7 +186,7 @@ export default component$(() => {
                   {isShow.value && (
                     <input
                       type="checkbox"
-                      class="absolute top-2 right-2 z-10 w-5 h-5 rounded-full border-2 border-kunai-blue-500 bg-white checked:bg-kunai-blue-500 checked:border-kunai-blue-500 cursor-pointer appearance-none transition-colors duration-200"
+                      class="absolute top-2 right-2"
                       checked={selectedRepos.value.includes(repo.name || "")}
                       onChange$={(e) =>
                         handleCheckboxChange(e, repo.name || "")
@@ -170,7 +195,6 @@ export default component$(() => {
                   )}
                 </div>
               ))}
-          </div>
         </div>
       </div>
     </div>

@@ -1,20 +1,20 @@
 export interface Repo {
-  id: number | null;
-  full_name: string | null;
+  id?: number | null;
+  full_name?: string | null;
   name: string | null;
-  repo: string | null;
-  html_url: string | null;
-  url: string | null;
-  language: string | null;
-  description: string | null;
-  updated_at: string | null;
-  stargazers_count: number | null;
-  forks_count: number | null;
-  watchers_count: number | null;
-  homepage: string | null;
-  topics: string[] | null;
-  open_issues_count: number | null;
-  license: {
+  repo?: string | null;
+  html_url?: string | null;
+  url?: string | null;
+  language?: string | null;
+  description?: string | null;
+  updated_at?: string | null;
+  stargazers_count?: number | null;
+  forks_count?: number | null;
+  watchers_count?: number | null;
+  homepage?: string | null;
+  topics?: string[] | null;
+  open_issues_count?: number | null;
+  license?: {
     name: string | null;
   } | null;
   owner: {
