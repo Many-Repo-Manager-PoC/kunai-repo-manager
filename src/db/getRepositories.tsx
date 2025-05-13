@@ -22,7 +22,7 @@ export const useGetRepos = routeLoader$(async (event) => {
           owner: metadata.owner,
           repo: repoName,
         });
-        return data;
+        return { ...data, repoOwner: metadata.owner };
       }),
     );
     return repositories;

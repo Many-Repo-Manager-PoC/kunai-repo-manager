@@ -70,6 +70,12 @@ export default component$(() => {
     }
   });
 
+  const handleCardClick = $((repo: Repo) => {
+    if (!isShow.value) {
+      window.location.href = `/allRepositories/${repo.repoOwner}/${repo.name}`;
+    }
+  });
+
   return (
     <div class="container min-h-screen">
       <PageTitle />
@@ -151,7 +157,9 @@ export default component$(() => {
               )
               .map((repo: Repo) => (
                 <div key={repo.id} class="relative">
-                  <RepositoryCard repo={repo} />
+                  <div onClick$={() => handleCardClick(repo)}>
+                    <RepositoryCard repo={repo} />
+                  </div>
                   {isShow.value && (
                     <input
                       type="checkbox"

@@ -23,6 +23,7 @@ export interface Repo {
     html_url: string;
     type: string;
   };
+  repoOwner?: string;
 }
 
 export interface Dependency {
