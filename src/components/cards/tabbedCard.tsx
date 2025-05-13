@@ -4,7 +4,7 @@ import { Card, Divider, Tabs } from "@kunai-consulting/kunai-design-system";
 import { Repo } from "~/db/types";
 
 export interface TabbedCardProps {
-  repoDetails: Repo;
+  repoDetails?: Repo;
 }
 
 export const TabbedCard = component$<TabbedCardProps>(({ repoDetails }) => {
@@ -31,7 +31,7 @@ export const TabbedCard = component$<TabbedCardProps>(({ repoDetails }) => {
         <Tabs.Panel class="col-span-10">
           <Card.Title>
             <div class="flex items-center gap-3">
-              <span class="text-3xl font-large">{repoDetails.name}</span>
+              <span class="text-3xl font-large">{repoDetails?.name}</span>
             </div>
           </Card.Title>
           <div class="text-gray-300">

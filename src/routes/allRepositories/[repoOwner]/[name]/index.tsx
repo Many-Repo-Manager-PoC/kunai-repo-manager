@@ -5,6 +5,8 @@ import { useLocation } from "@builder.io/qwik-city";
 export { useGetRepos };
 import type { Repo } from "~/db/types";
 import { DependencyUpdaterCard } from "~/components/cards/dependencyUpdaterCard";
+import { TabbedCard } from "~/components/cards/tabbedCard";
+import { PageTitle } from "~/components/page/pageTitle";
 
 export default component$(() => {
   const repos = useGetRepos();
@@ -15,10 +17,8 @@ export default component$(() => {
 
   return (
     <div class="container container-center">
-      <h1>
-        <span class="highlight">The repository details for</span>
-      </h1>
-      <h3>{repo?.name}</h3>
+      <PageTitle />
+      <TabbedCard repoDetails={repo} />
       <DependencyUpdaterCard
         repos={repos.value}
         repo={repo ? repo : ({} as Repo)}
