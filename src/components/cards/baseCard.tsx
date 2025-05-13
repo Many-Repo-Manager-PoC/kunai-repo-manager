@@ -1,15 +1,16 @@
 import { Card, Divider } from "@kunai-consulting/kunai-design-system";
-import { component$, Slot } from "@builder.io/qwik";
+import { component$, type QRL, Slot } from "@builder.io/qwik";
 
 export interface BaseCardProps {
   rootClassNames?: string;
   divider?: boolean;
+  onClick$?: QRL<(event: PointerEvent, element: HTMLDivElement) => any>;
 }
 
 export const BaseCard = component$<BaseCardProps>(
-  ({ rootClassNames, divider = true }) => {
+  ({ rootClassNames, onClick$, divider = true }) => {
     return (
-      <Card.Root class={`shadow-lg   ${rootClassNames}`}>
+      <Card.Root onClick$={onClick$} class={`shadow-lg ${rootClassNames}`}>
         <div class="flex-grow gap-3 flex flex-col">
           <Card.Title class="mb-2 flex items-center font-semibold">
             <Slot name="header" />
