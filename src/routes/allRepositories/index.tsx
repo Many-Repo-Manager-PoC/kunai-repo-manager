@@ -8,6 +8,8 @@ export { useGetRepos } from "../../db/getRepositories";
 import { TopicsModal } from "../../components/modals/topicsModal";
 import { PageTitle } from "~/components/page/pageTitle";
 import { LuRotateCcw } from "@qwikest/icons/lucide";
+import { usePutBulkTopics } from "~/db/putTopics";
+export { usePutBulkTopics };
 
 export default component$(() => {
   const serverData = useGetRepos();

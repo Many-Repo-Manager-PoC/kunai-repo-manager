@@ -1,7 +1,6 @@
 import { component$, $, useSignal } from "@builder.io/qwik";
 import { Modal } from "@qwik-ui/headless";
-import { usePutBulkTopics } from "~/db/putTopics";
-export { usePutBulkTopics } from "~/db/putTopics";
+import { usePutBulkTopics } from "../../routes/allRepositories";
 
 interface TopicsModalProps {
   selectedRepos: { value: string[] };
@@ -12,13 +11,17 @@ export const TopicsModal = component$<TopicsModalProps>(
   ({ selectedRepos, topicsMap }) => {
     const action = usePutBulkTopics();
     const newTags = useSignal("");
+    const tagsToRemove = useSignal<string[]>([]);
+
+    const handleTagToggle = $((topic: string, checked: boolean) => {
+      if (checked) {
+        tagsToRemove.value = [...tagsToRemove.value, topic];
+      } else {
+        tagsToRemove.value = tagsToRemove.value.filter((t) => t !== topic);
+      }
+    });
 
     const handleSaveChanges = $(() => {
-      const checkedBoxes = document.querySelectorAll(".removeTag:checked");
-      const tagsToRemove = Array.from(checkedBoxes).map(
-        (box) => box.parentElement?.querySelector("span")?.textContent || "",
-      );
-
       const tagsToAdd = newTags.value
         .split(",")
         .map((tag) => tag.trim())
@@ -29,7 +32,7 @@ export const TopicsModal = component$<TopicsModalProps>(
         const currentTags = topicsMap[repoName] || [];
         const updatedTags = [
           ...new Set([
-            ...currentTags.filter((t) => !tagsToRemove.includes(t)),
+            ...currentTags.filter((t) => !tagsToRemove.value.includes(t)),
             ...tagsToAdd,
           ]),
         ];
@@ -40,7 +43,6 @@ export const TopicsModal = component$<TopicsModalProps>(
         repos: selectedRepos.value,
         reposTopics: updatedRepoTopics,
       });
-      window.location.reload();
     });
 
     return (
@@ -74,7 +76,13 @@ export const TopicsModal = component$<TopicsModalProps>(
                   <span>{topic}</span>
                   <input
                     type="checkbox"
-                    class="removeTag"
+                    checked={tagsToRemove.value.includes(topic)}
+                    onChange$={(ev) =>
+                      handleTagToggle(
+                        topic,
+                        (ev.target as HTMLInputElement).checked,
+                      )
+                    }
                     id={`remove-tag-${topic}`}
                     name={`remove-tag-${topic}`}
                   />
