@@ -2,9 +2,6 @@ import { component$, useSignal, $ } from "@builder.io/qwik";
 import { type DocumentHead } from "@builder.io/qwik-city";
 import { RepositoryCard } from "../../components/cards/repositoryCard";
 import type { Repo } from "~/db/types";
-// import { Modal } from "@qwik-ui/headless";
-// import { usePutBulkTopics } from "../../db/putTopics";
-// export { usePutBulkTopics } from "../../db/putTopics";
 import { Button, Chip } from "@kunai-consulting/kunai-design-system";
 import { useGetRepos } from "../../db/getRepositories";
 export { useGetRepos } from "../../db/getRepositories";
@@ -30,7 +27,6 @@ export default component$(() => {
   );
   const selectedRepos = useSignal<string[]>([]);
   const isShow = useSignal<boolean>(false);
-  // const action = usePutBulkTopics();
 
   const handleSelectAll = $(() => {
     const filteredRepos = serverData?.value
@@ -71,35 +67,6 @@ export default component$(() => {
       selectedRepos.value = selectedRepos.value.filter((r) => r !== repoName);
     }
   });
-
-  // const handleSaveChanges = $(() => {
-  //   const updatedRepoTopics: { [key: string]: string[] } = {};
-  //   const inputEl = document.querySelector(".tagInput") as HTMLInputElement;
-  //   const newTags = inputEl.value
-  //     .split(",")
-  //     .map((t) => t.trim())
-  //     .filter(Boolean);
-  //   const checkedBoxes = document.querySelectorAll(".removeTag:checked");
-  //   const tagsToRemove = Array.from(checkedBoxes).map(
-  //     (box) => box.parentElement?.querySelector("span")?.textContent || "",
-  //   );
-
-  //   for (const repoName of selectedRepos.value) {
-  //     const currentTags = repoTopicsMap?.[repoName] ?? [];
-  //     const updatedTags = [
-  //       ...new Set([
-  //         ...currentTags.filter((t) => !tagsToRemove.includes(t)),
-  //         ...newTags,
-  //       ]),
-  //     ];
-  //     updatedRepoTopics[repoName] = updatedTags;
-  //   }
-
-  //   action.submit({
-  //     repos: selectedRepos.value,
-  //     reposTopics: updatedRepoTopics,
-  //   });
-  // });
 
   return (
     <div class="container min-h-screen">
@@ -155,6 +122,8 @@ export default component$(() => {
               }
               placeholder="Search repositories..."
               class="pr-48"
+              id="search-repositories"
+              name="search-repositories"
             />
             <Button
               onClick$={handleClearFilters}
@@ -189,6 +158,8 @@ export default component$(() => {
                       onChange$={(e) =>
                         handleCheckboxChange(e, repo.name || "")
                       }
+                      id={`repo-checkbox-${repo.id}`}
+                      name={`repo-checkbox-${repo.id}`}
                     />
                   )}
                 </div>

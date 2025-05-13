@@ -1,4 +1,4 @@
-import { component$, $ } from "@builder.io/qwik";
+import { component$, $, useSignal } from "@builder.io/qwik";
 import { Modal } from "@qwik-ui/headless";
 import { usePutBulkTopics } from "~/db/putTopics";
 export { usePutBulkTopics } from "~/db/putTopics";
@@ -11,9 +11,7 @@ interface TopicsModalProps {
 export const TopicsModal = component$<TopicsModalProps>(
   ({ selectedRepos, topicsMap }) => {
     const action = usePutBulkTopics();
-    // const topics = useSignal<string[]>([
-    //   ...new Set(selectedRepos.value.flatMap((repo) => topicsMap[repo] || [])),
-    // ]);
+    const newTags = useSignal("");
 
     const handleSaveChanges = $(() => {
       const checkedBoxes = document.querySelectorAll(".removeTag:checked");
@@ -21,11 +19,19 @@ export const TopicsModal = component$<TopicsModalProps>(
         (box) => box.parentElement?.querySelector("span")?.textContent || "",
       );
 
+      const tagsToAdd = newTags.value
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter((tag) => tag.length > 0);
+
       const updatedRepoTopics: Record<string, string[]> = {};
       for (const repoName of selectedRepos.value) {
         const currentTags = topicsMap[repoName] || [];
         const updatedTags = [
-          ...new Set([...currentTags.filter((t) => !tagsToRemove.includes(t))]),
+          ...new Set([
+            ...currentTags.filter((t) => !tagsToRemove.includes(t)),
+            ...tagsToAdd,
+          ]),
         ];
         updatedRepoTopics[repoName] = updatedTags;
       }
@@ -34,6 +40,7 @@ export const TopicsModal = component$<TopicsModalProps>(
         repos: selectedRepos.value,
         reposTopics: updatedRepoTopics,
       });
+      window.location.reload();
     });
 
     return (
@@ -65,7 +72,12 @@ export const TopicsModal = component$<TopicsModalProps>(
               .map((topic) => (
                 <div key={topic} class="flex items-center gap-2">
                   <span>{topic}</span>
-                  <input type="checkbox" class="removeTag" />
+                  <input
+                    type="checkbox"
+                    class="removeTag"
+                    id={`remove-tag-${topic}`}
+                    name={`remove-tag-${topic}`}
+                  />
                 </div>
               ))}
           </div>
@@ -75,8 +87,14 @@ export const TopicsModal = component$<TopicsModalProps>(
           </Modal.Description>
           <input
             type="text"
+            value={newTags.value}
+            onInput$={(ev) =>
+              (newTags.value = (ev.target as HTMLInputElement).value)
+            }
             placeholder="Enter tags separated by commas"
             class="w-full mb-4"
+            id="new-tags-input"
+            name="new-tags-input"
           />
 
           <footer>
