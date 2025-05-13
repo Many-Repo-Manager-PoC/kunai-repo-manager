@@ -1,5 +1,6 @@
 import { component$, $, useSignal } from "@builder.io/qwik";
-import { Modal } from "@qwik-ui/headless";
+import { Modal } from "@kunai-consulting/kunai-design-system";
+
 import { usePutBulkTopics } from "../../routes/allRepositories";
 
 interface TopicsModalProps {
