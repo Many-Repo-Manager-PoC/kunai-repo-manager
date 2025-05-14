@@ -7,14 +7,14 @@ import { TabbedCard } from "~/components/cards/tabbedCard";
 import { PageTitle } from "~/components/page/pageTitle";
 import { DependencyUpdaterCard } from "~/components/cards/dependencyUpdaterCard";
 import type { Repo } from "~/db/types";
-
+import { RepoDetails } from "~/components/repoDetails/repoDetails";
 export { useGetPackageJson } from "~/db/getPackageJson";
 
 export default component$(() => {
   const repos = useGetRepos();
   const packageJson = useGetPackageJson();
   const { name: repoName } = useLocation().params;
-  const tabList = ["details", "dependencies", "dependents"];
+  const tabList = ["Details", "dependencies", "dependents"];
 
   const repo = repos.value.find((r) => r.name === repoName);
 
@@ -22,7 +22,9 @@ export default component$(() => {
     <div class="container container-center">
       <PageTitle />
       <TabbedCard tabList={tabList}>
-        <Slot name="details" />
+        <div q:slot="Details">
+          <RepoDetails repoDetails={repo} />
+        </div>
         <Slot name="dependencies" />
         <div q:slot="dependents">
           <DependencyUpdaterCard
