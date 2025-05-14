@@ -2,13 +2,14 @@ import { component$ } from "@builder.io/qwik";
 import { type DocumentHead } from "@builder.io/qwik-city";
 import { useGetRepos } from "~/routes/layout";
 import { useLocation } from "@builder.io/qwik-city";
-import type { Repo } from "~/db/types";
-import { DependencyUpdaterCard } from "~/components/cards/dependencyUpdaterCard";
 import { TabbedCard } from "~/components/cards/tabbedCard";
 import { PageTitle } from "~/components/page/pageTitle";
+import { useGetPackageJson } from "~/db/getPackageJson";
+export { useGetPackageJson } from "~/db/getPackageJson";
 
 export default component$(() => {
   const repos = useGetRepos();
+  const packageJson = useGetPackageJson();
   const params = useLocation().params;
   const repoName = params.name;
 
@@ -17,10 +18,10 @@ export default component$(() => {
   return (
     <div class="container container-center">
       <PageTitle />
-      <TabbedCard repoDetails={repo} />
-      <DependencyUpdaterCard
+      <TabbedCard
+        repoDetails={repo}
         repos={repos.value}
-        repo={repo ? repo : ({} as Repo)}
+        packageJson={packageJson.value}
       />
     </div>
   );

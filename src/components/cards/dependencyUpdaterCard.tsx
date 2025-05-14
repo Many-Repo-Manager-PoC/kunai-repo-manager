@@ -1,14 +1,21 @@
 import { component$ } from "@builder.io/qwik";
 import { BaseCard } from "./baseCard";
-import type { Repo } from "~/db/types";
+import type { Repo, PackageJson } from "~/db/types";
 
 interface DependencyUpdaterCardProps {
   repos: Repo[];
   repo: Repo;
+  packageJson: PackageJson[];
 }
 
 export const DependencyUpdaterCard = component$<DependencyUpdaterCardProps>(
-  ({ repos, repo }) => {
+  ({ repos, repo, packageJson }) => {
+    const currentRepoPackage = packageJson.find(
+      (pkg) => pkg.repo === repo.name,
+    )?.packageJson;
+    const dependencies = currentRepoPackage?.dependencies || {};
+    const devDependencies = currentRepoPackage?.devDependencies || {};
+
     return (
       <BaseCard>
         <div q:slot="header">
@@ -16,16 +23,38 @@ export const DependencyUpdaterCard = component$<DependencyUpdaterCardProps>(
         </div>
         <div q:slot="body">
           <div class="space-y-4">
-            {repos.map((dependency) => (
-              <div key={dependency.name} class="border-b pb-4 last:border-b-0">
-                <div class="flex justify-between items-center">
-                  <span class="font-medium">{dependency.name}</span>
-                  <span class="text-gray-600 dark:text-gray-400">
-                    {/* {dependency.version || "N/A"} */}
-                  </span>
+            {Object.entries(dependencies).map(([name, version]) => {
+              const matchingRepo = repos.find((r) => r.name === name);
+              return (
+                <div key={name} class="border-b pb-4 last:border-b-0">
+                  <div class="flex justify-between items-center">
+                    <span class="font-medium">{name}</span>
+                    <span class="font-medium">{version}</span>
+                    {matchingRepo && (
+                      <span class="text-sm text-gray-500">
+                        ({matchingRepo.name})
+                      </span>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
+            {Object.entries(devDependencies).map(([name, version]) => {
+              const matchingRepo = repos.find((r) => r.name === name);
+              return (
+                <div key={name} class="border-b pb-4 last:border-b-0">
+                  <div class="flex justify-between items-center">
+                    <span class="font-medium">{name}</span>
+                    <span class="font-medium">{version}</span>
+                    {matchingRepo && (
+                      <span class="text-sm text-gray-500">
+                        ({matchingRepo.name})
+                      </span>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </BaseCard>
