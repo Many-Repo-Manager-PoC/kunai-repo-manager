@@ -1,33 +1,37 @@
 import { component$, useSignal, $ } from "@builder.io/qwik";
 import { useNavigate, type DocumentHead } from "@builder.io/qwik-city";
-import { RepositoryCard } from "../../components/cards/repositoryCard";
+import { RepositoryCard } from "~/components/cards/repositoryCard";
 import type { Repo } from "~/db/types";
 import { Button, Chip } from "@kunai-consulting/kunai-design-system";
 import { useGetRepos } from "~/routes/layout";
-import { TopicsModal } from "../../components/modals/topicsModal";
+import { TopicsModal } from "~/components/modals/topicsModal";
 import { PageTitle } from "~/components/page/pageTitle";
 import { LuRotateCcw } from "@qwikest/icons/lucide";
 import { usePutBulkTopics } from "~/db/putTopics";
+
 export { usePutBulkTopics };
 
 export default component$(() => {
   const serverData = useGetRepos();
   const searchQuery = useSignal("");
   const selectedTopic = useSignal("");
+  const selectedRepos = useSignal<string[]>([]);
+  const isShow = useSignal(false);
+  const navigate = useNavigate();
+
   const allTopics = [
     ...new Set(
       serverData.value?.flatMap((repo: Repo) => repo.topics || []) ?? [],
     ),
   ];
+
   const repoTopicsMap = serverData.value?.reduce(
-    (acc: { [key: string]: string[] }, repo: Repo) => {
+    (acc: Record<string, string[]>, repo: Repo) => {
       acc[repo.name || ""] = repo.topics || [];
       return acc;
     },
     {},
   );
-  const selectedRepos = useSignal<string[]>([]);
-  const isShow = useSignal<boolean>(false);
 
   const handleSelectAll = $(() => {
     const filteredRepos = serverData?.value
@@ -62,14 +66,10 @@ export default component$(() => {
 
   const handleCheckboxChange = $((e: Event, repoName: string) => {
     const checkbox = e.target as HTMLInputElement;
-    if (checkbox.checked) {
-      selectedRepos.value = [...selectedRepos.value, repoName];
-    } else {
-      selectedRepos.value = selectedRepos.value.filter((r) => r !== repoName);
-    }
+    selectedRepos.value = checkbox.checked
+      ? [...selectedRepos.value, repoName]
+      : selectedRepos.value.filter((r) => r !== repoName);
   });
-
-  const navigate = useNavigate();
 
   const handleCardClick = $((repo: Repo) => {
     if (!isShow.value) {
@@ -103,12 +103,12 @@ export default component$(() => {
               </>
             )}
           </div>
+
           <div class="space-y-2">
             <span class="text-sm font-medium">Tags:</span>
             <div onClick$={handleTopicClick}>
               <div class="flex flex-wrap gap-2">
                 {allTopics
-                  .flat()
                   .filter((topic): topic is string => topic !== null)
                   .map((topic) => (
                     <Chip.Root
@@ -122,6 +122,7 @@ export default component$(() => {
               </div>
             </div>
           </div>
+
           <div class="flex gap-2">
             <input
               type="text"
@@ -148,14 +149,15 @@ export default component$(() => {
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {serverData?.value &&
             serverData.value
-              .filter(
-                (repo: Repo) =>
-                  repo.name
-                    ?.toLowerCase()
-                    .includes(searchQuery.value.toLowerCase()) &&
-                  (!selectedTopic.value ||
-                    (repo.topics && repo.topics.includes(selectedTopic.value))),
-              )
+              .filter((repo: Repo) => {
+                const matchesSearch = repo.name
+                  ?.toLowerCase()
+                  .includes(searchQuery.value.toLowerCase());
+                const matchesTopic =
+                  !selectedTopic.value ||
+                  repo.topics?.includes(selectedTopic.value);
+                return matchesSearch && matchesTopic;
+              })
               .map((repo: Repo) => (
                 <div key={repo.id} class="relative">
                   <div onClick$={() => handleCardClick(repo)}>

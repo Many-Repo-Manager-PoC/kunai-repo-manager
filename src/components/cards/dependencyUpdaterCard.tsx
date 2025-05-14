@@ -17,7 +17,7 @@ export const DependencyUpdaterCard = component$<DependencyUpdaterCardProps>(
     const devDependencies = currentRepoPackage?.devDependencies || {};
 
     return (
-      <BaseCard>
+      <BaseCard q:slot="depcard">
         <div q:slot="header">
           <h4>{repo.name}</h4>
         </div>
