@@ -7,6 +7,7 @@ import Footer from "~/components/footer/footer";
 import Toggle from "~/components/toggle/toggle";
 import { useCreateRepository } from "~/db/createRepository";
 export { useCreateRepository };
+export { useGetRepos } from "~/db/getRepositories";
 
 export const onGet: RequestHandler = async ({
   cacheControl,

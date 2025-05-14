@@ -1,8 +1,7 @@
 import { component$ } from "@builder.io/qwik";
 import { type DocumentHead } from "@builder.io/qwik-city";
-import { useGetRepos } from "~/db/getRepositories";
+import { useGetRepos } from "~/routes/layout";
 import { useLocation } from "@builder.io/qwik-city";
-export { useGetRepos };
 import type { Repo } from "~/db/types";
 import { DependencyUpdaterCard } from "~/components/cards/dependencyUpdaterCard";
 import { TabbedCard } from "~/components/cards/tabbedCard";

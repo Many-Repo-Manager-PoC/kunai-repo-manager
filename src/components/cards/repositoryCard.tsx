@@ -9,21 +9,14 @@ import {
 import { component$ } from "@builder.io/qwik";
 import type { Repo } from "~/db/types";
 import { BaseCard } from "./baseCard";
-import { useNavigate } from "@builder.io/qwik-city";
 
 export interface RepositoryCardProps {
   repo: Repo;
 }
 
 export const RepositoryCard = component$<RepositoryCardProps>(({ repo }) => {
-  const navigate = useNavigate();
   return (
-    <BaseCard
-      rootClassNames="h-full dark:bg-kunai-blue-600 w-full cursor-pointer hover:shadow-xl transition-shadow duration-300"
-      onClick$={() => {
-        navigate(`/allRepositories/${repo.owner.login}/${repo.name}`);
-      }}
-    >
+    <BaseCard rootClassNames="h-full dark:bg-kunai-blue-600 w-full cursor-pointer hover:shadow-xl transition-shadow duration-300">
       <div q:slot="header" class="flex items-center gap-2 w-full p-2">
         <LuGithub class="h-15 w-15" />
 

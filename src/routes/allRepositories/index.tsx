@@ -1,10 +1,9 @@
 import { component$, useSignal, $ } from "@builder.io/qwik";
-import { type DocumentHead } from "@builder.io/qwik-city";
+import { useNavigate, type DocumentHead } from "@builder.io/qwik-city";
 import { RepositoryCard } from "../../components/cards/repositoryCard";
 import type { Repo } from "~/db/types";
 import { Button, Chip } from "@kunai-consulting/kunai-design-system";
-import { useGetRepos } from "../../db/getRepositories";
-export { useGetRepos } from "../../db/getRepositories";
+import { useGetRepos } from "~/routes/layout";
 import { TopicsModal } from "../../components/modals/topicsModal";
 import { PageTitle } from "~/components/page/pageTitle";
 import { LuRotateCcw } from "@qwikest/icons/lucide";
@@ -70,9 +69,11 @@ export default component$(() => {
     }
   });
 
+  const navigate = useNavigate();
+
   const handleCardClick = $((repo: Repo) => {
     if (!isShow.value) {
-      window.location.href = `/allRepositories/${repo.repoOwner}/${repo.name}`;
+      navigate(`/allRepositories/${repo.repoOwner}/${repo.name}`);
     }
   });
 

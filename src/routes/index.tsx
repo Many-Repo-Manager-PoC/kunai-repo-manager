@@ -1,6 +1,6 @@
 import { component$ } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
-import { Form, useLocation } from "@builder.io/qwik-city";
+import { Form, Link, useLocation } from "@builder.io/qwik-city";
 import { useSignOut } from "~/routes/plugin@auth";
 import { Button } from "@kunai-consulting/kunai-design-system";
 import { DashboardCard } from "~/components/cards/dashboardCard";
@@ -25,27 +25,27 @@ export default component$(() => {
       </div>
       <div class="container mx-auto px-4 flex flex-col gap-4 mt-4 text-center items-center justify-center">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-max-3 gap-6 max-w-7xl mx-auto justify-center">
-          <a href="/createRepositories" class="block">
+          <Link href="/createRepositories" class="block">
             <DashboardCard
               title="Create Repositories"
               description="Set up new repositories with ease"
             />
-          </a>
+          </Link>
 
-          <a href="/allRepositories" class="block">
+          <Link href="/allRepositories" class="block">
             <DashboardCard
               title="All Repositories"
               description="Browse and manage your repositories"
             />
-          </a>
+          </Link>
 
           {owner && repoName && (
-            <a href={`/allRepositories/${owner}/${repoName}`} class="block">
+            <Link href={`/allRepositories/${owner}/${repoName}`} class="block">
               <DashboardCard
                 title="Repository Details"
                 description={`View details for ${repoName}`}
               />
-            </a>
+            </Link>
           )}
         </div>
       </div>
