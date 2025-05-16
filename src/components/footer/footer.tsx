@@ -5,7 +5,8 @@ export default component$(() => {
     <footer class="fixed bottom-0 left-0 right-0 w-full">
       <div
         class="w-full flex justify-center items-center 
-          dark:bg-kunai-blue-900 bg-kunai-blue-200"
+          bg-gradient-to-t from-kunai-blue-200 via-kunai-blue-200 via-kunai-blue-100 to-transparent 
+          dark:from-kunai-blue-900 dark:via-kunai-blue-900 dark:via-kunai-blue-800 dark:to-transparent"
       >
         <a
           href="https://open-source.kunaico.com/"

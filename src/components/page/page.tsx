@@ -8,7 +8,7 @@ export default component$(() => {
  dark:text-white  text-gray-900 bg-kunai-blue-200 dark:bg-kunai-blue-900"
     >
       <Slot name="header" />
-      <div class="flex flex-grow justify-center items-center relative py-24">
+      <div class="flex flex-grow justify-center items-center relative py-24 px-4 sm:px-6 md:px-8">
         <div class="w-full max-w-sm sm:max-w-md md:max-w-2xl lg:max-w-7xl">
           <Slot />
         </div>

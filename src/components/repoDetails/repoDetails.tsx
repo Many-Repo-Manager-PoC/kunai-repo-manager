@@ -31,16 +31,16 @@ export const RepoDetails = component$<RepoDetailsProps>(({ repoDetails }) => {
           href={repoDetails?.html_url || "#"}
           target="_blank"
           rel="noopener noreferrer"
-          class="inline-flex items-center gap-2 bg-gray-50 dark:bg-kunai-blue-200 text-kunai-blue-800 px-4 py-2 rounded-md"
+          class="inline-flex items-center gap-2 bg-gray-50/50 dark:bg-kunai-blue-200 text-kunai-blue-800 px-4 py-2 rounded-md"
         >
           <GitHubIcon class="h-5 w-5" />
           <span>View on GitHub</span>
         </a>
       </div>
-      <div class="bg-gray-50 p-4 rounded-md dark:bg-kunai-blue-200">
+      <div class="bg-gray-50/50 p-4 rounded-md dark:bg-kunai-blue-200">
         <p>{repoDetails?.description || "No description available"}</p>
       </div>
-      <div class="flex flex-wrap gap-10 bg-gray-50 p-4 rounded-md dark:bg-kunai-blue-200">
+      <div class="flex flex-wrap gap-10 bg-gray-50/50 p-4 rounded-md dark:bg-kunai-blue-200">
         <div class="flex items-center gap-2">
           <StarIcon class="h-5 w-5 text-yellow-500" />
           <span class="font-medium">{repoDetails?.stargazers_count || 0}</span>
@@ -69,7 +69,7 @@ export const RepoDetails = component$<RepoDetailsProps>(({ repoDetails }) => {
         <h4 class="mb-3">
           <span class="dark:text-white">Repository Information</span>
         </h4>
-        <div class="border-t border-gray-200 dark:border-gray-700 divide-y divide-gray-200 dark:divide-gray-700">
+        <div class="border-t border-gray-500 dark:border-gray-300 divide-y divide-gray-500 dark:divide-gray-300">
           <div class="py-3 flex dark:text-white">
             <span class="font-medium w-1/3">Language</span>
             <div class="flex items-center gap-2">

@@ -1,5 +1,5 @@
 import { component$ } from "@builder.io/qwik";
-import { Card, Divider, Tabs } from "@kunai-consulting/kunai-design-system";
+import { Card, Tabs } from "@kunai-consulting/kunai-design-system";
 import { Slot } from "@builder.io/qwik";
 
 export interface TabbedCardProps {
@@ -8,25 +8,40 @@ export interface TabbedCardProps {
 
 export const TabbedCard = component$<TabbedCardProps>(({ tabList }) => {
   return (
-    <Card.Root class="shadow-lg min-h-[600px] dark:bg-kunai-blue-600">
-      <Tabs.Root vertical class="gap-3 grid grid-flow-col min-h-[600px]">
-        <Tabs.List class="flex flex-col gap-5 border-r border-gray-200 dark:border-white">
+    <Card.Root class="shadow-lg min-h-[800px] dark:bg-kunai-blue-600/50 bg-kunai-blue-100/50 overflow-auto">
+      <Tabs.Root vertical class="gap-3 grid grid-flow-col min-h-[800px]">
+        <Tabs.List class="flex flex-col gap-5 border-r border-gray-500 dark:border-white">
           {tabList?.map((tab, index) => (
-            <Tabs.Tab key={tab} selected={index === 0}>
-              <span class="dark:text-white dark:border-white">{tab}</span>
+            <Tabs.Tab
+              class={`
+                text-kunai-blue-500 
+                dark:text-gray-100 
+                text-xl 
+                hover:text-kunai-blue-500 
+                hover:dark:text-white 
+                hover:dark:bg-kunai-blue-300/50 
+                hover:bg-kunai-blue-100 
+                data-[state=selected]:bg-kunai-blue-100 
+                data-[state=selected]:dark:bg-kunai-blue-300/50 
+                w-[200px]
+              `}
+              key={tab}
+              selected={index === 0}
+              look="filled"
+            >
+              {tab}
             </Tabs.Tab>
           ))}
         </Tabs.List>
         {tabList?.map((tab) => (
-          <Tabs.Panel key={tab} class="col-span-10">
-            <div>
+          <Tabs.Panel key={tab} class="w-[800px] p-4 h-[800px]">
+            <div class="flex flex-col gap-4 h-full">
               <Card.Title>
                 <span class="text-3xl font-large">{tab}</span>
               </Card.Title>
-              <div class="text-gray-300 dark:text-white">
-                <Divider />
+              <div class="flex-1">
+                <Slot name={tab} />
               </div>
-              <Slot name={tab} />
             </div>
           </Tabs.Panel>
         ))}

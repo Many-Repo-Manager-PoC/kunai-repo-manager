@@ -131,7 +131,7 @@ export default component$(() => {
                 (searchQuery.value = (ev.target as HTMLInputElement).value)
               }
               placeholder="Search repositories..."
-              class="pr-48"
+              class="px-4 pr-48"
               id="search-repositories"
               name="search-repositories"
             />

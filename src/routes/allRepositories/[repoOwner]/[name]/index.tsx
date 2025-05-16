@@ -13,7 +13,7 @@ export default component$(() => {
   const repos = useGetRepos();
   const packageJson = useGetPackageJson();
   const { name: repoName } = useLocation().params;
-  const tabList = ["Details", "dependencies", "dependents"];
+  const tabList = ["Details", "Dependencies", "Dependents"];
 
   const repo = repos.value.find((r) => r.name === repoName);
 
@@ -25,7 +25,7 @@ export default component$(() => {
           <RepoDetails repoDetails={repo} />
         </div>
         <Slot name="dependencies" />
-        <div q:slot="dependents">
+        <div q:slot="Dependents">
           <DependencyUpdaterCard
             repos={repos.value}
             repo={repo as Repo}

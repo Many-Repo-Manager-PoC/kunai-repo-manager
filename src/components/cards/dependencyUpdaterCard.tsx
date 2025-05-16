@@ -36,27 +36,38 @@ export const DependencyUpdaterCard = component$<DependencyUpdaterCardProps>(
     });
 
     return (
-      <BaseCard>
-        <div q:slot="header" class="flex justify-between items-center">
-          <h4 class="text-lg font-bold">{repo.name}</h4>
+      <BaseCard rootClassNames="h-full bg-white/50 dark:bg-kunai-blue-600/50 w-full cursor-pointer hover:shadow-xl transition-shadow duration-300">
+        <div q:slot="header" class="flex items-center gap-2 w-full p-2">
+          <span class="text-lg font-large">{repo.name}</span>
         </div>
-        <div q:slot="body">
-          <h4 class="text-sm text-gray-600 text-center">
-            Current version: {currentVersion}
-          </h4>
-          {Array.from(dependentRepos).map(([repoName, version]) => (
-            <div
-              key={`${repoName}-${version}`}
-              class="flex justify-between items-center py-2"
-            >
-              <div class="body">{repoName || "No repo name"}</div>
-              <Chip.Root variant="outline" class="text-sm">
-                {version || "No version"}
-              </Chip.Root>
-            </div>
-          ))}
+        <div q:slot="body" class="flex flex-col gap-2 p-2">
+          <div class="flex-grow dark:text-white">
+            <h4 class="text-sm text-center">
+              Current version: {currentVersion}
+            </h4>
+          </div>
+
+          <div class="flex flex-col gap-2 mt-2 text-sm p-2 rounded-md">
+            {Array.from(dependentRepos).map(([repoName, version]) => (
+              <div
+                key={`${repoName}-${version}`}
+                class="flex justify-between items-center py-2"
+              >
+                <div class="dark:text-white">{repoName || "No repo name"}</div>
+                <Chip.Root
+                  variant="outline"
+                  class="dark:bg-kunai-blue-300 text-xs"
+                >
+                  {version || "No version"}
+                </Chip.Root>
+              </div>
+            ))}
+          </div>
         </div>
-        <div q:slot="footer"></div>
+        <div
+          q:slot="footer"
+          class="flex w-full flex-wrap items-center gap-1"
+        ></div>
       </BaseCard>
     );
   },
