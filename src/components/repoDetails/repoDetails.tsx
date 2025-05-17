@@ -1,6 +1,6 @@
 import { component$ } from "@builder.io/qwik";
 import { Chip } from "@kunai-consulting/kunai-design-system";
-import { Repo } from "~/db/types";
+import type { Repo } from "~/db/types";
 import {
   StarIcon,
   GitForkIcon,
@@ -18,11 +18,6 @@ export const RepoDetails = component$<RepoDetailsProps>(({ repoDetails }) => {
     <div class="flex flex-col gap-6 p-4 w-full lg:w-full md:w-1/2">
       <div class="flex justify-between items-center">
         <div class="flex items-center gap-3">
-          <img
-            src={repoDetails?.owner?.avatar_url}
-            alt={repoDetails?.owner?.login}
-            class="w-10 h-10 rounded-full"
-          />
           <h4>
             <span class="dark:text-white">{repoDetails?.name}</span>
           </h4>

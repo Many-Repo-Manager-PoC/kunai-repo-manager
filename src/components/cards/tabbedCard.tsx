@@ -8,12 +8,9 @@ export interface TabbedCardProps {
 
 export const TabbedCard = component$<TabbedCardProps>(({ tabList }) => {
   return (
-    <Card.Root class="md:container md:mx-auto shadow-lg min-h-[800px] dark:bg-kunai-blue-600/50 bg-kunai-blue-100/50 overflow-auto min-w-[768px]">
-      <Tabs.Root
-        vertical
-        class="md:container md:mx-auto grid grid-flow-col min-h-[800px]"
-      >
-        <Tabs.List class="md:container md:mx-auto flex flex-col gap-5 border-r border-gray-500 dark:border-white">
+    <Card.Root class="md:container md:mx-auto shadow-lg dark:bg-kunai-blue-600/50 bg-kunai-blue-100/50 overflow-auto min-w-[768px]">
+      <Tabs.Root vertical class="md:container md:mx-auto grid grid-flow-col">
+        <Tabs.List class="md:container md:mx-auto flex flex-col gap-5 border-r border-gray-500 dark:border-white max-w-[200px]">
           {tabList?.map((tab, index) => (
             <Tabs.Tab
               class={`
@@ -26,7 +23,7 @@ export const TabbedCard = component$<TabbedCardProps>(({ tabList }) => {
                 hover:bg-kunai-blue-100 
                 data-[state=selected]:bg-kunai-blue-100 
                 data-[state=selected]:dark:bg-kunai-blue-300/50 
-                w-[200px]
+                w-full
               `}
               key={tab}
               selected={index === 0}
@@ -38,13 +35,13 @@ export const TabbedCard = component$<TabbedCardProps>(({ tabList }) => {
         </Tabs.List>
         {tabList?.map((tab) => (
           <Tabs.Panel key={tab} class="w-[800px] p-4">
-            <div class="flex flex-col gap-4 h-full">
+            <div class="flex flex-col gap-4">
               <Card.Title>
                 <span class="md:container md:mx-auto text-3xl font-large">
                   {tab}
                 </span>
               </Card.Title>
-              <div class="flex-1">
+              <div>
                 <Slot name={tab} />
               </div>
             </div>
