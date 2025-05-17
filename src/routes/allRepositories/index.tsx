@@ -77,14 +77,21 @@ export default component$(() => {
     }
   });
 
+  const toggleManageTags = $(() => {
+    isShow.value = !isShow.value;
+    if (!isShow.value) {
+      selectedRepos.value = [];
+    }
+  });
+
   return (
     <div class="container min-h-screen">
       <PageTitle />
       <div class="space-y-6">
         <div class="space-y-4">
           <div class="flex gap-4">
-            <Button onClick$={() => (isShow.value = true)} variant="primary">
-              Manage Tags
+            <Button onClick$={toggleManageTags} variant="primary">
+              {isShow.value ? "Done" : "Manage Tags"}
             </Button>
             {isShow.value && (
               <>

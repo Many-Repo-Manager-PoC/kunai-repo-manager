@@ -18,7 +18,7 @@ export const DependencyUpdaterCard = component$<DependencyUpdaterCardProps>(
     const dependentRepos = new Set<[string, string]>();
 
     // Find all repos that depend on the current repo
-    packageJson?.forEach((pkg) => {
+    packageJson.forEach((pkg) => {
       const { dependencies, devDependencies } = pkg.packageJson ?? {};
       const repoName = pkg.packageJson?.name ?? "";
 
