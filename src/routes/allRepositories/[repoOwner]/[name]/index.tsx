@@ -16,6 +16,11 @@ export default component$(() => {
   const tabList = ["Details", "Dependencies", "Dependents"];
 
   const repo = repos.value.find((r) => r.name === repoName);
+  const repoTopics = repo?.topics;
+  const isDesignSystem = repoTopics?.includes("design-system");
+  if (!isDesignSystem) {
+    tabList.pop();
+  }
 
   return (
     <div class="container container-center">
@@ -31,6 +36,7 @@ export default component$(() => {
             packageJson={packageJson.value}
           />
         </div>
+
         <div q:slot="Dependents">
           <DependencyUpdaterCard
             repos={repos.value}
