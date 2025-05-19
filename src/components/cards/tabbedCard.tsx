@@ -8,9 +8,9 @@ export interface TabbedCardProps {
 
 export const TabbedCard = component$<TabbedCardProps>(({ tabList }) => {
   return (
-    <Card.Root class="md:container md:mx-auto shadow-lg dark:bg-kunai-blue-600/50 bg-kunai-blue-100/50 overflow-auto min-w-[768px]">
-      <Tabs.Root vertical class="md:container md:mx-auto grid grid-flow-col">
-        <Tabs.List class="md:container md:mx-auto flex flex-col gap-5 border-r border-gray-500 dark:border-white max-w-[200px]">
+    <Card.Root class="shadow-lg dark:bg-kunai-blue-600/50 bg-kunai-blue-100/50 ">
+      <Tabs.Root class="grid grid-flow-row sm:grid-flow-col">
+        <Tabs.List class="flex flex-row sm:flex-col gap-5 sm:border-r sm:border-b-0 border-b pb-4 border-gray-500 dark:border-white sm:col-span-1 col-span-12">
           {tabList?.map((tab, index) => (
             <Tabs.Tab
               class={`
@@ -34,12 +34,10 @@ export const TabbedCard = component$<TabbedCardProps>(({ tabList }) => {
           ))}
         </Tabs.List>
         {tabList?.map((tab) => (
-          <Tabs.Panel key={tab} class="w-[800px] p-4">
-            <div class="flex flex-col gap-4">
+          <Tabs.Panel key={tab} class="sm:pl-5 py-5 sm:col-span-11 col-span-12">
+            <div class="flex flex-col gap-4 justify-center">
               <Card.Title>
-                <span class="md:container md:mx-auto text-3xl font-large">
-                  {tab}
-                </span>
+                <span class="text-3xl font-large">{tab}</span>
               </Card.Title>
               <div>
                 <Slot name={tab} />

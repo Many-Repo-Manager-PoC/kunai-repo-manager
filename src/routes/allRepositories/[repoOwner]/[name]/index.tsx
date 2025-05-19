@@ -23,7 +23,7 @@ export default component$(() => {
   }
 
   return (
-    <div class="container container-center">
+    <div class="">
       <PageTitle />
       <TabbedCard tabList={tabList}>
         <div q:slot="Details">

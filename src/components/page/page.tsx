@@ -9,7 +9,7 @@ export default component$(() => {
     >
       <Slot name="header" />
       <div class="flex flex-grow justify-center items-center relative py-24 px-4 sm:px-6 md:px-8">
-        <div class="w-full max-w-sm sm:max-w-md md:max-w-2xl lg:max-w-7xl">
+        <div class="w-full md:max-w-7xl">
           <Slot />
         </div>
       </div>
