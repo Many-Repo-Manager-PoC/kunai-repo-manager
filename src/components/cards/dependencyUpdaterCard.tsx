@@ -1,11 +1,10 @@
-import { component$, useSignal } from "@builder.io/qwik";
+import { component$ } from "@builder.io/qwik";
 import { BaseCard } from "./baseCard";
 import { Chip } from "@kunai-consulting/kunai-design-system";
 import type { Repo, PackageJson } from "~/db/types";
 import semver from "semver";
 import { DependencyUpdaterModal } from "../modals/dependencyUpdaterModal";
-import { postWorkflowDispatchEvent } from "../../db/postWorkflowDispatchEvent";
-export { postWorkflowDispatchEvent } from "../../db/postWorkflowDispatchEvent";
+import { postWorkflowDispatchEvent } from "~/routes/layout";
 
 interface DependencyUpdaterCardProps {
   repos: Repo[];
@@ -18,9 +17,12 @@ export const DependencyUpdaterCard = component$<DependencyUpdaterCardProps>(
     const currentVersion =
       packageJson.find((pkg) => pkg.repo === repo.name)?.packageJson?.version ||
       "No version";
-    const currentRepoName = repo.name as string;
+    const currentPackageJson = packageJson.find(
+      (pkg) => pkg.repo === repo.name,
+    )?.packageJson;
+    const currentRepoName = currentPackageJson?.name ?? "";
     const dependentRepos = new Set<[string, string]>();
-    const action = useSignal(postWorkflowDispatchEvent());
+    const action = postWorkflowDispatchEvent();
 
     // Find all repos that depend on the current repo
     packageJson.forEach((pkg) => {
@@ -115,11 +117,11 @@ export const DependencyUpdaterCard = component$<DependencyUpdaterCardProps>(
                   {needsUpdate(version) && (
                     <div class="flex justify-end">
                       <DependencyUpdaterModal
-                        packageToUpdate={repo.full_name}
+                        packageToUpdate={currentRepoName}
                         packageVersion={currentVersion}
                         repoToUpdate={repoName}
                         oldVersion={version}
-                        dispatchEvent={action.value}
+                        dispatchEvent={action}
                       />
                     </div>
                   )}

@@ -17,15 +17,15 @@ import { OCTOKIT_CLIENT } from "~/routes/plugin@octokit";
  */
 // eslint-disable-next-line qwik/loader-location
 export const postWorkflowDispatchEvent = routeAction$(async (data, event) => {
-  const repo = data.repo as string;
-
+  const session = event.sharedMap.get("session");
+  const gh_access_token = session?.accessToken;
   try {
     const octokit: Octokit = event.sharedMap.get(OCTOKIT_CLIENT);
 
     await octokit.rest.actions.createWorkflowDispatch({
       owner: metadata.owner,
-      repo: repo,
-      workflow_id: "update-dependencies.yml",
+      repo: "kunai-repo-manager",
+      workflow_id: "update-package.yml",
       ref: "main",
       inputs: {
         repo_name: data.repo_name as string,
@@ -34,6 +34,7 @@ export const postWorkflowDispatchEvent = routeAction$(async (data, event) => {
         pr_title: data.pr_title as string,
         pr_body: data.pr_body as string,
         owner: metadata.owner,
+        gh_access_token: gh_access_token as string,
       },
     });
 

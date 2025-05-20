@@ -39,56 +39,27 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ inputs.gh_access_token }}
+          repository: ${{ inputs.owner }}/${{ inputs.repo_name }}
 
-      - name: Update Package
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-          GH_API_KEY: ${{ github.event.inputs.gh_access_token || github.event.client_payload.gh_access_token }}
-          REPO_NAME: ${{ github.event.inputs.repo_name || github.event.client_payload.repo_name }}
-          PACKAGE_NAME: ${{ github.event.inputs.package_name || github.event.client_payload.package_name }}
-          PACKAGE_VERSION: ${{ github.event.inputs.package_version || github.event.client_payload.package_version }}
-          PR_TITLE: ${{ github.event.inputs.pr_title || github.event.client_payload.pr_title }}
-          PR_BODY: ${{ github.event.inputs.pr_body || github.event.client_payload.pr_body }}
-          OWNER: ${{ github.event.inputs.owner || github.event.client_payload.owner }}
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
 
-        run: |
-          # This script updates a package to its latest version and creates a pull request
-          # It requires the following environment variables:
-          # - GH_API_KEY: GitHub API key for authentication
-          # - REPO_NAME: Name of the repository to update
-          # - PACKAGE_NAME: Name of the package to update
-          # - PACKAGE_VERSION: Version to update to
-          # - PR_TITLE: Title for the pull request
-          # - PR_BODY: Description for the pull request
-          # - OWNER: GitHub organization or user name
+      - name: Install dependencies
+        run: npm ci
 
-          # Clone the repository to make sure we have the latest version      
-          git clone https://${{ env.GH_API_KEY }}@github.com/${{ env.OWNER }}/${{ env.REPO_NAME }}.git
-          cd ${{ env.REPO_NAME }}
+      - name: Update package
+        run: npm install ${{ inputs.package_name }}@${{ inputs.package_version }}
 
-          # Install the package in the cloned repository
-          npm install ${{ env.PACKAGE_NAME }}@${{ env.PACKAGE_VERSION }} --prefix ${{ env.REPO_NAME }}
-
-          # Configure git user for GitHub Actions
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
-
-          # Create a new branch for the update
-          git checkout -b update-package-${{env.PACKAGE_NAME }}-to-${{ env.PACKAGE_VERSION }}
-          git add .
-          git commit -m "Update ${{ env.PACKAGE_NAME }} to ${{ env.PACKAGE_VERSION }}"
-
-          # Push the changes to the repository
-          git push origin update-package-${{env.PACKAGE_NAME }}-to-${{ env.PACKAGE_VERSION }}
-
-          # Create a pull request using the GitHub API
-          curl -X POST \
-            -H "Authorization: token ${{ env.GH_API_KEY }}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/${{ env.OWNER }}/${{ env.REPO_NAME }}/pulls \
-            -d '{
-              "title": "${{ env.PR_TITLE }}",
-              "body": "${{ env.PR_BODY }}",
-              "head": "update-package-${{ env.PACKAGE_NAME }}-to-${{ env.PACKAGE_VERSION }}",
-              "base": "main"
-            }'
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ inputs.gh_access_token }}
+          commit-message: "Update ${{ inputs.package_name }} to ${{ inputs.package_version }}"
+          title: ${{ inputs.pr_title }}
+          body: ${{ inputs.pr_body }}
+          branch: update-package-${{ inputs.package_name }}-to-${{ inputs.package_version }}
+          base: main

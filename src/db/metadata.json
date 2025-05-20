@@ -5,7 +5,8 @@
     "mock-repo-with-two-dependencies",
     "mock-repo-with-no-dependencies",
     "mock-repo-with-also-one-dependency",
-    "mock-repo-with-one-dependency"
+    "mock-repo-with-one-dependency",
+    "mock-web-app-repo"
   ],
   "owner": "Many-Repo-Manager-PoC",
   "dependencyPaths": [
@@ -15,7 +16,8 @@
     ["mock-repo-with-two-dependencies", "packages/dep-two/package.json"],
     ["mock-repo-with-no-dependencies", "package.json"],
     ["mock-repo-with-also-one-dependency", "package.json"],
-    ["mock-repo-with-one-dependency", "package.json"]
+    ["mock-repo-with-one-dependency", "package.json"],
+    ["mock-web-app-repo", "package.json"]
   ],
   "dummyRepos": [
     {

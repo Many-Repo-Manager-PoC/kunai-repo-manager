@@ -9,6 +9,7 @@ import { useCreateRepository } from "~/db/createRepository";
 export { useCreateRepository };
 export { useGetRepos } from "~/db/getRepositories";
 export { useGetPackageJson } from "~/db/getPackageJson";
+export { postWorkflowDispatchEvent } from "~/db/postWorkflowDispatchEvent";
 
 export const onGet: RequestHandler = async ({
   cacheControl,
