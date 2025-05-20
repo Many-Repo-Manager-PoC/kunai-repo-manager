@@ -1,8 +1,9 @@
 import { component$ } from "@builder.io/qwik";
 import { BaseCard } from "./baseCard";
-import { Chip, Button } from "@kunai-consulting/kunai-design-system";
+import { Chip } from "@kunai-consulting/kunai-design-system";
 import type { Repo, PackageJson } from "~/db/types";
 import semver from "semver";
+import { DependencyUpdaterModal } from "../modals/dependencyUpdaterModal";
 
 interface DependencyUpdaterCardProps {
   repos: Repo[];
@@ -109,13 +110,14 @@ export const DependencyUpdaterCard = component$<DependencyUpdaterCardProps>(
                 </div>
                 <div class="w-1/4 flex justify-end">
                   {needsUpdate(version) && (
-                    <Button
-                      variant="primary"
-                      size="sm"
-                      class="bg-kunai-blue-500 hover:bg-kunai-blue-600 text-white text-xs px-3 py-1 rounded-md transition-colors duration-200"
-                    >
-                      Update to current version
-                    </Button>
+                    <div class="flex justify-end">
+                      <DependencyUpdaterModal
+                        packageToUpdate={currentRepoName}
+                        packageVersion={currentVersion}
+                        repoToUpdate={repoName}
+                        oldVersion={version}
+                      />
+                    </div>
                   )}
                 </div>
               </div>
