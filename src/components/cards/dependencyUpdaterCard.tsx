@@ -1,9 +1,11 @@
-import { component$ } from "@builder.io/qwik";
+import { component$, useSignal } from "@builder.io/qwik";
 import { BaseCard } from "./baseCard";
 import { Chip } from "@kunai-consulting/kunai-design-system";
 import type { Repo, PackageJson } from "~/db/types";
 import semver from "semver";
 import { DependencyUpdaterModal } from "../modals/dependencyUpdaterModal";
+import { postWorkflowDispatchEvent } from "../../db/postWorkflowDispatchEvent";
+export { postWorkflowDispatchEvent } from "../../db/postWorkflowDispatchEvent";
 
 interface DependencyUpdaterCardProps {
   repos: Repo[];
@@ -18,6 +20,7 @@ export const DependencyUpdaterCard = component$<DependencyUpdaterCardProps>(
       "No version";
     const currentRepoName = repo.name as string;
     const dependentRepos = new Set<[string, string]>();
+    const action = useSignal(postWorkflowDispatchEvent());
 
     // Find all repos that depend on the current repo
     packageJson.forEach((pkg) => {
@@ -112,10 +115,11 @@ export const DependencyUpdaterCard = component$<DependencyUpdaterCardProps>(
                   {needsUpdate(version) && (
                     <div class="flex justify-end">
                       <DependencyUpdaterModal
-                        packageToUpdate={currentRepoName}
+                        packageToUpdate={repo.full_name}
                         packageVersion={currentVersion}
                         repoToUpdate={repoName}
                         oldVersion={version}
+                        dispatchEvent={action.value}
                       />
                     </div>
                   )}

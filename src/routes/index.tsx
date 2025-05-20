@@ -17,7 +17,7 @@ export default component$(() => {
         <Form action={signOutSig}>
           <Button
             kind="secondary"
-            class="bg-kunai-gray-100 text-kunai-gray-700 hover:bg-kunai-gray-200 dark:bg-kunai-gray-800 dark:text-kunai-gray-300 dark:hover:bg-kunai-gray-700 outline outline-1 outline-kunai-gray-700 dark:outline-kunai-gray-300"
+            class="mt-10 bg-kunai-gray-100 text-kunai-gray-700 hover:bg-kunai-gray-200 dark:bg-kunai-gray-800 dark:text-kunai-gray-300 dark:hover:bg-kunai-gray-700 outline outline-1 outline-kunai-gray-700 dark:outline-kunai-gray-300"
           >
             Sign Out
           </Button>

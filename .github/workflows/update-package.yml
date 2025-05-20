@@ -62,8 +62,7 @@ jobs:
           cd ${{ env.REPO_NAME }}
 
           # Install dependencies and update package
-          npm ci
-          npm install ${{ env.PACKAGE_NAME }}@${{ env.PACKAGE_VERSION }} --save-exact
+          npm install ${{ env.PACKAGE_NAME }}@${{ env.PACKAGE_VERSION }} --prefix ${{ env.REPO_NAME }}
 
           # Configure git
           git config --global user.name 'github-actions[bot]'

@@ -1,6 +1,6 @@
 import { component$, $, useSignal } from "@builder.io/qwik";
 import { Modal } from "@kunai-consulting/kunai-design-system";
-import { postWorkflowDispatchEvent } from "../../db/postWorkflowDispatchEvent";
+import { type postWorkflowDispatchEvent } from "../../db/postWorkflowDispatchEvent";
 export { postWorkflowDispatchEvent } from "../../db/postWorkflowDispatchEvent";
 
 interface DependencyUpdaterModalProps {
@@ -8,11 +8,18 @@ interface DependencyUpdaterModalProps {
   packageVersion: string;
   repoToUpdate: string;
   oldVersion: string;
+  dispatchEvent: ReturnType<typeof postWorkflowDispatchEvent>;
 }
 
 export const DependencyUpdaterModal = component$<DependencyUpdaterModalProps>(
-  ({ packageToUpdate, packageVersion, repoToUpdate, oldVersion }) => {
-    const action = postWorkflowDispatchEvent();
+  ({
+    packageToUpdate,
+    packageVersion,
+    repoToUpdate,
+    oldVersion,
+    dispatchEvent,
+  }) => {
+    const action = dispatchEvent;
     const prTitle = useSignal(
       `Update Package: ${packageToUpdate} from version ${oldVersion} to ${packageVersion}`,
     );
@@ -22,8 +29,8 @@ export const DependencyUpdaterModal = component$<DependencyUpdaterModalProps>(
     const showTitleInput = useSignal(false);
     const showBodyInput = useSignal(false);
 
-    const handleSaveChanges = $(() => {
-      action.submit({
+    const handleSaveChanges = $(async () => {
+      await action.submit({
         repo_name: repoToUpdate,
         package_name: packageToUpdate,
         package_version: packageVersion,
