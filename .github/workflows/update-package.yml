@@ -40,12 +40,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: "npm"
-
       - name: Update Package
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -56,26 +50,38 @@ jobs:
           PR_TITLE: ${{ github.event.inputs.pr_title || github.event.client_payload.pr_title }}
           PR_BODY: ${{ github.event.inputs.pr_body || github.event.client_payload.pr_body }}
           OWNER: ${{ github.event.inputs.owner || github.event.client_payload.owner }}
+
         run: |
-          # Clone the repository
+          # This script updates a package to its latest version and creates a pull request
+          # It requires the following environment variables:
+          # - GH_API_KEY: GitHub API key for authentication
+          # - REPO_NAME: Name of the repository to update
+          # - PACKAGE_NAME: Name of the package to update
+          # - PACKAGE_VERSION: Version to update to
+          # - PR_TITLE: Title for the pull request
+          # - PR_BODY: Description for the pull request
+          # - OWNER: GitHub organization or user name
+
+          # Clone the repository to make sure we have the latest version      
           git clone https://${{ env.GH_API_KEY }}@github.com/${{ env.OWNER }}/${{ env.REPO_NAME }}.git
           cd ${{ env.REPO_NAME }}
 
-          # Install dependencies and update package
+          # Install the package in the cloned repository
           npm install ${{ env.PACKAGE_NAME }}@${{ env.PACKAGE_VERSION }} --prefix ${{ env.REPO_NAME }}
 
-          # Configure git
+          # Configure git user for GitHub Actions
           git config --global user.name 'github-actions[bot]'
           git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
 
-          # Create and push changes
-          BRANCH_NAME="update-package-${{ env.PACKAGE_NAME }}-to-${{ env.PACKAGE_VERSION }}"
-          git checkout -b "$BRANCH_NAME"
-          git add package.json package-lock.json
-          git commit -m "chore: update ${{ env.PACKAGE_NAME }} to ${{ env.PACKAGE_VERSION }}"
-          git push origin "$BRANCH_NAME"
+          # Create a new branch for the update
+          git checkout -b update-package-${{env.PACKAGE_NAME }}-to-${{ env.PACKAGE_VERSION }}
+          git add .
+          git commit -m "Update ${{ env.PACKAGE_NAME }} to ${{ env.PACKAGE_VERSION }}"
 
-          # Create pull request
+          # Push the changes to the repository
+          git push origin update-package-${{env.PACKAGE_NAME }}-to-${{ env.PACKAGE_VERSION }}
+
+          # Create a pull request using the GitHub API
           curl -X POST \
             -H "Authorization: token ${{ env.GH_API_KEY }}" \
             -H "Accept: application/vnd.github.v3+json" \
@@ -83,6 +89,6 @@ jobs:
             -d '{
               "title": "${{ env.PR_TITLE }}",
               "body": "${{ env.PR_BODY }}",
-              "head": "'$BRANCH_NAME'",
+              "head": "update-package-${{ env.PACKAGE_NAME }}-to-${{ env.PACKAGE_VERSION }}",
               "base": "main"
             }'
