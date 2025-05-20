@@ -85,7 +85,7 @@ export default component$(() => {
   });
 
   return (
-    <div class="container min-h-screen">
+    <div class="min-h-screen">
       <PageTitle />
       <div class="space-y-6">
         <div class="space-y-4">

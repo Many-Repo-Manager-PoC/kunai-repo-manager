@@ -28,7 +28,7 @@ export const RepoDependencyCard = component$<RepoDependencyCardProps>(
     ];
 
     return (
-      <BaseCard rootClassNames="w-full lg:w-full md:w-2/3 bg-white/50 dark:bg-kunai-blue-600/50 w-full cursor-pointer hover:shadow-xl transition-shadow duration-300">
+      <BaseCard rootClassNames="bg-white/50 dark:bg-kunai-blue-600/50 w-full">
         <div q:slot="header" class="flex items-center gap-2 w-full p-2">
           <span class="text-lg font-large">{repo.name}</span>
         </div>

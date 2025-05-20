@@ -15,7 +15,7 @@ export interface RepoDetailsProps {
 
 export const RepoDetails = component$<RepoDetailsProps>(({ repoDetails }) => {
   return (
-    <div class="flex flex-col gap-6 w-full lg:w-full">
+    <div class="flex flex-col gap-6 w-full">
       <div class="flex justify-between items-center">
         <div class="flex items-center gap-3">
           <h4>

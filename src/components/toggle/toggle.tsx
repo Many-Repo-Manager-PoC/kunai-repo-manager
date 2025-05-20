@@ -16,8 +16,8 @@ export default component$(() => {
           }}
         />
         <span class="dark:translate-x-7 translate-x-1 inline-block h-6 w-6 transform rounded-full bg-white transition-transform duration-200 ease-in-out" />
-        <LuSun class="absolute left-1.5 h-5 w-5 text-yellow-500" />
-        <LuMoon class="absolute right-1.5 h-5 w-5 text-gray-400" />
+        <LuSun class="absolute left-1.5 h-5 w-5 text-yellow-500 cursor-pointer" />
+        <LuMoon class="absolute right-1.5 h-5 w-5 text-gray-400 cursor-pointer" />
       </label>
     </div>
   );
