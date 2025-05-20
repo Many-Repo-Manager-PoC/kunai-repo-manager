@@ -1,7 +1,7 @@
 import { component$, $, useSignal } from "@builder.io/qwik";
 import { Modal } from "@kunai-consulting/kunai-design-system";
 import { postWorkflowDispatchEvent } from "../../db/postWorkflowDispatchEvent";
-export { postWorkflowDispatchEvent };
+export { postWorkflowDispatchEvent } from "../../db/postWorkflowDispatchEvent";
 
 interface DependencyUpdaterModalProps {
   packageToUpdate: string;
