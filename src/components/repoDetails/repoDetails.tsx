@@ -1,4 +1,4 @@
-import { component$ } from "@builder.io/qwik";
+import { component$, useSignal } from "@builder.io/qwik";
 import { Chip } from "@kunai-consulting/kunai-design-system";
 import type { Repo } from "~/db/types";
 import {
@@ -8,12 +8,13 @@ import {
   CircleAlertIcon,
   GitHubIcon,
 } from "~/components/icons";
-
+import { TopicsModal } from "~/components/modals/topicsModal";
 export interface RepoDetailsProps {
   repoDetails?: Repo;
 }
 
 export const RepoDetails = component$<RepoDetailsProps>(({ repoDetails }) => {
+  const repoTopics = useSignal(repoDetails?.topics || []);
   return (
     <div class="flex flex-col gap-6 w-full">
       <div class="flex justify-between items-center">
@@ -107,9 +108,15 @@ export const RepoDetails = component$<RepoDetailsProps>(({ repoDetails }) => {
         </div>
       </div>
       <div>
-        <h4 class="mb-3">
-          <span class="dark:text-white">Topics</span>
-        </h4>
+        <div class="flex items-center justify-between mb-3">
+          <h4>
+            <span class="dark:text-white">Topics</span>
+          </h4>
+          <TopicsModal
+            selectedRepo={repoDetails?.name || ""}
+            topicsMap={repoTopics.value}
+          />
+        </div>
         <div class="flex flex-wrap gap-2">
           {repoDetails?.topics && repoDetails.topics.length > 0 ? (
             repoDetails.topics.map((topic) => (

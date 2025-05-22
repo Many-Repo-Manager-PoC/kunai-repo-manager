@@ -4,12 +4,10 @@ import { RepositoryCard } from "~/components/cards/repositoryCard";
 import type { Repo } from "~/db/types";
 import { Button, Chip } from "@kunai-consulting/kunai-design-system";
 import { useGetRepos } from "~/routes/layout";
-import { TopicsModal } from "~/components/modals/topicsModal";
+import { BulkTopicsModal } from "~/components/modals/bulkTopicsModal";
 import { PageTitle } from "~/components/page/pageTitle";
 import { LuRotateCcw } from "@qwikest/icons/lucide";
-import { usePutBulkTopics } from "~/db/putTopics";
-
-export { usePutBulkTopics };
+export { usePutBulkTopics, usePutTopics } from "~/db/putTopics";
 
 export default component$(() => {
   const serverData = useGetRepos();
@@ -102,7 +100,7 @@ export default component$(() => {
                   Deselect All
                 </Button>
                 {selectedRepos.value.length > 0 && (
-                  <TopicsModal
+                  <BulkTopicsModal
                     selectedRepos={selectedRepos}
                     topicsMap={repoTopicsMap || {}}
                   />

@@ -13,6 +13,8 @@ import { OCTOKIT_CLIENT } from "~/routes/plugin@octokit";
 export const usePutTopics = routeAction$(async (data, event) => {
   const repo = data.repo as string;
   const topics = data.topics as string[];
+  console.log(repo, topics);
+  console.log("YOU MADE IT INTO THIS ACTION");
 
   try {
     const octokit: Octokit = event.sharedMap.get(OCTOKIT_CLIENT);
