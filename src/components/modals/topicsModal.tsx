@@ -1,25 +1,17 @@
 import { component$, $, useSignal } from "@builder.io/qwik";
 import { Modal } from "@kunai-consulting/kunai-design-system";
-import { type usePutTopics } from "../../db/putTopics";
+import { usePutTopics } from "~/routes/layout";
 
 interface TopicsModalProps {
   selectedRepo: string;
   topicsMap: string[];
-  action: ReturnType<typeof usePutTopics>;
 }
 
 export const TopicsModal = component$<TopicsModalProps>(
-  ({ selectedRepo, topicsMap, action }) => {
+  ({ selectedRepo, topicsMap }) => {
+    const action = usePutTopics();
     const newTags = useSignal("");
-    const tagsToRemove = useSignal<string[]>([]);
-
-    const handleTagToggle = $((topic: string, checked: boolean) => {
-      if (checked) {
-        tagsToRemove.value = [...tagsToRemove.value, topic];
-      } else {
-        tagsToRemove.value = tagsToRemove.value.filter((t) => t !== topic);
-      }
-    });
+    const checkedTopics = useSignal<string[]>([]);
 
     const handleSaveChanges = $(async () => {
       const tagsToAdd = newTags.value
@@ -27,35 +19,34 @@ export const TopicsModal = component$<TopicsModalProps>(
         .map((tag) => tag.trim())
         .filter((tag) => tag.length > 0);
 
+      const currentTags = topicsMap || [];
       const updatedTags = [
         ...new Set([
-          ...topicsMap.filter((t) => !tagsToRemove.value.includes(t)),
+          ...currentTags.filter((t) => !checkedTopics.value.includes(t)),
           ...tagsToAdd,
         ]),
       ];
-      console.log(updatedTags);
-      console.log(selectedRepo);
 
       await action.submit({
         repo: selectedRepo,
         topics: updatedTags,
       });
+
+      // Refresh the page after successful submission
+      window.location.reload();
     });
 
     return (
       <Modal.Root>
-        <Modal.Trigger class="inline-flex items-center gap-2 bg-gray-50/50 dark:bg-kunai-blue-200 text-kunai-blue-800 px-4 py-2 rounded-md">
+        <Modal.Trigger class="bg-kunai-blue-500 hover:bg-kunai-blue-600 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-200">
           Edit Tags
         </Modal.Trigger>
         <Modal.Panel class="bg-white dark:bg-kunai-blue-600 rounded-lg p-6 max-w-2xl mx-auto mt-8">
           <div class="flex flex-col gap-2 p-2">
             <div class="flex-grow dark:text-white">
-              <Modal.Title class="font-semibold mb-4">
+              <Modal.Title class=" font-semibold mb-4">
                 <h4 class="text-sm font-semibold mb-4">Add/Remove Tags</h4>
               </Modal.Title>
-              <Modal.Description class="mb-4">
-                Repository: {selectedRepo}
-              </Modal.Description>
             </div>
 
             <div class="flex flex-col gap-2 mt-2 text-sm p-2 rounded-md overflow-y-auto">
@@ -68,13 +59,18 @@ export const TopicsModal = component$<TopicsModalProps>(
                   <div class="dark:text-white truncate">{topic}</div>
                   <input
                     type="checkbox"
-                    checked={tagsToRemove.value.includes(topic)}
-                    onChange$={(ev) =>
-                      handleTagToggle(
-                        topic,
-                        (ev.target as HTMLInputElement).checked,
-                      )
-                    }
+                    onChange$={(ev) => {
+                      ev.preventDefault();
+                      ev.stopPropagation();
+                      const isChecked = (ev.target as HTMLInputElement).checked;
+                      if (isChecked) {
+                        checkedTopics.value = [...checkedTopics.value, topic];
+                      } else {
+                        checkedTopics.value = checkedTopics.value.filter(
+                          (t) => t !== topic,
+                        );
+                      }
+                    }}
                     id={`remove-tag-${topic}`}
                     name={`remove-tag-${topic}`}
                     class="h-4 w-4"

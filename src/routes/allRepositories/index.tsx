@@ -7,7 +7,7 @@ import { useGetRepos } from "~/routes/layout";
 import { BulkTopicsModal } from "~/components/modals/bulkTopicsModal";
 import { PageTitle } from "~/components/page/pageTitle";
 import { LuRotateCcw } from "@qwikest/icons/lucide";
-export { usePutBulkTopics, usePutTopics } from "~/db/putTopics";
+export { usePutBulkTopics } from "~/db/putTopics";
 
 export default component$(() => {
   const serverData = useGetRepos();
