@@ -1,3 +1,5 @@
+import { ApplicationError } from "~/util/error";
+
 export interface Repo {
   id?: number | null;
   full_name?: string | null;
@@ -124,3 +126,7 @@ export interface Commit {
     login: string | null;
   } | null;
 }
+
+export type Response<T> =
+  | { data: T; error: null }
+  | { data: null; error: { message: string } };

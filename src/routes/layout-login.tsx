@@ -5,34 +5,17 @@ import Page from "~/components/page/page";
 import Header from "~/components/header/header";
 import Footer from "~/components/footer/footer";
 import Toggle from "~/components/toggle/toggle";
-import { useCreateRepository } from "~/db/createRepository";
-import {
-  RedirectMessage,
-  ServerError,
-} from "@builder.io/qwik-city/middleware/request-handler";
-import { ApplicationError } from "~/util/error";
-export { useCreateRepository };
-export { useGetRepos } from "~/db/getRepositories";
-export { useGetPackageJson } from "~/db/getPackageJson";
-export { postWorkflowDispatchEvent } from "~/db/postWorkflowDispatchEvent";
 
 export const onGet: RequestHandler = async ({
   cacheControl,
   redirect,
   sharedMap,
   request,
-  json,
 }) => {
   cacheControl({
     staleWhileRevalidate: 60 * 60 * 24 * 7,
     maxAge: 5,
   });
-
-  // Get session from shared map
-  const session = sharedMap.get("session");
-  if (!session?.accessToken) {
-    throw new ApplicationError(401, "Unauthorized");
-  }
 };
 
 export const useServerTimeLoader = routeLoader$(() => {
