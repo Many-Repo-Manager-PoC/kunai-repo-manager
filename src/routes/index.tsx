@@ -39,6 +39,13 @@ export default component$(() => {
             />
           </Link>
 
+          <Link href="/data" class="block">
+            <DashboardCard
+              title="Data Visualization"
+              description="Browse and visualize your data"
+            />
+          </Link>
+
           {owner && repoName && (
             <Link href={`/allRepositories/${owner}/${repoName}`} class="block">
               <DashboardCard

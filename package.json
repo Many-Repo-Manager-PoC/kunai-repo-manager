@@ -45,6 +45,7 @@
     "prettier": "3.3.3",
     "semver": "^7.7.1",
     "tailwindcss": "^4.1.4",
+    "tsx": "^4.19.4",
     "typescript": "5.4.5",
     "undici": "*",
     "vite": "5.3.5",

@@ -1,0 +1,118 @@
+module default {
+  type Repo {
+    full_name: str;
+    name: str;
+    repo: str;
+    html_url: str;
+    url: str;
+    language: str;
+    description: str;
+    updated_at: str;
+    stargazers_count: int64;
+    forks_count: int64;
+    watchers_count: int64;
+    homepage: str;
+    topics: array<str>;
+    open_issues_count: int64;
+    license: License;
+    owner: Owner;
+    repoOwner: str;
+  };
+
+  type License {
+    name: str;
+  };
+
+  type Owner {
+    login: str;
+    avatar_url: str;
+    html_url: str;
+    type: str;
+  };
+
+  type Dependency {
+    repo: str;
+    dependencies: Dependencies;
+    error: str;
+  };
+
+  type Dependencies {
+    sbom: SBOM;
+    multi link relationships: Relationship;
+  };
+
+  type SBOM {
+    spdxVersion: str;
+    dataLicense: str;
+    SPDXID: str;
+    relationshipType: str;
+    name: str;
+    documentNamespace: str;
+    creationInfo: CreationInfo;
+    multi link packages: Package;
+  };
+
+  type CreationInfo {
+    created: str;
+    creators: array<str>;
+  };
+
+  type Relationship {
+    spdxElementId: str;
+    relationshipType: str;
+    relatedSpdxElement: str;
+  };
+
+  type PackageJson {
+    repo: str;
+    packageJson: PackageJsonData;
+    error: str;
+  };
+
+  type PackageJsonData {
+    name: str;
+    version: str;
+    dependencies: json;
+    devDependencies: json;
+  };
+
+  type Package {
+    name: str;
+    SPDXID: str;
+    licenseConcluded: str;
+    externalRefs: array<json>;
+    downloadLocation: str;
+    versionInfo: str;
+    filesAnalyzed: bool;
+  };
+
+  type Member {
+    login: str;
+    avatar_url: str;
+    html_url: str;
+  };
+
+  type shaCommit {
+    html_url: str;
+    sha: str;
+    commitData: CommitData;
+    author: CommitAuthor;
+  };
+
+  type CommitData {
+    message: str;
+    author: CommitAuthorData;
+  };
+
+  type CommitAuthorData {
+    name: str;
+    date: str;
+  };
+
+  type CommitAuthor {
+    login: str;
+  };
+};
+
+
+
