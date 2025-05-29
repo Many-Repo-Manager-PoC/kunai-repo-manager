@@ -7,6 +7,7 @@ import Footer from "~/components/footer/footer";
 import Toggle from "~/components/toggle/toggle";
 import { useCreateRepository } from "~/db/createRepository";
 import { ApplicationError } from "~/util/errors";
+import { ToastProvider } from "~/components/toasts/toast-context";
 export { useCreateRepository };
 export { useGetRepos } from "~/db/getRepositories";
 export { useGetPackageJson } from "~/db/getPackageJson";
@@ -36,13 +37,15 @@ export const useServerTimeLoader = routeLoader$(() => {
 export default component$(() => {
   return (
     <Page>
-      <main>
-        <Header q:slot="header">
-          <Toggle />
-        </Header>
-        <Slot />
-        <Footer q:slot="footer" />
-      </main>
+      <ToastProvider>
+        <main>
+          <Header q:slot="header">
+            <Toggle />
+          </Header>
+          <Slot />
+          <Footer q:slot="footer" />
+        </main>
+      </ToastProvider>
     </Page>
   );
 });

@@ -50,6 +50,10 @@ export const useGetRepos = routeLoader$(
       });
     }
 
-    return { data: { repositories, errors }, failed: false };
+    const result: Result<{ repositories: Repo[]; errors: ErrorContext[] }> = {
+      data: { repositories, errors },
+      failed: false,
+    };
+    return result;
   },
 );

@@ -8,6 +8,9 @@ import { TopicsModal } from "~/components/modals/topicsModal";
 import { PageTitle } from "~/components/page/pageTitle";
 import { LuRotateCcw } from "@qwikest/icons/lucide";
 import { usePutBulkTopics } from "~/db/putTopics";
+import { useToast } from "~/components/toasts/use-toast";
+import { useWithToast } from "~/util/useWithToast";
+import { ErrorContext } from "~/util/errors";
 
 export { usePutBulkTopics };
 
@@ -18,14 +21,20 @@ export default component$(() => {
   const selectedRepos = useSignal<string[]>([]);
   const isShow = useSignal(false);
   const navigate = useNavigate();
+  const { showToast } = useToast();
+  const result = useWithToast(useGetRepos);
 
   const repositories = useComputed$(() => {
-    return serverData.value.data?.repositories ?? [];
+    if (result.value.failed) return [];
+    return result.value.data?.repositories ?? [];
   });
 
   // Do something with errors
   // const errors = useComputed$(() => {
-  //   return serverData.value.data?.errors ?? [];
+  //   if ("failed" in result.value && result.value.failed) {
+  //     return [];
+  //   }
+  //   return result.value.data?.errors ?? [];
   // });
 
   const allTopics = [
@@ -96,6 +105,13 @@ export default component$(() => {
   return (
     <div class="min-h-screen">
       <PageTitle />
+      <Button
+        onClick$={() =>
+          showToast({ message: "Hello, world!", type: "success" })
+        }
+      >
+        Show Toast
+      </Button>
       <div class="space-y-6">
         <div class="space-y-4">
           <div class="flex gap-4">
