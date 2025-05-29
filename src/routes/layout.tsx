@@ -6,10 +6,6 @@ import Header from "~/components/header/header";
 import Footer from "~/components/footer/footer";
 import Toggle from "~/components/toggle/toggle";
 import { useCreateRepository } from "~/db/createRepository";
-import {
-  RedirectMessage,
-  ServerError,
-} from "@builder.io/qwik-city/middleware/request-handler";
 import { ApplicationError } from "~/util/errors";
 export { useCreateRepository };
 export { useGetRepos } from "~/db/getRepositories";
@@ -24,7 +20,7 @@ export const onGet: RequestHandler = async ({ cacheControl, sharedMap }) => {
   // Get session from shared map
   const session = sharedMap.get("session");
   if (!session || !session?.accessToken) {
-    throw new ApplicationError(401, {
+    throw new ApplicationError({
       name: "UNAUTHORIZED",
       message: "Unauthorized",
     });
