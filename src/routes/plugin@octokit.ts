@@ -17,6 +17,7 @@
 import { Octokit } from "octokit";
 import type { RequestHandler } from "@builder.io/qwik-city";
 import type { Session } from "@auth/qwik";
+import { ApplicationError } from "~/util/errors";
 
 export const OCTOKIT_CLIENT = "octokit_client";
 
@@ -34,7 +35,10 @@ export const onRequest: RequestHandler = async ({ sharedMap }) => {
       sharedMap.set(OCTOKIT_CLIENT, octokit);
     } catch (error) {
       console.error("Failed to initialize Octokit client:", error);
-      // Optionally: Add fallback behavior or error reporting
+      throw new ApplicationError(500, {
+        name: "OCTOKIT_CLIENT_ERROR",
+        message: "Failed to initialize Octokit client",
+      });
     }
   }
 };
