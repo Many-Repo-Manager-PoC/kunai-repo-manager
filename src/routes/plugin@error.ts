@@ -13,12 +13,13 @@ export const onRequest: RequestHandler = async ({ next, error, redirect }) => {
     } else {
       if (isApplicationError(err)) {
         console.log("Application error...", err);
-        if (err.status === 401) {
+        if (err.name === "UNAUTHORIZED") {
           throw redirect(302, "/home/login/");
         }
 
-        // ErrorCodes is not exported so we need to cast to any
-        throw error(err.status as any, err.message);
+        // TODO: Add more error types here
+
+        throw error(500, err.message);
       } else if (isServerError(err)) {
         console.log("Server error...", err);
         throw error(500, { message: "An error occurred" });

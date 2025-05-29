@@ -35,7 +35,7 @@ export const onRequest: RequestHandler = async ({ sharedMap }) => {
       sharedMap.set(OCTOKIT_CLIENT, octokit);
     } catch (error) {
       console.error("Failed to initialize Octokit client:", error);
-      throw new ApplicationError(500, {
+      throw new ApplicationError({
         name: "OCTOKIT_CLIENT_ERROR",
         message: "Failed to initialize Octokit client",
       });
