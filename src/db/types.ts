@@ -1,4 +1,4 @@
-import { ApplicationError } from "~/util/error";
+import { FailReturn } from "@builder.io/qwik-city";
 
 export interface Repo {
   id?: number | null;
@@ -127,6 +127,6 @@ export interface Commit {
   } | null;
 }
 
-export type Response<T> =
-  | { data: T; error: null }
-  | { data: null; error: { message: string } };
+export type Result<T, E = { message: string }> =
+  | { data: T; failed: false }
+  | FailReturn<E>;

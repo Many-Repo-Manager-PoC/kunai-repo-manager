@@ -23,7 +23,6 @@ export const OCTOKIT_CLIENT = "octokit_client";
 export const onRequest: RequestHandler = async ({ sharedMap }) => {
   // Get the session from the shared map (assuming it's already set by the auth plugin)
   const session: Session | null = sharedMap.get("session");
-
   if (session?.accessToken) {
     // Create the Octokit client
     try {

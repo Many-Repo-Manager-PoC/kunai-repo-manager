@@ -21,11 +21,11 @@ export default component$(() => {
 
   const allTopics = [
     ...new Set(
-      serverData.value?.flatMap((repo: Repo) => repo.topics || []) ?? [],
+      serverData.value.data?.flatMap((repo: Repo) => repo.topics || []) ?? [],
     ),
   ];
 
-  const repoTopicsMap = serverData.value?.reduce(
+  const repoTopicsMap = serverData.value.data?.reduce(
     (acc: Record<string, string[]>, repo: Repo) => {
       acc[repo.name || ""] = repo.topics || [];
       return acc;
@@ -34,7 +34,7 @@ export default component$(() => {
   );
 
   const handleSelectAll = $(() => {
-    const filteredRepos = serverData?.value
+    const filteredRepos = serverData.value.data
       ?.filter((repo) => {
         const matchesSearch =
           !searchQuery.value ||
@@ -154,8 +154,8 @@ export default component$(() => {
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {serverData?.value &&
-            serverData.value
+          {serverData.value.data &&
+            serverData.value.data
               .filter((repo: Repo) => {
                 const matchesSearch = repo.name
                   ?.toLowerCase()

@@ -10,28 +10,24 @@ import {
   RedirectMessage,
   ServerError,
 } from "@builder.io/qwik-city/middleware/request-handler";
-import { ApplicationError } from "~/util/error";
+import { ApplicationError } from "~/util/errors";
 export { useCreateRepository };
 export { useGetRepos } from "~/db/getRepositories";
 export { useGetPackageJson } from "~/db/getPackageJson";
 export { postWorkflowDispatchEvent } from "~/db/postWorkflowDispatchEvent";
 
-export const onGet: RequestHandler = async ({
-  cacheControl,
-  redirect,
-  sharedMap,
-  request,
-  json,
-}) => {
+export const onGet: RequestHandler = async ({ cacheControl, sharedMap }) => {
   cacheControl({
     staleWhileRevalidate: 60 * 60 * 24 * 7,
     maxAge: 5,
   });
-
   // Get session from shared map
   const session = sharedMap.get("session");
-  if (!session?.accessToken) {
-    throw new ApplicationError(401, "Unauthorized");
+  if (!session || !session?.accessToken) {
+    throw new ApplicationError(401, {
+      name: "UNAUTHORIZED",
+      message: "Unauthorized",
+    });
   }
 };
 
