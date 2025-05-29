@@ -1,4 +1,4 @@
-import { component$, useSignal, $ } from "@builder.io/qwik";
+import { component$, useSignal, $, useComputed$ } from "@builder.io/qwik";
 import { useNavigate, type DocumentHead } from "@builder.io/qwik-city";
 import { RepositoryCard } from "~/components/cards/repositoryCard";
 import type { Repo } from "~/db/types";
@@ -19,13 +19,22 @@ export default component$(() => {
   const isShow = useSignal(false);
   const navigate = useNavigate();
 
+  const repositories = useComputed$(() => {
+    return serverData.value.data?.repositories ?? [];
+  });
+
+  // Do something with errors
+  // const errors = useComputed$(() => {
+  //   return serverData.value.data?.errors ?? [];
+  // });
+
   const allTopics = [
     ...new Set(
-      serverData.value.data?.flatMap((repo: Repo) => repo.topics || []) ?? [],
+      repositories.value.flatMap((repo: Repo) => repo.topics || []) ?? [],
     ),
   ];
 
-  const repoTopicsMap = serverData.value.data?.reduce(
+  const repoTopicsMap = repositories.value.reduce(
     (acc: Record<string, string[]>, repo: Repo) => {
       acc[repo.name || ""] = repo.topics || [];
       return acc;
@@ -34,8 +43,8 @@ export default component$(() => {
   );
 
   const handleSelectAll = $(() => {
-    const filteredRepos = serverData.value.data
-      ?.filter((repo) => {
+    const filteredRepos = repositories.value
+      .filter((repo) => {
         const matchesSearch =
           !searchQuery.value ||
           repo.name?.toLowerCase().includes(searchQuery.value.toLowerCase());
@@ -45,7 +54,7 @@ export default component$(() => {
       })
       .map((repo) => repo.name);
     selectedRepos.value =
-      filteredRepos?.filter((name): name is string => name !== null) ?? [];
+      filteredRepos.filter((name): name is string => name !== null) ?? [];
   });
 
   const handleDeselectAll = $(() => {
@@ -154,8 +163,8 @@ export default component$(() => {
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {serverData.value.data &&
-            serverData.value.data
+          {repositories.value &&
+            repositories.value
               .filter((repo: Repo) => {
                 const matchesSearch = repo.name
                   ?.toLowerCase()
