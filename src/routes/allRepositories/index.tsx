@@ -8,9 +8,6 @@ import { TopicsModal } from "~/components/modals/topicsModal";
 import { PageTitle } from "~/components/page/pageTitle";
 import { LuRotateCcw } from "@qwikest/icons/lucide";
 import { usePutBulkTopics } from "~/db/putTopics";
-import { useToast } from "~/components/toasts/use-toast";
-import { useWithToast } from "~/util/useWithToast";
-import { ErrorContext } from "~/util/errors";
 
 export { usePutBulkTopics };
 
@@ -21,12 +18,9 @@ export default component$(() => {
   const selectedRepos = useSignal<string[]>([]);
   const isShow = useSignal(false);
   const navigate = useNavigate();
-  const { showToast } = useToast();
-  const result = useWithToast(useGetRepos);
 
   const repositories = useComputed$(() => {
-    if (result.value.failed) return [];
-    return result.value.data?.repositories ?? [];
+    return serverData.value.data?.repositories;
   });
 
   // Do something with errors
@@ -39,11 +33,11 @@ export default component$(() => {
 
   const allTopics = [
     ...new Set(
-      repositories.value.flatMap((repo: Repo) => repo.topics || []) ?? [],
+      repositories.value?.flatMap((repo: Repo) => repo.topics || []) ?? [],
     ),
   ];
 
-  const repoTopicsMap = repositories.value.reduce(
+  const repoTopicsMap = repositories.value?.reduce(
     (acc: Record<string, string[]>, repo: Repo) => {
       acc[repo.name || ""] = repo.topics || [];
       return acc;
@@ -53,7 +47,7 @@ export default component$(() => {
 
   const handleSelectAll = $(() => {
     const filteredRepos = repositories.value
-      .filter((repo) => {
+      ?.filter((repo) => {
         const matchesSearch =
           !searchQuery.value ||
           repo.name?.toLowerCase().includes(searchQuery.value.toLowerCase());
@@ -63,7 +57,7 @@ export default component$(() => {
       })
       .map((repo) => repo.name);
     selectedRepos.value =
-      filteredRepos.filter((name): name is string => name !== null) ?? [];
+      filteredRepos?.filter((name): name is string => name !== null) ?? [];
   });
 
   const handleDeselectAll = $(() => {
@@ -105,13 +99,6 @@ export default component$(() => {
   return (
     <div class="min-h-screen">
       <PageTitle />
-      <Button
-        onClick$={() =>
-          showToast({ message: "Hello, world!", type: "success" })
-        }
-      >
-        Show Toast
-      </Button>
       <div class="space-y-6">
         <div class="space-y-4">
           <div class="flex gap-4">
