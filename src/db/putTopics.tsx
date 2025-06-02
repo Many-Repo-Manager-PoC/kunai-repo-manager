@@ -17,11 +17,13 @@ export const usePutTopics = routeAction$(async (data, event) => {
   try {
     const octokit: Octokit = event.sharedMap.get(OCTOKIT_CLIENT);
 
-    await octokit.rest.repos.replaceAllTopics({
-      owner: metadata.owner,
-      repo: repo,
-      names: topics,
-    });
+    await Promise.all([
+      octokit.rest.repos.replaceAllTopics({
+        owner: metadata.owner,
+        repo: repo,
+        names: topics,
+      }),
+    ]);
 
     return { success: true };
   } catch (error) {
