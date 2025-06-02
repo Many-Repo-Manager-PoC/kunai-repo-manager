@@ -8,8 +8,8 @@ export const onRequest: RequestHandler = async ({ next, error, redirect }) => {
     return await next();
   } catch (err) {
     if (isDev) {
-      console.error("Development error...", error);
-      throw error;
+      console.error("Development error...", err);
+      throw err;
     } else {
       if (isApplicationError(err)) {
         console.log("Application error...", err);

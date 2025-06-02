@@ -38,7 +38,7 @@ export const useGetRepos = routeLoader$(
       } else {
         errors.push({
           name: "GET_REPOSITORIES_ERROR",
-          message: promise.reason.message,
+          message: promise.reason?.message ?? "Failed to get repositories",
         });
       }
     });
