@@ -1,3 +1,6 @@
+import { type FailReturn } from "@builder.io/qwik-city";
+import { type ErrorContext } from "~/util/errors";
+
 export interface Repo {
   id?: number | null;
   full_name?: string | null;
@@ -124,3 +127,7 @@ export interface Commit {
     login: string | null;
   } | null;
 }
+
+export type Result<T, E = ErrorContext> =
+  | { data: T; failed: false }
+  | FailReturn<E>;

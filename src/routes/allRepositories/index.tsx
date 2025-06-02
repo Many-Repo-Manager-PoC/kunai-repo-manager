@@ -1,4 +1,4 @@
-import { component$, useSignal, $ } from "@builder.io/qwik";
+import { component$, useSignal, $, useComputed$ } from "@builder.io/qwik";
 import { useNavigate, type DocumentHead } from "@builder.io/qwik-city";
 import { RepositoryCard } from "~/components/cards/repositoryCard";
 import type { Repo } from "~/db/types";
@@ -17,13 +17,25 @@ export default component$(() => {
   const isShow = useSignal(false);
   const navigate = useNavigate();
 
+  const repositories = useComputed$(() => {
+    return serverData.value.data?.repositories;
+  });
+
+  // Do something with errors
+  // const errors = useComputed$(() => {
+  //   if ("failed" in result.value && result.value.failed) {
+  //     return [];
+  //   }
+  //   return result.value.data?.errors ?? [];
+  // });
+
   const allTopics = [
     ...new Set(
-      serverData.value?.flatMap((repo: Repo) => repo.topics || []) ?? [],
+      repositories.value?.flatMap((repo: Repo) => repo.topics || []) ?? [],
     ),
   ];
 
-  const repoTopicsMap = serverData.value?.reduce(
+  const repoTopicsMap = repositories.value?.reduce(
     (acc: Record<string, string[]>, repo: Repo) => {
       acc[repo.name || ""] = repo.topics || [];
       return acc;
@@ -32,7 +44,7 @@ export default component$(() => {
   );
 
   const handleSelectAll = $(() => {
-    const filteredRepos = serverData?.value
+    const filteredRepos = repositories.value
       ?.filter((repo) => {
         const matchesSearch =
           !searchQuery.value ||
@@ -152,8 +164,8 @@ export default component$(() => {
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {serverData?.value &&
-            serverData.value
+          {repositories.value &&
+            repositories.value
               .filter((repo: Repo) => {
                 const matchesSearch = repo.name
                   ?.toLowerCase()

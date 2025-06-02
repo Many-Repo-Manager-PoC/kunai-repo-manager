@@ -14,11 +14,14 @@ export default component$(() => {
   const { name: repoName } = useLocation().params;
   const tabList = ["Details", "Dependencies", "Dependents"];
 
-  const repo = repos.value.find((r) => r.name === repoName);
+  const repo = repos.value.data?.repositories.find((r) => r.name === repoName);
   const repoTopics = repo?.topics;
   const isDesignSystem = repoTopics?.includes("design-system");
   if (!isDesignSystem) {
     tabList.pop();
+  }
+  if (repos.value.failed) {
+    return <div>Error: {repos.value.message}</div>;
   }
 
   return (
@@ -30,7 +33,7 @@ export default component$(() => {
         </div>
         <div q:slot="Dependencies">
           <RepoDependencyCard
-            repos={repos.value}
+            repos={repos.value.data.repositories}
             repo={repo as Repo}
             packageJson={packageJson.value}
           />
@@ -38,7 +41,7 @@ export default component$(() => {
 
         <div q:slot="Dependents">
           <DependencyUpdaterCard
-            repos={repos.value}
+            repos={repos.value.data.repositories}
             repo={repo as Repo}
             packageJson={packageJson.value}
           />

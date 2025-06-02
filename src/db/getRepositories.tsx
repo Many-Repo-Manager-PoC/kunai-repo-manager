@@ -1,7 +1,9 @@
 import { routeLoader$ } from "@builder.io/qwik-city";
 import metadata from "./metadata.json";
-import type { Octokit } from "octokit";
+import { type Octokit } from "octokit";
 import { OCTOKIT_CLIENT } from "../routes/plugin@octokit";
+import type { Repo, Result } from "./types";
+import { type ErrorContext } from "~/util/errors";
 
 /**
  * Gets all repositories from the given owner and list of repositories in metadata.json
@@ -9,25 +11,49 @@ import { OCTOKIT_CLIENT } from "../routes/plugin@octokit";
  * @returns Array of repository data or empty array if error occurs
  */
 // eslint-disable-next-line qwik/loader-location
-export const useGetRepos = routeLoader$(async (event) => {
-  try {
-    const octokit: Octokit = event.sharedMap.get(OCTOKIT_CLIENT);
+export const useGetRepos = routeLoader$(
+  async ({
+    sharedMap,
+    fail,
+  }): Promise<Result<{ repositories: Repo[]; errors: ErrorContext[] }>> => {
+    const octokit: Octokit = sharedMap.get(OCTOKIT_CLIENT);
+    sharedMap.set("repos", metadata.repositories);
+    const repositories: Repo[] = [];
+    const errors: ErrorContext[] = [];
 
-    // Set initial state in shared map
-    event.sharedMap.set("repos", metadata.repositories);
-
-    const repositories = await Promise.all(
+    const repoPromises = await Promise.allSettled(
       metadata.repositories.map(async (repoName) => {
-        const { data } = await octokit.rest.repos.get({
+        const res = await octokit.rest.repos.get({
           owner: metadata.owner,
           repo: repoName,
         });
-        return { ...data, repoOwner: metadata.owner };
+
+        return { ...res.data, repoOwner: metadata.owner };
       }),
     );
-    return repositories;
-  } catch (error) {
-    console.error("Error fetching repositories:", error);
-    return [];
-  }
-});
+
+    repoPromises.forEach((promise) => {
+      if (promise.status === "fulfilled") {
+        repositories.push(promise.value);
+      } else {
+        errors.push({
+          name: "GET_REPOSITORIES_ERROR",
+          message: promise.reason?.message ?? "Failed to get repositories",
+        });
+      }
+    });
+
+    if (repositories.length === 0) {
+      return fail(500, {
+        name: "GET_REPOSITORIES_ERROR",
+        message: "Failed to get repositories",
+      });
+    }
+
+    const result: Result<{ repositories: Repo[]; errors: ErrorContext[] }> = {
+      data: { repositories, errors },
+      failed: false,
+    };
+    return result;
+  },
+);

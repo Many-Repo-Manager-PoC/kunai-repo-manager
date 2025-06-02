@@ -6,30 +6,25 @@ import Header from "~/components/header/header";
 import Footer from "~/components/footer/footer";
 import Toggle from "~/components/toggle/toggle";
 import { useCreateRepository } from "~/db/createRepository";
+import { ApplicationError } from "~/util/errors";
 export { useCreateRepository };
 export { useGetRepos } from "~/db/getRepositories";
 export { useGetPackageJson } from "~/db/getPackageJson";
 export { postWorkflowDispatchEvent } from "~/db/postWorkflowDispatchEvent";
 export { usePutTopics } from "~/db/putTopics";
 
-export const onGet: RequestHandler = async ({
-  cacheControl,
-  redirect,
-  sharedMap,
-  request,
-}) => {
+export const onGet: RequestHandler = async ({ cacheControl, sharedMap }) => {
   cacheControl({
     staleWhileRevalidate: 60 * 60 * 24 * 7,
     maxAge: 5,
   });
-
   // Get session from shared map
   const session = sharedMap.get("session");
-
-  // Only redirect if we're not already on the login page
-  const url = new URL(request.url);
-  if (!session?.accessToken && !url.pathname.startsWith("/home/login")) {
-    throw redirect(302, "/home/login");
+  if (!session || !session?.accessToken) {
+    throw new ApplicationError({
+      name: "UNAUTHORIZED",
+      message: "Unauthorized",
+    });
   }
 };
 
