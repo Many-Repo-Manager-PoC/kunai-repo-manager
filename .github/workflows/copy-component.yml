@@ -1,5 +1,7 @@
 on:
   workflow_dispatch:
+    branches:
+      - feat/OSS-169-Copy-Code-to-Repo-PoC
     inputs:
       repo_name:
         description: "Name of the repository to update"
