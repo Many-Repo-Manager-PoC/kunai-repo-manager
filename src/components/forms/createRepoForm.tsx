@@ -214,13 +214,12 @@ export const CreateRepositoryForm = component$(() => {
                   value={field.value}
                   error={field.error}
                   options={[
-                    { value: "none", label: "None" },
-                    { value: "python", label: "Python" },
-                    { value: "node", label: "Node" },
-                    { value: "ruby", label: "Ruby" },
-                    { value: "go", label: "Go" },
-                    { value: "rust", label: "Rust" },
-                    { value: "java", label: "Java" },
+                    { value: "Python", label: "Python" },
+                    { value: "Node", label: "Node" },
+                    { value: "Ruby", label: "Ruby" },
+                    { value: "Go", label: "Go" },
+                    { value: "Rust", label: "Rust" },
+                    { value: "Java", label: "Java" },
                   ]}
                 />
               );
