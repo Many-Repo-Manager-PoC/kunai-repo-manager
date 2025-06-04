@@ -4,10 +4,26 @@ import type { Octokit } from "octokit";
 import { OCTOKIT_CLIENT } from "~/routes/plugin@octokit";
 
 export const createCodeCopyWorkflow = routeAction$(async (data, event) => {
-  const session = event.sharedMap.get("session");
-  const gh_access_token = session?.accessToken;
   try {
     const octokit: Octokit = event.sharedMap.get(OCTOKIT_CLIENT);
+
+    // get the tree of the source repo
+    const tree = await octokit.rest.git.getTree({
+      owner: metadata.owner,
+      repo: "kunai-repo-manager",
+      tree_sha: "main",
+      recursive: "true",
+    });
+
+    // get the tsx files from the source repo
+    const tsxComponentFiles = tree.data.tree.filter(
+      (item) =>
+        item.type === "blob" &&
+        item.path.startsWith("src/components/formInputs") && // This will likely be a dynamic path that will be passed in as a parameter
+        item.path.endsWith(".tsx"),
+    );
+
+    console.log("tsxComponentFiles", tsxComponentFiles);
 
     // First get the SHA of the main branch for the target repo
     const mainBranch = await octokit.rest.repos.getBranch({
@@ -24,57 +40,32 @@ export const createCodeCopyWorkflow = routeAction$(async (data, event) => {
       sha: mainBranch.data.commit.sha,
     });
 
-    // get the contents of the formInputs directory from the main branch on the source repo
-    const contents = await octokit.rest.repos.getContent({
-      owner: metadata.owner,
-      repo: "kunai-repo-manager",
-      path: "src/components/formInputs",
-    });
-
-    // First check if it's an array
-    if (Array.isArray(contents.data)) {
-      // Now TypeScript knows data is an array of files/directories
-      for (const item of contents.data) {
-        if (item.type === "file") {
-          // Get the file contents
-          const fileContent = await octokit.rest.repos.getContent({
-            owner: metadata.owner,
-            repo: "kunai-repo-manager",
-            path: item.path,
-          });
-
-          // Now we need to check if fileContent.data is a file with content
-          if (
-            !Array.isArray(fileContent.data) &&
-            fileContent.data.type === "file" &&
-            "content" in fileContent.data
-          ) {
-            // create the file in the target repo
-            await octokit.rest.repos.createOrUpdateFileContents({
-              owner: metadata.owner,
-              repo: data.repo_name as string,
-              path: item.path,
-              message: "Copy component",
-              content: fileContent.data.content,
-              branch: targetBranch.data.ref,
-            });
-          }
-        }
-      }
-    } else {
-      // Handle single file case
-      if (contents.data.type === "file" && "content" in contents.data) {
-        // create the file in the target repo
-        await octokit.rest.repos.createOrUpdateFileContents({
+    await Promise.all(
+      tsxComponentFiles.map(async (item) => {
+        // get the file content from the source repo
+        const fileContent = await octokit.rest.repos.getContent({
           owner: metadata.owner,
-          repo: data.repo_name as string,
-          path: contents.data.path,
-          message: "Copy component",
-          content: contents.data.content,
-          branch: targetBranch.data.ref,
+          repo: "kunai-repo-manager",
+          path: item.path,
         });
-      }
-    }
+
+        if (
+          !Array.isArray(fileContent.data) &&
+          fileContent.data.type === "file" &&
+          "content" in fileContent.data
+        ) {
+          // create the file in the target repo
+          await octokit.rest.repos.createOrUpdateFileContents({
+            owner: metadata.owner,
+            repo: data.repo_name as string,
+            path: item.path,
+            message: "Copy component",
+            content: fileContent.data.content,
+            branch: targetBranch.data.ref,
+          });
+        }
+      }),
+    );
 
     // create a new PR for the target repo
     await octokit.rest.pulls.create({
