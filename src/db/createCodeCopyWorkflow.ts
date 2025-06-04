@@ -15,11 +15,13 @@ export const createCodeCopyWorkflow = routeAction$(async (data, event) => {
       recursive: "true",
     });
 
+    const paths = ["src/components"];
+
     // get the tsx files from the source repo
     const tsxComponentFiles = tree.data.tree.filter(
       (item) =>
         item.type === "blob" &&
-        item.path.startsWith("src/components/formInputs") && // This will likely be a dynamic path that will be passed in as a parameter
+        paths.some((path) => item.path.startsWith(path)) && // This will likely be a dynamic path that will be passed in as a parameter
         item.path.endsWith(".tsx"),
     );
 
@@ -32,15 +34,8 @@ export const createCodeCopyWorkflow = routeAction$(async (data, event) => {
       branch: "main",
     });
 
-    // Then create a new branch using that SHA for the target repo
-    const targetBranch = await octokit.rest.git.createRef({
-      owner: metadata.owner,
-      repo: data.repo_name as string,
-      ref: `refs/heads/copy-component-${data.repo_name}`,
-      sha: mainBranch.data.commit.sha,
-    });
-
-    await Promise.all(
+    // create the tree items for the new tree by copying the tsx files from the source repo
+    const treeItems = await Promise.all(
       tsxComponentFiles.map(async (item) => {
         // get the file content from the source repo
         const fileContent = await octokit.rest.repos.getContent({
@@ -54,18 +49,46 @@ export const createCodeCopyWorkflow = routeAction$(async (data, event) => {
           fileContent.data.type === "file" &&
           "content" in fileContent.data
         ) {
-          // create the file in the target repo
-          await octokit.rest.repos.createOrUpdateFileContents({
-            owner: metadata.owner,
-            repo: data.repo_name as string,
+          return {
             path: item.path,
-            message: "Copy component",
-            content: fileContent.data.content,
-            branch: targetBranch.data.ref,
-          });
+            type: item.type as "blob" | "commit" | "tree",
+            content: Buffer.from(fileContent.data.content, "base64").toString(), // Decode the base64 content
+            mode: "100644" as
+              | "100644"
+              | "100755"
+              | "040000"
+              | "160000"
+              | "120000",
+            // sha: item.sha,
+          };
         }
       }),
     );
+    const filteredTreeItems = treeItems.filter((item) => item !== undefined);
+
+    const newTree = await octokit.rest.git.createTree({
+      owner: metadata.owner,
+      repo: data.repo_name as string,
+      tree: filteredTreeItems,
+      base_tree: mainBranch.data.commit.sha,
+    });
+
+    // Create a commit with the new tree
+    const commit = await octokit.rest.git.createCommit({
+      owner: metadata.owner,
+      repo: data.repo_name as string,
+      message: "Copy components",
+      tree: newTree.data.sha,
+      parents: [mainBranch.data.commit.sha],
+    });
+
+    // Then create a new branch using that SHA for the target repo
+    const targetBranch = await octokit.rest.git.createRef({
+      owner: metadata.owner,
+      repo: data.repo_name as string,
+      ref: `refs/heads/copy-component-${data.repo_name}`,
+      sha: commit.data.sha,
+    });
 
     // create a new PR for the target repo
     await octokit.rest.pulls.create({
