@@ -1,10 +1,13 @@
-import { component$ } from "@builder.io/qwik";
+import { $, component$ } from "@builder.io/qwik";
 import { BaseCard } from "./baseCard";
-import { Chip } from "@kunai-consulting/kunai-design-system";
+import { Button, Chip } from "@kunai-consulting/kunai-design-system";
 import type { Repo, PackageJson } from "~/db/types";
 import semver from "semver";
 import { DependencyUpdaterModal } from "../modals/dependencyUpdaterModal";
-import { postWorkflowDispatchEvent } from "~/routes/layout";
+import {
+  postWorkflowDispatchEvent,
+  createCodeCopyWorkflow,
+} from "~/routes/layout";
 
 interface DependencyUpdaterCardProps {
   repos: Repo[];
@@ -23,6 +26,14 @@ export const DependencyUpdaterCard = component$<DependencyUpdaterCardProps>(
     const currentRepoName = currentPackageJson?.name ?? "";
     const dependentRepos = new Set<[string, string]>();
     const action = postWorkflowDispatchEvent();
+    const copyAction = createCodeCopyWorkflow();
+
+    const handleCopyComponent = $(async (repoName: string) => {
+      console.log("Executing copy component");
+      await copyAction.submit({
+        repo_name: repoName,
+      });
+    });
 
     // Find all repos that depend on the current repo
     packageJson.forEach((pkg) => {
@@ -115,7 +126,7 @@ export const DependencyUpdaterCard = component$<DependencyUpdaterCardProps>(
                 </div>
                 <div class="w-1/4 flex justify-end">
                   {needsUpdate(version) && (
-                    <div class="flex justify-end">
+                    <div class="flex justify-end gap-2">
                       <DependencyUpdaterModal
                         packageToUpdate={currentRepoName}
                         packageVersion={currentVersion}
@@ -123,6 +134,13 @@ export const DependencyUpdaterCard = component$<DependencyUpdaterCardProps>(
                         oldVersion={version}
                         dispatchEvent={action}
                       />
+                      <Button
+                        kind="secondary"
+                        size="sm"
+                        onClick$={() => handleCopyComponent(repoName)}
+                      >
+                        Copy Component
+                      </Button>
                     </div>
                   )}
                 </div>
