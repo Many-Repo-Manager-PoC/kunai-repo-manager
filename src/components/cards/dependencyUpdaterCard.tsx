@@ -1,6 +1,6 @@
-import { $, component$ } from "@builder.io/qwik";
+import { component$ } from "@builder.io/qwik";
 import { BaseCard } from "./baseCard";
-import { Button, Chip } from "@kunai-consulting/kunai-design-system";
+import { Chip } from "@kunai-consulting/kunai-design-system";
 import type { Repo, PackageJson } from "~/db/types";
 import semver from "semver";
 import { DependencyUpdaterModal } from "../modals/dependencyUpdaterModal";
