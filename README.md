@@ -20,6 +20,8 @@ Step 1: Create A Gel Account
 
   Step 4: ...
 
+  \*\*Random notes: when in gel GUI, to get out `\q + enter`
+
 ## A Qwik City App ⚡️
 
 - [Qwik Docs](https://qwik.dev/)

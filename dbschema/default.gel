@@ -1,3 +1,141 @@
 module default {
 
+ type Repository {
+    allow_auto_merge: bool;
+    allow_forking: bool;
+    allow_merge_commit: bool;
+    allow_rebase_merge: bool;
+    allow_squash_merge: bool;
+    required archived: bool;
+    required archive_url: str;
+    required assignees_url: str;
+    required blobs_url: str;
+    required branches_url: str;
+    required clone_url: str;
+    required collaborators_url: str;
+    required comments_url: str;
+    required commits_url: str;
+    required compare_url: str;
+    required contents_url: str;
+    required contributors_url: str;
+    required created_at: str;
+    required default_branch: str;
+    delete_branch_on_merge: bool;
+    required deployments_url: str;
+    required description: str;
+    required disabled: bool;
+    required downloads_url: str;
+    required events_url: str;
+    required fork: bool;
+    required forks: int64;
+    required forks_count: int64;
+    forks_url: str;
+    required full_name: str;
+    required git_commits_url: str;
+    required git_refs_url: str;
+    required git_tags_url: str;
+    required git_url: str;
+    required has_discussions: bool;
+    has_downloads: bool;
+    required has_issues: bool;
+    required has_pages: bool;
+    required has_projects: bool;
+    required has_wiki: bool;
+    required homepage: str;
+    required hooks_url: str;
+    required html_url: str;
+    # this is id in github schema but want to separate it from built in gel id 
+    required repository_id: int64;
+    is_template: bool;
+    required issue_comment_url: str;
+    required issue_events_url: str;
+    required issues_url: str;
+    required keys_url: str;
+    required labels_url: str;
+    required language: str;
+    required languages_url: str;
+    required license: License;
+    master_branch: str;
+    required merges_url: str;
+    required milestones_url: str;
+    required mirror_url: str;
+    required name: str;
+    required node_id: str;
+    required notifications_url: str;
+    required open_issues: int64;
+    required open_issues_count: int64;
+    required owner: User;
+    permissions: Permissions;
+    required private: bool;
+    required pushed_at: str;
+    required pulls_url: str;
+    required releases_url: str;
+    required url: str;
+    required ssh_url: str;
+    required size: int64;
+    required stargazers_count: int64;
+    required stargazers_url: str;
+    required statuses_url: str;
+    required subscribers_url: str;
+    required subscription_url: str;
+    required svn_url: str;
+    required tags_url: str;
+    required teams_url: str;
+    template_repository: Repository;
+    # put the list of topics in as unordered set of strings
+    # will make much easier to query and modify
+    multi topics: str;
+    required trees_url: str;
+    required updated_at: str;
+    visibility: str;
+    required watchers_count: int64;
+ }
+
+ type License {
+    required key: str;
+    required name: str;
+    required url: str;
+    required spdx_id: str;
+    required node_id: str;
+    html_url: str;
+ }
+
+ type Permissions {
+    required admin: bool;
+    maintain: bool;
+    required push: bool;
+    triage: bool;
+    required pull:bool;
+ }
+
+ type User {
+    required avatar_url: str;
+    email: str;
+    required events_url: str;
+    required followers_url: str;
+    required following_url: str;
+    required gists_url: str;
+    required gravatar_id: str;
+    required html_url: str;
+    required login: str;
+    name: str;
+    # this is id in github schema but want to separate it from built in gel id 
+    required user_id: int64;
+    required node_id: str;
+    required organizations_url: str;
+    required received_events_url: str;
+    required repos_url: str;
+    # this is type in github schema but 'type' is a reserved word in gel
+    required role_type: str;
+    required site_admin: bool;
+    required starred_url: str;
+    starred_at: str;
+    required subscriptions_url: str;
+    required url: str;
+    user_view_type: str;
+ }
 }
+
+
+
+
