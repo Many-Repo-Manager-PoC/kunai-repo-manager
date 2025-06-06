@@ -1,5 +1,25 @@
 # Kunai Repository manager
 
+## Setting up your app with Gel
+
+This project utilizes [Gel Data](https://www.geldata.com/) as its Database layer. Follow these simple instructions to get your team setup with Gel!
+
+Step 1: Create A Gel Account
+
+- Easiest way to do this is to create one through "sign in with github"
+
+* Make sure to Authorize geldata to have Organization access
+  Step 2: Add your Organization to gel Cloud
+
+- On the top of the webpage, you will see that it initially instantiates a personal cloud, but you want to create one for the Organization
+- Click on that and then click "Add Organization"
+
+  Step 3: Make sure you have gel on your machine
+
+  `pnpm gel --version`
+
+  Step 4: ...
+
 ## A Qwik City App ⚡️
 
 - [Qwik Docs](https://qwik.dev/)
