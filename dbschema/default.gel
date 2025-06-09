@@ -89,6 +89,8 @@ module default {
     required updated_at: str;
     visibility: str;
     required watchers_count: int64;
+
+    index on (.repository_id);
  }
 
  type License {
@@ -134,6 +136,22 @@ module default {
     required url: str;
     user_view_type: str;
  }
+
+ type PackageJson {
+    required repository_id: int64;
+    required name: str;
+    required package_version: str;
+    required multi dependencies: Dependency;
+    required multi dev_dependencies: Dependency;
+    
+    index on (.repository_id);
+ }
+
+ type Dependency {
+    required name: str;
+    required dependency_version: str;
+ }
+
 }
 
 
