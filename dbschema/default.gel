@@ -1,6 +1,10 @@
 module default {
-
- type Repository {
+ abstract type Timestamped {
+    required data_updated_at: datetime {
+      default := datetime_of_statement();
+    };
+  }
+ type Repository extending Timestamped {
     allow_auto_merge: bool;
     allow_forking: bool;
     allow_merge_commit: bool;
@@ -93,7 +97,7 @@ module default {
     index on (.repository_id);
  }
 
- type License {
+ type License extending Timestamped {
     required key: str;
     required name: str;
     required url: str;
@@ -102,7 +106,7 @@ module default {
     html_url: str;
  }
 
- type Permissions {
+ type Permissions extending Timestamped {
     required admin: bool;
     maintain: bool;
     required push: bool;
@@ -110,7 +114,7 @@ module default {
     required pull:bool;
  }
 
- type User {
+ type User extending Timestamped {
     required avatar_url: str;
     email: str;
     required events_url: str;
@@ -137,7 +141,7 @@ module default {
     user_view_type: str;
  }
 
- type PackageJson {
+ type PackageJson extending Timestamped {
     required repository_id: int64;
     required name: str;
     required package_version: str;
@@ -147,7 +151,7 @@ module default {
     index on (.repository_id);
  }
 
- type Dependency {
+ type Dependency extending Timestamped {
     required repository_id: int64;
     required name: str;
     required dependency_version: str;
