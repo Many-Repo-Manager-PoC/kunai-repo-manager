@@ -148,8 +148,11 @@ module default {
  }
 
  type Dependency {
+    required repository_id: int64;
     required name: str;
     required dependency_version: str;
+
+    index on (.repository_id);
  }
 
 }
