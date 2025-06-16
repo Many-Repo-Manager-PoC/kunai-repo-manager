@@ -63,6 +63,8 @@ export const useCreateComponentCopy = formAction$<CreateComponentCopyFormType>(
       // create the new PR for the target repo with the new tree and the main branch as the base
       await createPullRequest(
         octokit,
+        sourceRepoOwner,
+        sourceRepoName,
         targetRepo,
         targetBranchName,
         newTree.data.sha,
@@ -162,7 +164,7 @@ const getComponentTreeList = async (
         "content" in fileContent.data
       ) {
         const newPath = basePathOverride
-          ? item.path.replace("src/components", basePathOverride)
+          ? item.path.replace("src/components", basePathOverride) // TODO: See above comment about dynamic component paths
           : item.path;
 
         return {
@@ -198,6 +200,8 @@ const createComponentTree = async (
 
 const createPullRequest = async (
   octokit: Octokit,
+  sourceRepoOwner: string,
+  sourceRepoName: string,
   targetRepo: string,
   targetBranchName: string,
   treeSha: string,
@@ -209,7 +213,7 @@ const createPullRequest = async (
   const commit = await octokit.rest.git.createCommit({
     owner: targetRepoOwner,
     repo: targetRepoName,
-    message: "Copy components",
+    message: `Copy components from ${sourceRepoOwner}/${sourceRepoName}`,
     tree: treeSha,
     parents: [mainTargetBranchSha],
   });
@@ -228,7 +232,7 @@ const createPullRequest = async (
     repo: targetRepoName,
     head: targetBranch.data.ref,
     base: "main",
-    title: "Copy component",
-    body: "Copy component",
+    title: `Component Copy: ${sourceRepoOwner}/${sourceRepoName} -> ${targetRepoOwner}/${targetRepoName}`,
+    body: "",
   });
 };
