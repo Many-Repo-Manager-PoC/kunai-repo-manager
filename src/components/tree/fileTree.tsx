@@ -25,16 +25,17 @@ export const FileTree = component$<TreeProps>(({ treeData, onChange$ }) => {
 
   const renderTreeItem = (item: TreeNode, level: number) => {
     const indentStyle = { marginLeft: `${level * 1.5}rem` };
-
     if (item.children && item.children.length > 0) {
       return (
         <Tree.Item key={item.name}>
           <div style={indentStyle} class="flex items-center gap-2">
-            <TreeItem
-              name={item.name}
-              path={item.path}
-              onChange$={handleChange}
-            />
+            {level > 0 && (
+              <TreeItem
+                name={item.name}
+                path={item.path}
+                onChange$={handleChange}
+              />
+            )}
             <Tree.ItemTrigger
               type="button"
               class="flex items-center gap-1 p-1 hover:bg-gray-100 dark:hover:bg-kunai-blue-200/50 rounded cursor-pointer"
@@ -60,6 +61,7 @@ export const FileTree = component$<TreeProps>(({ treeData, onChange$ }) => {
             path={item.path}
             onChange$={handleChange}
           />
+
           <span class="text-gray-700 dark:text-gray-200 text-sm">
             {item.name}
           </span>
