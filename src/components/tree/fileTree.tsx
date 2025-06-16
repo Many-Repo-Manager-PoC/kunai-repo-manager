@@ -37,7 +37,7 @@ export const FileTree = component$<TreeProps>(({ treeData, onChange$ }) => {
             />
             <Tree.ItemTrigger
               type="button"
-              class="flex items-center gap-1 p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded cursor-pointer"
+              class="flex items-center gap-1 p-1 hover:bg-gray-100 dark:hover:bg-kunai-blue-200/50 rounded cursor-pointer"
             >
               <span class="text-gray-700 dark:text-gray-200 text-sm">
                 {item.name}
@@ -81,7 +81,7 @@ interface TreeItemProps extends Omit<TreeNode, "children"> {
 
 const TreeItem = component$<TreeItemProps>(({ name, path, onChange$ }) => {
   return (
-    <Checkbox.Root class="flex items-center gap-2 py-1 px-2 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded cursor-pointer">
+    <Checkbox.Root class="flex items-center gap-2 py-1 px-2 hover:bg-gray-100 dark:hover:bg-kunai-blue-200/50 rounded cursor-pointer">
       <Checkbox.Input onChange$={onChange$} name={name} value={path} />
     </Checkbox.Root>
   );

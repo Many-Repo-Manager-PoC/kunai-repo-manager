@@ -19,8 +19,6 @@ import { FileTree } from "../tree/fileTree";
 import { buildTree } from "~/util/tree";
 
 export interface ComponentCopyFormProps {
-  sourceRepo: string;
-  sourceRepoOwner: string;
   repositories: Repo[];
   sourceComponentTree: GitHubTreeItem[];
 }
@@ -65,89 +63,104 @@ export const ComponentCopyForm = component$<ComponentCopyFormProps>(
     return (
       <div>
         <Form>
-          <div class="grid grid-cols-2 gap-4">
-            <div class="px-4 py-8">
-              <Field name="targetRepo">
-                {(field, props) => (
-                  <SelectInput
-                    {...props}
-                    label="Target Repository"
-                    value={field.value}
-                    error={field.error}
-                    options={repositories.map((repo) => ({
-                      label: repo.full_name || "",
-                      value: repo.full_name || "",
-                    }))}
-                  />
-                )}
-              </Field>
+          <div class="flex flex-col gap-6">
+            <div class="grid grid-cols-2 gap-8">
+              {/* Left side: Form fields */}
+              <div class="flex flex-col gap-4">
+                <Field name="targetRepo">
+                  {(field, props) => (
+                    <SelectInput
+                      {...props}
+                      label="Target Repository"
+                      value={field.value}
+                      error={field.error}
+                      options={repositories.map((repo) => ({
+                        label: repo.full_name || "",
+                        value: repo.full_name || "",
+                      }))}
+                    />
+                  )}
+                </Field>
+
+                <Field name="targetBranch">
+                  {(field, props) => (
+                    <TextInput
+                      {...props}
+                      type="text"
+                      label="Target Branch"
+                      value={field.value}
+                      error={field.error}
+                      required
+                    />
+                  )}
+                </Field>
+
+                <Field name="targetPath">
+                  {(field, props) => (
+                    <TextInput
+                      {...props}
+                      type="text"
+                      label="Target Base Path"
+                      value={field.value}
+                      error={field.error}
+                      required
+                    />
+                  )}
+                </Field>
+              </div>
+
+              {/* Right side: File tree */}
+              <div class="flex flex-col gap-4">
+                <label class="text-sm font-medium text-gray-900 dark:text-gray-100">
+                  Select Components to Copy
+                </label>
+                <Field name="componentPaths" type="string[]">
+                  {() => (
+                    <FileTree
+                      treeData={treeData.value}
+                      onChange$={handleComponentPathsChange}
+                    />
+                  )}
+                </Field>
+              </div>
             </div>
 
-            <Field name="targetBranch">
-              {(field, props) => (
-                <TextInput
-                  {...props}
-                  type="text"
-                  label="Target Branch"
-                  value={field.value}
-                  error={field.error}
-                  required
-                />
-              )}
-            </Field>
+            {/* Action buttons */}
+            <div class="flex gap-4 justify-end">
+              <Button
+                class="cursor-pointer"
+                kind="secondary"
+                onClick$={handleReset}
+                type="button"
+                disabled={form.submitting}
+              >
+                Clear
+              </Button>
+              <Button
+                class="cursor-pointer"
+                type="submit"
+                disabled={form.submitting}
+              >
+                Copy Components
+              </Button>
+            </div>
 
-            <Field name="targetPath">
-              {(field, props) => (
-                <TextInput
-                  {...props}
-                  type="text"
-                  label="Target Base Path"
-                  value={field.value}
-                  error={field.error}
-                  required
-                />
+            {/* Status Messages */}
+            <div class="flex gap-4 justify-end">
+              {form.submitting && (
+                <span class="text-sm text-gray-500">Submitting...</span>
               )}
-            </Field>
-
-            <Field name="componentPaths" type="string[]">
-              {() => (
-                <FileTree
-                  treeData={treeData.value}
-                  onChange$={handleComponentPathsChange}
-                />
+              {form.response?.status === "success" && (
+                <span class="text-sm text-green-500">
+                  {form.response.message}
+                </span>
               )}
-            </Field>
-          </div>
-          <div class="flex gap-4 justify-end mt-4">
-            <Button
-              class="cursor-pointer"
-              kind="secondary"
-              onClick$={handleReset}
-              type="button"
-              disabled={form.submitting}
-            >
-              Clear
-            </Button>
-            <Button
-              class="cursor-pointer"
-              type="submit"
-              disabled={form.submitting}
-            >
-              Copy Components
-            </Button>
-          </div>
-          <div class="flex gap-4 justify-end mt-4">
-            {form.submitting && (
-              <span class="text-sm text-gray-500">Submitting...</span>
-            )}
-            {form.response?.status === "success" && (
-              <span class="text-sm text-green-500">
-                {form.response.message}
-              </span>
-            )}
-            {form.response?.status === "error" && (
-              <span class="text-sm text-red-500">{form.response.message}</span>
-            )}
+              {form.response?.status === "error" && (
+                <span class="text-sm text-red-500">
+                  {form.response.message}
+                </span>
+              )}
+            </div>
           </div>
         </Form>
       </div>
