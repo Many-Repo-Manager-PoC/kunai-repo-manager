@@ -128,6 +128,38 @@ export interface Commit {
   } | null;
 }
 
+export enum FileMode {
+  blob = "100644",
+  executable = "100755",
+  tree = "040000",
+  commit = "160000",
+  symlink = "120000",
+}
+
+export enum FileType {
+  tree = "tree",
+  commit = "commit",
+  blob = "blob",
+}
+
+// this is the format of the tree item returned by the GitHub API
+export interface GitHubTreeItem {
+  path: string;
+  mode: string;
+  type: string;
+  sha: string;
+  size?: number;
+  url?: string;
+}
+
+// this is the format of the tree item input to the GitHub API
+export interface TreeItemInput {
+  path: string;
+  type: FileType;
+  content: string;
+  mode: FileMode;
+}
+
 export type Result<T, E = ErrorContext> =
   | { data: T; failed: false }
   | FailReturn<E>;
