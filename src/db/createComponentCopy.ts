@@ -21,9 +21,6 @@ export const useCreateComponentCopy = formAction$<CreateComponentCopyFormType>(
     try {
       const octokit: Octokit = sharedMap.get(OCTOKIT_CLIENT);
       const { repoOwner: sourceRepoOwner, name: sourceRepoName } = params;
-      console.log("sourceRepoOwner", sourceRepoOwner);
-      console.log("sourceRepoName", sourceRepoName);
-      console.log("data", data);
       const {
         targetRepo,
         targetBranch: targetBranchName,
@@ -68,7 +65,6 @@ export const useCreateComponentCopy = formAction$<CreateComponentCopyFormType>(
         mainBranch.data.commit.sha,
       );
 
-      console.log("PR created");
       return {
         status: "success",
         message: "Component copy created",
@@ -90,9 +86,7 @@ export const useGetRepositoryComponentTree = routeLoader$(
   async ({ sharedMap, params }) => {
     const componentPaths = ["src/components"]; // TODO: make this dynamic in a future phase.  Right now we are assuming all relevant components are in the src/components directory at the root of the repo.
     const octokit: Octokit = sharedMap.get(OCTOKIT_CLIENT);
-
     const { repoOwner, name: repoName } = params;
-    console.log({ repoOwner, repoName });
 
     const componentFiles = await findComponentFiles(
       octokit,
@@ -169,7 +163,7 @@ const getComponentTreeList = async (
           type: item.type as FileType,
           content: Buffer.from(fileContent.data.content, "base64").toString(), // Decode the base64 content
           mode: item.mode as FileMode,
-        };
+        } satisfies TreeItemInput;
       }
     }),
   );

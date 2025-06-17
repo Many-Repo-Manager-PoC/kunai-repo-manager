@@ -6,14 +6,14 @@ import { TreeNode } from "~/util/tree";
 
 export interface TreeProps {
   treeData: TreeNode[];
+  value: string[];
   onChange$: (value: string[]) => void;
-  defaultSelectedItems: string[];
   defaultOpenKeys: string[];
 }
 
 export const FileTree = component$<TreeProps>(
-  ({ treeData, onChange$, defaultSelectedItems, defaultOpenKeys }) => {
-    const selectedItems = useSignal<string[]>(defaultSelectedItems);
+  ({ treeData, onChange$, defaultOpenKeys, value }) => {
+    const selectedItems = useSignal<string[]>(value);
 
     const handleChange = $((_: Event, element: HTMLInputElement) => {
       if (element.checked) {

@@ -1,4 +1,4 @@
-import { $, component$, useComputed$, useSignal } from "@builder.io/qwik";
+import { $, component$, useComputed$ } from "@builder.io/qwik";
 import {
   useForm,
   zodForm$,
@@ -54,9 +54,7 @@ export const ComponentCopyForm = component$<ComponentCopyFormProps>(
     });
 
     const handleComponentPathsChange = $((value: string[]) => {
-      console.log(value);
       setValue(form, "componentPaths", value);
-      console.log(getValue(form, "componentPaths"));
     });
 
     const handleReset = $(() => {
@@ -118,12 +116,9 @@ export const ComponentCopyForm = component$<ComponentCopyFormProps>(
                   Select Components to Copy
                 </label>
                 <Field name="componentPaths" type="string[]">
-                  {() => (
+                  {(field) => (
                     <FileTree
-                      defaultSelectedItems={[
-                        "src/components/Button",
-                        "src/components/Button/Button.tsx",
-                      ]}
+                      value={field.value ?? []}
                       defaultOpenKeys={["src", "components", "Button"]}
                       treeData={treeData.value}
                       onChange$={handleComponentPathsChange}

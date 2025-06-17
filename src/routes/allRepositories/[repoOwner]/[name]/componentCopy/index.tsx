@@ -1,5 +1,5 @@
 import { component$ } from "@builder.io/qwik";
-import { useLocation, type DocumentHead } from "@builder.io/qwik-city";
+import { type DocumentHead } from "@builder.io/qwik-city";
 import { BaseCard } from "~/components/cards/baseCard";
 import { ComponentCopyForm } from "~/components/forms/componentCopyForm";
 import { PageTitle } from "~/components/page/pageTitle";
@@ -10,7 +10,6 @@ export { useGetRepositoryComponentTree };
 export default component$(() => {
   const sourceComponentTree = useGetRepositoryComponentTree();
   const repos = useGetRepos();
-  const { name: repoName, repoOwner } = useLocation().params;
   return (
     <div class="container container-center">
       <PageTitle />
