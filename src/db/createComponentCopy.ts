@@ -8,10 +8,7 @@ import { FileMode, FileType, GitHubTreeItem, TreeItemInput } from "./types";
 export const createComponentCopySchema = z.object({
   targetRepo: z.string().min(1, "Target repository is required"),
   targetBranch: z.string().min(1, "Target branch name is required"),
-  targetPath: z
-    .string()
-    .min(1, "Base path is required")
-    .default("src/components"),
+  targetPath: z.string().optional(),
   componentPaths: z.array(z.string()),
 });
 

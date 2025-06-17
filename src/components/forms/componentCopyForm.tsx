@@ -43,7 +43,10 @@ export const ComponentCopyForm = component$<ComponentCopyFormProps>(
           targetRepo: "",
           targetBranch: "",
           targetPath: "src/components",
-          componentPaths: [],
+          componentPaths: [
+            "src/components/Button",
+            "src/components/Button/Button.tsx",
+          ],
         },
       },
       validate: zodForm$(createComponentCopySchema),
@@ -117,6 +120,11 @@ export const ComponentCopyForm = component$<ComponentCopyFormProps>(
                 <Field name="componentPaths" type="string[]">
                   {() => (
                     <FileTree
+                      defaultSelectedItems={[
+                        "src/components/Button",
+                        "src/components/Button/Button.tsx",
+                      ]}
+                      defaultOpenKeys={["src", "components", "Button"]}
                       treeData={treeData.value}
                       onChange$={handleComponentPathsChange}
                     />
