@@ -59,7 +59,7 @@ const TreeBranch = component$<TreeBranchProps>(
         <Tree.Item key={item.name} bind:open={isOpen}>
           <div style={indentStyle} class="flex items-center gap-2">
             {level > 0 && (
-              <TreeNode
+              <TreeItem
                 isChecked={isChecked}
                 name={item.name}
                 path={item.path}
@@ -95,7 +95,7 @@ const TreeBranch = component$<TreeBranchProps>(
     return (
       <Tree.Item key={item.name}>
         <div style={indentStyle} class="flex items-center gap-2">
-          <TreeNode
+          <TreeItem
             isChecked={isChecked}
             name={item.name}
             path={item.path}
@@ -111,12 +111,12 @@ const TreeBranch = component$<TreeBranchProps>(
   },
 );
 
-interface TreeNodeProps extends Omit<TreeNode, "children"> {
+interface TreeItemProps extends Omit<TreeNode, "children"> {
   onChange$: QRL<(event: Event, element: HTMLInputElement) => void>;
   isChecked: boolean;
 }
 
-const TreeNode = component$<TreeNodeProps>(
+const TreeItem = component$<TreeItemProps>(
   ({ name, path, onChange$, isChecked }) => {
     return (
       <Checkbox.Root class="flex items-center gap-2 py-1 px-2 hover:bg-gray-100 dark:hover:bg-kunai-blue-200/50 rounded cursor-pointer">
