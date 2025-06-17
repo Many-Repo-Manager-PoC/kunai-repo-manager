@@ -14,8 +14,8 @@ import {
   type CreateComponentCopyFormType,
   createComponentCopySchema,
 } from "~/db/createComponentCopy";
-import { Repo, GitHubTreeItem } from "~/db/types";
-import { FileTree } from "../tree/fileTree";
+import type { Repo, GitHubTreeItem } from "~/db/types";
+import { FileTree } from "~/components/tree/fileTree";
 import { buildTree } from "~/util/tree";
 
 export interface ComponentCopyFormProps {
@@ -53,8 +53,14 @@ export const ComponentCopyForm = component$<ComponentCopyFormProps>(
       action: createComponentCopy,
     });
 
-    const handleComponentPathsChange = $((value: string[]) => {
-      setValue(form, "componentPaths", value);
+    const handleChange = $((_: Event, element: HTMLInputElement) => {
+      let selectedItems = getValue(form, "componentPaths") ?? [];
+      if (element.checked) {
+        selectedItems = [...selectedItems, element.value];
+      } else {
+        selectedItems = selectedItems.filter((item) => item !== element.value);
+      }
+      setValue(form, "componentPaths", selectedItems);
     });
 
     const handleReset = $(() => {
@@ -118,10 +124,11 @@ export const ComponentCopyForm = component$<ComponentCopyFormProps>(
                 <Field name="componentPaths" type="string[]">
                   {(field) => (
                     <FileTree
+                      error={field.error}
                       value={field.value ?? []}
                       defaultOpenKeys={["src", "components", "Button"]}
                       treeData={treeData.value}
-                      onChange$={handleComponentPathsChange}
+                      onChange$={handleChange}
                     />
                   )}
                 </Field>
@@ -153,12 +160,12 @@ export const ComponentCopyForm = component$<ComponentCopyFormProps>(
               {form.submitting && (
                 <span class="text-sm text-gray-500">Submitting...</span>
               )}
-              {form.response?.status === "success" && (
+              {form.response.status === "success" && (
                 <span class="text-sm text-green-500">
                   {form.response.message}
                 </span>
               )}
-              {form.response?.status === "error" && (
+              {form.response.status === "error" && (
                 <span class="text-sm text-red-500">
                   {form.response.message}
                 </span>

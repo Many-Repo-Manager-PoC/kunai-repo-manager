@@ -3,13 +3,20 @@ import { OCTOKIT_CLIENT } from "~/routes/plugin@octokit";
 import { z } from "zod";
 import { formAction$, zodForm$ } from "@modular-forms/qwik";
 import { routeLoader$ } from "@builder.io/qwik-city";
-import { FileMode, FileType, GitHubTreeItem, TreeItemInput } from "./types";
+import {
+  FileMode,
+  FileType,
+  type GitHubTreeItem,
+  type TreeItemInput,
+} from "~/db/types";
 
 export const createComponentCopySchema = z.object({
   targetRepo: z.string().min(1, "Target repository is required"),
   targetBranch: z.string().min(1, "Target branch name is required"),
   targetPath: z.string().optional(),
-  componentPaths: z.array(z.string()),
+  componentPaths: z
+    .array(z.string())
+    .min(1, "At least one component is required"),
 });
 
 export type CreateComponentCopyFormType = z.infer<
@@ -45,14 +52,12 @@ export const useCreateComponentCopy = formAction$<CreateComponentCopyFormType>(
         basePathOverride,
       );
 
-      // create the new tree for the target repo
-      const newTree = await createComponentTree(
-        octokit,
-        targetRepoOwner,
-        targetRepoName,
-        mainBranch.data.commit.sha,
-        componentTreeList,
-      );
+      const newTree = await octokit.rest.git.createTree({
+        owner: targetRepoOwner,
+        repo: targetRepoName,
+        tree: componentTreeList,
+        base_tree: mainBranch.data.commit.sha,
+      });
 
       // create the new PR for the target repo with the new tree and the main branch as the base
       await createPullRequest(
@@ -82,6 +87,7 @@ export const useCreateComponentCopy = formAction$<CreateComponentCopyFormType>(
 );
 
 // get the component tree for the source repo - route loader
+// eslint-disable-next-line qwik/loader-location
 export const useGetRepositoryComponentTree = routeLoader$(
   async ({ sharedMap, params }) => {
     const componentPaths = ["src/components"]; // TODO: make this dynamic in a future phase.  Right now we are assuming all relevant components are in the src/components directory at the root of the repo.
@@ -170,23 +176,6 @@ const getComponentTreeList = async (
 
   const filteredTreeItems = treeItems.filter((item) => item !== undefined);
   return filteredTreeItems;
-};
-
-const createComponentTree = async (
-  octokit: Octokit,
-  targetRepoOwner: string,
-  targetRepoName: string,
-  mainTargetBranchSha: string,
-  componentTreeList: TreeItemInput[],
-) => {
-  const newTree = await octokit.rest.git.createTree({
-    owner: targetRepoOwner,
-    repo: targetRepoName,
-    tree: componentTreeList,
-    base_tree: mainTargetBranchSha,
-  });
-
-  return newTree;
 };
 
 const createPullRequest = async (

@@ -77,9 +77,11 @@ export const RepoDetails = component$<RepoDetailsProps>(
             {isDesignSystem && (
               <div class="py-3 flex dark:text-white">
                 <span class="font-medium w-1/3">Actions</span>
-                <a href={`${location.url.pathname}/componentCopy`}>
-                  <Button class="cursor-pointer">Copy Components</Button>
-                </a>
+                <Button asChild>
+                  <a href={`${location.url.pathname}/componentCopy`}>
+                    Copy Components
+                  </a>
+                </Button>
               </div>
             )}
             <div class="py-3 flex dark:text-white">

@@ -30,7 +30,7 @@ export const TabbedCard = component$<TabbedCardProps>(({ tabList }) => {
                 data-selected:dark:bg-kunai-blue-300/50 
                 w-full
               `}
-              key={tab}
+              key={`${tab}-${index}`}
             >
               {tab}
             </Tabs.Trigger>
