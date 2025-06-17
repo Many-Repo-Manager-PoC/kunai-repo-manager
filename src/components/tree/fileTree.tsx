@@ -79,7 +79,7 @@ const TreeBranch = component$<TreeBranchProps>(
           <Tree.ItemContent>
             {item.children.map((child) => (
               <TreeBranch
-                key={child.name}
+                key={child.path}
                 item={child}
                 level={level + 1}
                 onChange$={onChange$}
@@ -93,7 +93,7 @@ const TreeBranch = component$<TreeBranchProps>(
     }
 
     return (
-      <Tree.Item key={item.name}>
+      <Tree.Item>
         <div style={indentStyle} class="flex items-center gap-2">
           <TreeItem
             isChecked={isChecked}
