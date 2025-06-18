@@ -25,7 +25,9 @@ export const CheckboxInput = component$<CheckboxInputProps>(
           hasError={isInvalid}
           {...props}
         />
-        <Checkbox.Label class="ml-3">{label}</Checkbox.Label>
+        <Checkbox.Label class="ml-3 dark:text-white text-black">
+          {label}
+        </Checkbox.Label>
       </Checkbox.Root>
     );
   },

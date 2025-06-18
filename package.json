@@ -31,6 +31,7 @@
     "@builder.io/qwik-city": "^1.13.0",
     "@cloudflare/workers-types": "^4.20250429.0",
     "@kunai-consulting/kunai-design-system": "^0.0.8",
+    "@kunai-consulting/qwik": "^0.2.0",
     "@modular-forms/qwik": "^0.29.1",
     "@qwik-ui/headless": "^0.6.7",
     "@qwikest/icons": "^0.0.13",
