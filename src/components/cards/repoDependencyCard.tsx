@@ -1,32 +1,17 @@
 import { component$ } from "@builder.io/qwik";
 import { BaseCard } from "./baseCard";
 import { Chip } from "@kunai-consulting/kunai-design-system";
-import type { PackageJson } from "~/db/types";
 import type { GetRepositoryReturns } from "../../../dbschema/queries";
+import { useGetDependenciesForRepo } from "~/hooks";
 
 interface RepoDependencyCardProps {
   repos: GetRepositoryReturns[];
   repo: GetRepositoryReturns;
-  packageJson: PackageJson[];
 }
 
 export const RepoDependencyCard = component$<RepoDependencyCardProps>(
-  ({ repo, packageJson }) => {
-    const repoPackageJson = packageJson.find((pkg) => pkg.repo === repo?.name);
-    const dependencies = repoPackageJson?.packageJson?.dependencies || {};
-    const devDependencies = repoPackageJson?.packageJson?.devDependencies || {};
-    const allDependencies = [
-      ...Object.entries(dependencies).map(([name, version]) => ({
-        name,
-        version,
-        type: "production",
-      })),
-      ...Object.entries(devDependencies).map(([name, version]) => ({
-        name,
-        version,
-        type: "development",
-      })),
-    ];
+  ({ repo }) => {
+    const allDependencies = useGetDependenciesForRepo(repo?.repository_id || 0);
 
     return (
       <BaseCard rootClassNames="bg-white/50 dark:bg-kunai-blue-600/50 w-full">
@@ -48,26 +33,30 @@ export const RepoDependencyCard = component$<RepoDependencyCardProps>(
                 Type
               </div>
             </div>
-            {allDependencies.map(({ name, version, type }) => (
-              <div
-                key={`${name}-${version}`}
-                class="flex justify-between items-center py-2"
-              >
-                <span class="dark:text-white w-1/3 truncate">{name}</span>
-                <span class="dark:text-white w-1/3 text-center">{version}</span>
-                <div class="w-1/3 flex justify-end">
-                  <Chip.Root
-                    class={`text-xs shrink-0  ${
-                      type === "production"
-                        ? "bg-kunai-blue-400 dark:bg-kunai-blue-400 text-kunai-blue-100"
-                        : "bg-kunai-blue-300 dark:bg-kunai-blue-300 text-kunai-blue-900"
-                    }`}
-                  >
-                    {type}
-                  </Chip.Root>
+            {allDependencies.value?.map(
+              ({ name, dependency_version, dependency_type }) => (
+                <div
+                  key={`${name}-${dependency_version}`}
+                  class="flex justify-between items-center py-2"
+                >
+                  <span class="dark:text-white w-1/3 truncate">{name}</span>
+                  <span class="dark:text-white w-1/3 text-center">
+                    {dependency_version}
+                  </span>
+                  <div class="w-1/3 flex justify-end">
+                    <Chip.Root
+                      class={`text-xs shrink-0  ${
+                        dependency_type === "Prod"
+                          ? "bg-kunai-blue-400 dark:bg-kunai-blue-400 text-kunai-blue-100"
+                          : "bg-kunai-blue-300 dark:bg-kunai-blue-300 text-kunai-blue-900"
+                      }`}
+                    >
+                      {dependency_type}
+                    </Chip.Root>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ),
+            )}
           </div>
         </div>
       </BaseCard>

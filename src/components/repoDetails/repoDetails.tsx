@@ -98,7 +98,7 @@ export const RepoDetails = component$<RepoDetailsProps>(
             </div>
 
             {repoDetails?.homepage && (
-              <div class="py-3 flex">
+              <div class="py-3 flex  dark:text-white">
                 <span class="font-medium w-1/3">Homepage</span>
                 <a
                   href={repoDetails.homepage}

@@ -2,7 +2,12 @@
 import { useSignal, useTask$ } from "@builder.io/qwik";
 import { createClient } from "gel";
 import * as queries from "../../dbschema/queries";
-import type { GetRepositoryReturns } from "../../dbschema/queries";
+import type {
+  GetRepositoryReturns,
+  GetPackageJsonReturns,
+  GetDependencyReturns,
+  GetAllPackageJsonsReturns,
+} from "../../dbschema/queries";
 
 export function useGetRepositories() {
   const repositories = useSignal<GetRepositoryReturns[]>([]);
@@ -43,4 +48,38 @@ export function useGetRepositoriesForAllTopics() {
   });
 
   return allTopics;
+}
+
+export function useGetPackageJson(repoName: string) {
+  const packageJson = useSignal<GetPackageJsonReturns | null>(null);
+
+  useTask$(async () => {
+    const result = await queries.getPackageJson(createClient(), {
+      name: repoName,
+    });
+    packageJson.value = result;
+  });
+  return packageJson;
+}
+
+export function useGetDependenciesForRepo(repoId: number) {
+  const dependencies = useSignal<GetDependencyReturns>([]);
+
+  useTask$(async () => {
+    const result = await queries.getDependency(createClient(), {
+      repository_id: repoId,
+    });
+    dependencies.value = result;
+  });
+  return dependencies;
+}
+
+export function useGetAllPackageJsons() {
+  const packageJsons = useSignal<GetAllPackageJsonsReturns>([]);
+
+  useTask$(async () => {
+    const result = await queries.getAllPackageJsons(createClient());
+    packageJsons.value = result;
+  });
+  return packageJsons;
 }

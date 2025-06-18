@@ -7,7 +7,7 @@ export type GetPackageJsonArgs = {
   readonly "name"?: string | null;
 };
 
-export type GetPackageJsonReturns = Array<{
+export type GetPackageJsonReturns = {
   "repository_id": number;
   "name": string;
   "package_version": string;
@@ -29,19 +29,22 @@ export type GetPackageJsonReturns = Array<{
     "name": string;
     "repository_id": number;
   }>;
-}>;
+} | null;
 
 export function getPackageJson(client: Executor, args: GetPackageJsonArgs): Promise<GetPackageJsonReturns> {
-  return client.query(`\
+  return client.querySingle(`\
 # get packageJson by repoID
-select PackageJson { **
-} filter assert_exists(PackageJson.repository_id) ?= <optional int64>$repository_id;
+select assert_single(
+  PackageJson { ** }
+  filter assert_exists(PackageJson.repository_id) ?= <optional int64>$repository_id
+);
 
 # get packageJson by repo name
-select PackageJson { **
-} filter assert_exists(Repository.full_name) ?= <optional str>$name;
+select assert_single(
+  PackageJson { ** }
+  filter assert_exists(Repository.full_name) ?= <optional str>$name
+);
 
-# return all packageJsons
-select PackageJson { ** };`, args);
+# This is all one query, but it's split up for readability. All filters are optional.`, args);
 
 }

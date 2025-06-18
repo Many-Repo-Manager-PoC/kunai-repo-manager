@@ -4,8 +4,7 @@ import type {Executor} from "gel";
 
 export type GetDependencyArgs = {
   readonly "dependency_type"?: ("Dev" | "Prod") | null;
-  readonly "name"?: string | null;
-  readonly "dependency_version"?: string | null;
+  readonly "repository_id"?: number | null;
 };
 
 export type GetDependencyReturns = Array<{
@@ -30,17 +29,10 @@ export function getDependency(client: Executor, args: GetDependencyArgs): Promis
 select Dependency { **
 } filter assert_exists(Dependency.dependency_type) ?= <optional DependencyType>$dependency_type;
 
-# get packageJson by dependency name
+# get packageJson by dependency repository_id
 select Dependency { **
-} filter assert_exists(Dependency.name) ?= <optional str>$name;
+} filter assert_exists(Dependency.repository_id) ?= <optional int64>$repository_id;
 
-# get packageJson by dependency version
-select Dependency { **
-} filter assert_exists(Dependency.dependency_version) ?= <optional str>$dependency_version;
-
-select Dependency { ** };
-
-# This is all one query, but it's split up for readability. All filters are optional. 
-# If no filters are provided, all Dependencies will be returned.`, args);
+# This is all one query, but it's split up for readability. All filters are optional.`, args);
 
 }
