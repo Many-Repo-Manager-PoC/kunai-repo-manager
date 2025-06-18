@@ -82,7 +82,9 @@ INSERT Repository {
             site_admin := false,
             starred_url := "https://api.github.com/users/octocat/starred{/owner}{/repo}",
             subscriptions_url := "https://api.github.com/users/octocat/subscriptions",
-            url := "https://api.github.com/users/octocat"
+            url := "https://api.github.com/users/octocat",
+            email := "octocat@github.com",
+            name := "Octocat"
         }
     ),
     private := false,
@@ -124,25 +126,55 @@ INSERT PackageJson {
     dependencies := {
         (INSERT Dependency {
             name := "express",
-            dependency_version := "^4.18.2"
+            dependency_version := "^4.18.2",
             repository_id := 1296269,
+            dependency_type := DependencyType.Prod,
         }),
         (INSERT Dependency {
             name := "axios",
-            dependency_version := "^1.6.2"
+            dependency_version := "^1.6.2",
             repository_id := 1296269,
+            dependency_type := DependencyType.Prod,
         })
     },
     dev_dependencies := {
         (INSERT Dependency {
             name := "typescript",
-            dependency_version := "^5.3.3"
+            dependency_version := "^5.3.3",
             repository_id := 1296269,
+            dependency_type := DependencyType.Dev,
         }),
         (INSERT Dependency {
             name := "jest",
-            dependency_version := "^29.7.0"
+            dependency_version := "^29.7.0",
             repository_id := 1296269,
+            dependency_type := DependencyType.Dev,
         })
     }
 };
+
+INSERT Permissions {
+    admin := true,
+    maintain := true,
+    push := true,
+    triage := true,
+    pull := true
+};
+
+INSERT ProdDependency {
+    name := "express",
+    dependency_version := "^4.18.2",
+    repository_id := 1296269,
+};
+
+INSERT DevDependency {
+    name := "typescript",
+    dependency_version := "^5.3.3",
+    repository_id := 1296269,
+};
+
+
+
+
+
+

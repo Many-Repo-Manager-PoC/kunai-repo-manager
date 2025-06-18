@@ -22,6 +22,13 @@ Step 1: Create A Gel Account
 
   \*\*Random notes: when in gel GUI, to get out `\q + enter`
 
+  ### Submitting new query requests!
+
+  - create a new query in the relevant queries/[].edgeql file.
+  - in a terminal type `pnpm generate queries`
+  - then type `pnpm generate queries --file` <-- this creates the query file inside the db schema.
+  - submit PR [check]
+
 ## A Qwik City App ⚡️
 
 - [Qwik Docs](https://qwik.dev/)

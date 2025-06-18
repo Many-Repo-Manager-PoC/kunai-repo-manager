@@ -64,7 +64,9 @@ export const createCodeCopyWorkflow = routeAction$(async (data, event) => {
         }
       }),
     );
-    const filteredTreeItems = treeItems.filter((item) => item !== undefined);
+    const filteredTreeItems = treeItems.filter(
+      (item): item is NonNullable<typeof item> => item !== undefined,
+    );
 
     const newTree = await octokit.rest.git.createTree({
       owner: metadata.owner,

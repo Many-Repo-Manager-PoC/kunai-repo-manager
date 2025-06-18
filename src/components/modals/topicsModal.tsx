@@ -12,6 +12,7 @@ export const TopicsModal = component$<TopicsModalProps>(
     const action = usePutTopics();
     const newTags = useSignal("");
     const checkedTopics = useSignal<string[]>([]);
+    console.log("TOPICS MAP", topicsMap);
 
     const handleSaveChanges = $(async () => {
       const tagsToAdd = newTags.value

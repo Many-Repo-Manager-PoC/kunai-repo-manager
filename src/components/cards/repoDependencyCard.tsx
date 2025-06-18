@@ -1,17 +1,18 @@
 import { component$ } from "@builder.io/qwik";
 import { BaseCard } from "./baseCard";
 import { Chip } from "@kunai-consulting/kunai-design-system";
-import type { Repo, PackageJson } from "~/db/types";
+import type { PackageJson } from "~/db/types";
+import type { GetRepositoryReturns } from "../../../dbschema/queries";
 
 interface RepoDependencyCardProps {
-  repos: Repo[];
-  repo: Repo;
+  repos: GetRepositoryReturns[];
+  repo: GetRepositoryReturns;
   packageJson: PackageJson[];
 }
 
 export const RepoDependencyCard = component$<RepoDependencyCardProps>(
   ({ repo, packageJson }) => {
-    const repoPackageJson = packageJson.find((pkg) => pkg.repo === repo.name);
+    const repoPackageJson = packageJson.find((pkg) => pkg.repo === repo?.name);
     const dependencies = repoPackageJson?.packageJson?.dependencies || {};
     const devDependencies = repoPackageJson?.packageJson?.devDependencies || {};
     const allDependencies = [
@@ -30,7 +31,7 @@ export const RepoDependencyCard = component$<RepoDependencyCardProps>(
     return (
       <BaseCard rootClassNames="bg-white/50 dark:bg-kunai-blue-600/50 w-full">
         <div q:slot="header" class="flex items-center gap-2 w-full p-2">
-          <span class="text-lg font-large">{repo.name}</span>
+          <span class="text-lg font-large">{repo?.name}</span>
         </div>
         <div q:slot="body" class="flex flex-col gap-2 p-2 h-[calc(100%-4rem)]">
           <div class="flex-grow dark:text-white">

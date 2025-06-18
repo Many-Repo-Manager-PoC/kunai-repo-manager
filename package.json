@@ -30,6 +30,7 @@
     "@builder.io/qwik": "^1.13.0",
     "@builder.io/qwik-city": "^1.13.0",
     "@cloudflare/workers-types": "^4.20250429.0",
+    "@gel/generate": "^0.6.3",
     "@kunai-consulting/kunai-design-system": "^0.0.8",
     "@modular-forms/qwik": "^0.29.1",
     "@qwik-ui/headless": "^0.6.7",
@@ -53,6 +54,9 @@
   },
   "dependencies": {
     "@fontsource-variable/work-sans": "^5.2.5",
+    "@trpc/client": "^11.4.1",
+    "@trpc/server": "^11.4.1",
+    "gel": "^2.1.0",
     "octokit": "^4.1.3",
     "zod": "^3.24.4"
   },

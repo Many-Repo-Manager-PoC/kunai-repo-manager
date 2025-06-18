@@ -1,24 +1,25 @@
 import { component$ } from "@builder.io/qwik";
 import { BaseCard } from "./baseCard";
 import { Chip } from "@kunai-consulting/kunai-design-system";
-import type { Repo, PackageJson } from "~/db/types";
+import type { PackageJson } from "~/db/types";
 import semver from "semver";
 import { DependencyUpdaterModal } from "../modals/dependencyUpdaterModal";
 import { postWorkflowDispatchEvent } from "~/routes/layout";
+import { type GetRepositoryReturns } from "../../../dbschema/queries";
 
 interface DependencyUpdaterCardProps {
-  repos: Repo[];
-  repo: Repo;
+  repos: GetRepositoryReturns[];
+  repo: GetRepositoryReturns;
   packageJson: PackageJson[];
 }
 
 export const DependencyUpdaterCard = component$<DependencyUpdaterCardProps>(
   ({ repo, packageJson }) => {
     const currentVersion =
-      packageJson.find((pkg) => pkg.repo === repo.name)?.packageJson?.version ||
-      "No version";
+      packageJson.find((pkg) => pkg.repo === repo?.name)?.packageJson
+        ?.version || "No version";
     const currentPackageJson = packageJson.find(
-      (pkg) => pkg.repo === repo.name,
+      (pkg) => pkg.repo === repo?.name,
     )?.packageJson;
     const currentRepoName = currentPackageJson?.name ?? "";
     const dependentRepos = new Set<[string, string]>();
@@ -73,7 +74,7 @@ export const DependencyUpdaterCard = component$<DependencyUpdaterCardProps>(
           q:slot="header"
           class="flex items-center justify-between w-full p-2"
         >
-          <span class="text-lg font-large">{repo.name}</span>
+          <span class="text-lg font-large">{repo?.name}</span>
           <span class="text-sm text-kunai-blue-100">
             Current version: {currentVersion}
           </span>

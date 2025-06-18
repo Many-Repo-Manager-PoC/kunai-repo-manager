@@ -1,30 +1,25 @@
 module default {
+
+ scalar type DependencyType extending enum <Dev, Prod>;
+
+ abstract type RepositoryID {
+    required repository_id: int64;
+
+    index on (.repository_id);
+ }
+
  abstract type Timestamped {
-    required data_updated_at: datetime {
-      default := datetime_of_statement();
+    last_updated: datetime {
+      rewrite insert, update using (datetime_of_statement());
     };
   }
- type Repository extending Timestamped {
-    allow_auto_merge: bool;
-    allow_forking: bool;
-    allow_merge_commit: bool;
-    allow_rebase_merge: bool;
-    allow_squash_merge: bool;
+
+ type Repository extending Timestamped, RepositoryID {
     required archived: bool;
-    required archive_url: str;
-    required assignees_url: str;
-    required blobs_url: str;
-    required branches_url: str;
-    required clone_url: str;
-    required collaborators_url: str;
-    required comments_url: str;
-    required commits_url: str;
-    required compare_url: str;
     required contents_url: str;
     required contributors_url: str;
     required created_at: str;
     required default_branch: str;
-    delete_branch_on_merge: bool;
     required deployments_url: str;
     required description: str;
     required disabled: bool;
@@ -33,14 +28,8 @@ module default {
     required fork: bool;
     required forks: int64;
     required forks_count: int64;
-    forks_url: str;
     required full_name: str;
-    required git_commits_url: str;
-    required git_refs_url: str;
-    required git_tags_url: str;
-    required git_url: str;
     required has_discussions: bool;
-    has_downloads: bool;
     required has_issues: bool;
     required has_pages: bool;
     required has_projects: bool;
@@ -48,9 +37,6 @@ module default {
     required homepage: str;
     required hooks_url: str;
     required html_url: str;
-    # this is id in github schema but want to separate it from built in gel id 
-    required repository_id: int64;
-    is_template: bool;
     required issue_comment_url: str;
     required issue_events_url: str;
     required issues_url: str;
@@ -59,42 +45,71 @@ module default {
     required language: str;
     required languages_url: str;
     required license: License;
-    master_branch: str;
-    required merges_url: str;
-    required milestones_url: str;
-    required mirror_url: str;
     required name: str;
     required node_id: str;
     required notifications_url: str;
     required open_issues: int64;
     required open_issues_count: int64;
     required owner: User;
-    permissions: Permissions;
     required private: bool;
     required pushed_at: str;
-    required pulls_url: str;
-    required releases_url: str;
     required url: str;
     required ssh_url: str;
     required size: int64;
     required stargazers_count: int64;
-    required stargazers_url: str;
-    required statuses_url: str;
-    required subscribers_url: str;
-    required subscription_url: str;
-    required svn_url: str;
-    required tags_url: str;
-    required teams_url: str;
+    required updated_at: str;
+    required watchers_count: int64;
+    archive_url: str;
+    assignees_url: str;
+    blobs_url: str;
+    branches_url: str;
+    clone_url: str;
+    collaborators_url: str;
+    comments_url: str;
+    commits_url: str;
+    compare_url: str;
+    merges_url: str;
+    milestones_url: str;
+    mirror_url: str;
+    git_commits_url: str;
+    git_refs_url: str;
+    git_tags_url: str;
+    git_url: str;
+    stargazers_url: str;
+    statuses_url: str;
+    subscribers_url: str;
+    subscription_url: str;
+    pulls_url: str;
+    releases_url: str;
+    svn_url: str;
+    tags_url: str;
+    teams_url: str;
+    trees_url: str;
+    allow_auto_merge: bool;
+    allow_forking: bool;
+    allow_merge_commit: bool;
+    allow_rebase_merge: bool;
+    allow_squash_merge: bool;
+    delete_branch_on_merge: bool;
+    forks_url: str;
+    has_downloads: bool;
+    is_template: bool;
+    master_branch: str;
+    permissions: Permissions {
+         on source delete delete target;
+    };
     template_repository: Repository;
     # put the list of topics in as unordered set of strings
     # will make much easier to query and modify
     multi topics: str;
-    required trees_url: str;
-    required updated_at: str;
     visibility: str;
-    required watchers_count: int64;
+    
 
-    index on (.repository_id);
+    index on (.full_name);
+    index on (.name);
+    index on (.license);
+    index on (.owner);
+
  }
 
  type License extending Timestamped {
@@ -104,6 +119,8 @@ module default {
     required spdx_id: str;
     required node_id: str;
     html_url: str;
+
+    constraint exclusive on (.name);
  }
 
  type Permissions extending Timestamped {
@@ -111,55 +128,85 @@ module default {
     maintain: bool;
     required push: bool;
     triage: bool;
-    required pull:bool;
+    required pull: bool;
  }
 
  type User extending Timestamped {
     required avatar_url: str;
-    email: str;
-    required events_url: str;
-    required followers_url: str;
-    required following_url: str;
-    required gists_url: str;
-    required gravatar_id: str;
-    required html_url: str;
+    required name: str;
+    required email: str;
     required login: str;
-    name: str;
     # this is id in github schema but want to separate it from built in gel id 
     required user_id: int64;
-    required node_id: str;
-    required organizations_url: str;
-    required received_events_url: str;
-    required repos_url: str;
     # this is type in github schema but 'type' is a reserved word in gel
     required role_type: str;
     required site_admin: bool;
-    required starred_url: str;
+    events_url: str;
+    followers_url: str;
+    following_url: str;
+    gists_url: str;
+    gravatar_id: str;
+    html_url: str;
+    node_id: str;
+    organizations_url: str;
+    received_events_url: str;
+    repos_url: str;
+    starred_url: str;
     starred_at: str;
-    required subscriptions_url: str;
-    required url: str;
+    subscriptions_url: str;
+    url: str;
     user_view_type: str;
+
+    index on (.login);
+    index on (.user_id);
+
+    constraint exclusive on (.user_id);
  }
 
- type PackageJson extending Timestamped {
-    required repository_id: int64;
+
+type PackageJson extending Timestamped, RepositoryID {
     required name: str;
     required package_version: str;
-    required multi dependencies: Dependency;
-    required multi dev_dependencies: Dependency;
-    
-    index on (.repository_id);
- }
+    multi dependencies: ProdDependency | Dependency;
+    multi dev_dependencies: DevDependency | Dependency; 
 
- type Dependency extending Timestamped {
-    required repository_id: int64;
+    index on (.name);
+    
+    constraint exclusive on (.repository_id){
+      annotation description := 'User can only have one PackageJson per repository';
+    };
+}
+
+
+type Dependency extending Timestamped,RepositoryID {
+    annotation description := 'Dependencies are the packages that a package depends on. We get these from a repository\'s package.json file.';
     required name: str;
     required dependency_version: str;
+    required dependency_type: DependencyType;
+    package_json: PackageJson;
 
-    index on (.repository_id);
+
+    index on (.dependency_type);
+
+ }
+ 
+ type ProdDependency extending Dependency {
+     overloaded dependency_type: DependencyType {
+        annotation description := 'on insert, set dependency_type to Prod';
+        rewrite insert using (DependencyType.Prod);
+    }
+   
+
  }
 
-}
+ type DevDependency extending Dependency {
+     overloaded dependency_type: DependencyType {
+        annotation description := 'on insert, set dependency_type to Dev';
+        rewrite insert using (DependencyType.Dev);
+    }
+ }
+  
+ }
 
 
 
