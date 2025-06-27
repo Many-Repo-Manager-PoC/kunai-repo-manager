@@ -8,149 +8,152 @@ INSERT Repository {
     allow_rebase_merge := true,
     allow_squash_merge := true,
     archived := false,
-    archive_url := "https://api.github.com/repos/octocat/Hello-World/{archive_format}{/ref}",
-    assignees_url := "https://api.github.com/repos/octocat/Hello-World/assignees{/user}",
-    blobs_url := "https://api.github.com/repos/octocat/Hello-World/git/blobs{/sha}",
-    branches_url := "https://api.github.com/repos/octocat/Hello-World/branches{/branch}",
-    clone_url := "https://github.com/octocat/Hello-World.git",
-    collaborators_url := "https://api.github.com/repos/octocat/Hello-World/collaborators{/collaborator}",
-    comments_url := "https://api.github.com/repos/octocat/Hello-World/comments{/number}",
-    commits_url := "https://api.github.com/repos/octocat/Hello-World/commits{/sha}",
-    compare_url := "https://api.github.com/repos/octocat/Hello-World/compare/{base}...{head}",
-    contents_url := "https://api.github.com/repos/octocat/Hello-World/contents/{+path}",
-    contributors_url := "https://api.github.com/repos/octocat/Hello-World/contributors",
-    created_at := "2011-01-26T19:01:12Z",
+    archive_url := "https://api.github.com/repos/kunai-consulting/pieces/{archive_format}{/ref}",
+    assignees_url := "https://api.github.com/repos/kunai-consulting/pieces/assignees{/user}",
+    blobs_url := "https://api.github.com/repos/kunai-consulting/pieces/git/blobs{/sha}",
+    branches_url := "https://api.github.com/repos/kunai-consulting/pieces/branches{/branch}",
+    clone_url := "https://github.com/kunai-consulting/pieces.git",
+    collaborators_url := "https://api.github.com/repos/kunai-consulting/pieces/collaborators{/collaborator}",
+    comments_url := "https://api.github.com/repos/kunai-consulting/pieces/comments{/number}",
+    commits_url := "https://api.github.com/repos/kunai-consulting/pieces/commits{/sha}",
+    compare_url := "https://api.github.com/repos/kunai-consulting/pieces/compare/{base}...{head}",
+    contents_url := "https://api.github.com/repos/kunai-consulting/pieces/contents/{+path}",
+    contributors_url := "https://api.github.com/repos/kunai-consulting/pieces/contributors",
+    created_at := "2023-03-15T14:22:33Z",
     default_branch := "main",
     delete_branch_on_merge := false,
-    deployments_url := "https://api.github.com/repos/octocat/Hello-World/deployments",
-    description := "My first repository on GitHub!",
+    deployments_url := "https://api.github.com/repos/kunai-consulting/pieces/deployments",
+    description := "Pieces repository for modular development",
     disabled := false,
-    downloads_url := "https://api.github.com/repos/octocat/Hello-World/downloads",
-    events_url := "https://api.github.com/repos/octocat/Hello-World/events",
+    downloads_url := "https://api.github.com/repos/kunai-consulting/pieces/downloads",
+    events_url := "https://api.github.com/repos/kunai-consulting/pieces/events",
     fork := false,
-    forks := 9,
-    forks_count := 9,
-    forks_url := "https://api.github.com/repos/octocat/Hello-World/forks",
-    full_name := "octocat/Hello-World",
-    git_commits_url := "https://api.github.com/repos/octocat/Hello-World/git/commits{/sha}",
-    git_refs_url := "https://api.github.com/repos/octocat/Hello-World/git/refs{/sha}",
-    git_tags_url := "https://api.github.com/repos/octocat/Hello-World/git/tags{/sha}",
-    git_url := "git:github.com/octocat/Hello-World.git",
+    forks := 8,
+    forks_count := 8,
+    forks_url := "https://api.github.com/repos/kunai-consulting/pieces/forks",
+    full_name := "kunai-consulting/pieces",
+    git_commits_url := "https://api.github.com/repos/kunai-consulting/pieces/git/commits{/sha}",
+    git_refs_url := "https://api.github.com/repos/kunai-consulting/pieces/git/refs{/sha}",
+    git_tags_url := "https://api.github.com/repos/kunai-consulting/pieces/git/tags{/sha}",
+    git_url := "git:github.com/kunai-consulting/pieces.git",
     has_discussions := false,
     has_downloads := true,
     has_issues := true,
     has_pages := false,
     has_projects := true,
     has_wiki := true,
-    homepage := "https://github.com",
-    hooks_url := "https://api.github.com/repos/octocat/Hello-World/hooks",
-    html_url := "https://github.com/octocat/Hello-World",
-    repository_id := 1296269,
+    homepage := "https://github.com/kunai-consulting/pieces",
+    hooks_url := "https://api.github.com/repos/kunai-consulting/pieces/hooks",
+    html_url := "https://github.com/kunai-consulting/pieces",
+    repository_id := 1296268,
     is_template := false,
-    issue_comment_url := "https://api.github.com/repos/octocat/Hello-World/issues/comments{/number}",
-    issue_events_url := "https://api.github.com/repos/octocat/Hello-World/issues/events{/number}",
-    issues_url := "https://api.github.com/repos/octocat/Hello-World/issues{/number}",
-    keys_url := "https://api.github.com/repos/octocat/Hello-World/keys{/key_id}",
-    labels_url := "https://api.github.com/repos/octocat/Hello-World/labels{/name}",
+    issue_comment_url := "https://api.github.com/repos/kunai-consulting/pieces/issues/comments{/number}",
+    issue_events_url := "https://api.github.com/repos/kunai-consulting/pieces/issues/events{/number}",
+    issues_url := "https://api.github.com/repos/kunai-consulting/pieces/issues{/number}",
+    keys_url := "https://api.github.com/repos/kunai-consulting/pieces/keys{/key_id}",
+    labels_url := "https://api.github.com/repos/kunai-consulting/pieces/labels{/name}",
     language := "JavaScript",
-    languages_url := "https://api.github.com/repos/octocat/Hello-World/languages",
+    languages_url := "https://api.github.com/repos/kunai-consulting/pieces/languages",
     master_branch := "main",
-    merges_url := "https://api.github.com/repos/octocat/Hello-World/merges",
-    milestones_url := "https://api.github.com/repos/octocat/Hello-World/milestones{/number}",
+    merges_url := "https://api.github.com/repos/kunai-consulting/pieces/merges",
+    milestones_url := "https://api.github.com/repos/kunai-consulting/pieces/milestones{/number}",
     mirror_url := "",
-    name := "Hello-World",
-    node_id := "MDEwOlJlcG9zaXRvcnkxMjk2MjY5",
-    notifications_url := "https://api.github.com/repos/octocat/Hello-World/notifications{?since,all,participating}",
-    open_issues := 80,
-    open_issues_count := 80,
+    name := "pieces",
+    node_id := "MDEwOlJlcG9zaXRvcnkxMjk2MjY4",
+    notifications_url := "https://api.github.com/repos/kunai-consulting/pieces/notifications{?since,all,participating}",
+    open_issues := 7,
+    open_issues_count := 7,
     owner := (
         INSERT User {
-            avatar_url := "https://github.com/images/error/octocat_happy.gif",
-            events_url := "https://api.github.com/users/octocat/events{/privacy}",
-            followers_url := "https://api.github.com/users/octocat/followers",
-            following_url := "https://api.github.com/users/octocat/following{/other_user}",
-            gists_url := "https://api.github.com/users/octocat/gists{/gist_id}",
+            avatar_url := "https://github.com/images/error/kunai_happy.gif",
+            events_url := "https://api.github.com/users/kunai-consulting/events{/privacy}",
+            followers_url := "https://api.github.com/users/kunai-consulting/followers",
+            following_url := "https://api.github.com/users/kunai-consulting/following{/other_user}",
+            gists_url := "https://api.github.com/users/kunai-consulting/gists{/gist_id}",
             gravatar_id := "",
-            html_url := "https://github.com/octocat",
-            login := "octocat",
-            user_id := 583231,
-            node_id := "MDQ6VXNlcjU4MzIzMQ==",
-            organizations_url := "https://api.github.com/users/octocat/orgs",
-            received_events_url := "https://api.github.com/users/octocat/received_events",
-            repos_url := "https://api.github.com/users/octocat/repos",
-            role_type := "User",
+            html_url := "https://github.com/kunai-consulting",
+            login := "kunai-consulting",
+            user_id := 583241,
+            node_id := "MDQ6VXNlcjU4MzI0MA==",
+            organizations_url := "https://api.github.com/users/kunai-consulting/orgs",
+            received_events_url := "https://api.github.com/users/kunai-consulting/received_events",
+            repos_url := "https://api.github.com/users/kunai-consulting/repos",
+            role_type := "Organization",
             site_admin := false,
-            starred_url := "https://api.github.com/users/octocat/starred{/owner}{/repo}",
-            subscriptions_url := "https://api.github.com/users/octocat/subscriptions",
-            url := "https://api.github.com/users/octocat",
-            email := "octocat@github.com",
-            name := "Octocat"
+            starred_url := "https://api.github.com/users/kunai-consulting/starred{/owner}{/repo}",
+            subscriptions_url := "https://api.github.com/users/kunai-consulting/subscriptions",
+            url := "https://api.github.com/users/kunai-consulting",
+            email := "info@kunai.com",
+            name := "Kunai Consulting"
         }
     ),
     private := false,
-    pushed_at := "2011-01-26T19:06:43Z",
-    pulls_url := "https://api.github.com/repos/octocat/Hello-World/pulls{/number}",
-    releases_url := "https://api.github.com/repos/octocat/Hello-World/releases{/id}",
-    url := "https://api.github.com/repos/octocat/Hello-World",
-    ssh_url := "git@github.com:octocat/Hello-World.git",
-    size := 80,
-    stargazers_count := 80,
-    stargazers_url := "https://api.github.com/repos/octocat/Hello-World/stargazers",
-    statuses_url := "https://api.github.com/repos/octocat/Hello-World/statuses/{sha}",
-    subscribers_url := "https://api.github.com/repos/octocat/Hello-World/subscribers",
-    subscription_url := "https://api.github.com/repos/octocat/Hello-World/subscription",
-    svn_url := "https://svn.github.com/octocat/Hello-World",
-    tags_url := "https://api.github.com/repos/octocat/Hello-World/tags",
-    teams_url := "https://api.github.com/repos/octocat/Hello-World/teams",
-    topics := "hello-world,example,octocat",
-    trees_url := "https://api.github.com/repos/octocat/Hello-World/git/trees{/sha}",
-    updated_at := "2011-01-26T19:14:43Z",
+    pushed_at := "2023-11-18T16:45:22Z",
+    pulls_url := "https://api.github.com/repos/kunai-consulting/pieces/pulls{/number}",
+    releases_url := "https://api.github.com/repos/kunai-consulting/pieces/releases{/id}",
+    url := "https://api.github.com/repos/kunai-consulting/pieces",
+    ssh_url := "git@github.com:kunai-consulting/pieces.git",
+    size := 85,
+    stargazers_count := 42,
+    stargazers_url := "https://api.github.com/repos/kunai-consulting/pieces/stargazers",
+    statuses_url := "https://api.github.com/repos/kunai-consulting/pieces/statuses/{sha}",
+    subscribers_url := "https://api.github.com/repos/kunai-consulting/pieces/subscribers",
+    subscription_url := "https://api.github.com/repos/kunai-consulting/pieces/subscription",
+    svn_url := "https://svn.github.com/kunai-consulting/pieces",
+    tags_url := "https://api.github.com/repos/kunai-consulting/pieces/tags",
+    teams_url := "https://api.github.com/repos/kunai-consulting/pieces/teams",
+    topics := "pieces,modular,development,javascript,nodejs",
+    trees_url := "https://api.github.com/repos/kunai-consulting/pieces/git/trees{/sha}",
+    updated_at := "2023-11-18T16:52:15Z",
     visibility := "public",
-    watchers_count := 80,
+    watchers_count := 42,
     license := (
         INSERT License {
-            key := "mit",
-            name := "MIT License",
-            node_id := "MDc6TGljZW5zZW1pdA==",
-            spdx_id := "MIT",
-            url := "https://api.github.com/licenses/mit",
-            html_url := "https://github.com/licenses/mit"
+            key := "apache-2.0",
+            name := "Apache License 2.0",
+            url := "https://api.github.com/licenses/apache-2.0",
+            spdx_id := "Apache-2.0",
+            node_id := "MDc6TGljZW5zZTI="
         }
     )
 };
 
 INSERT PackageJson {
-    repository_id := 1296269,
-    name := "Hello-World",
-    package_version := "1.0.0",
-    dependencies := {
-        (INSERT Dependency {
-            name := "express",
-            dependency_version := "^4.18.2",
-            repository_id := 1296269,
-            dependency_type := DependencyType.Prod,
-        }),
-        (INSERT Dependency {
-            name := "axios",
-            dependency_version := "^1.6.2",
-            repository_id := 1296269,
-            dependency_type := DependencyType.Prod,
-        })
-    },
-    dev_dependencies := {
-        (INSERT Dependency {
-            name := "typescript",
-            dependency_version := "^5.3.3",
-            repository_id := 1296269,
-            dependency_type := DependencyType.Dev,
-        }),
-        (INSERT Dependency {
-            name := "jest",
-            dependency_version := "^29.7.0",
-            repository_id := 1296269,
-            dependency_type := DependencyType.Dev,
-        })
-    }
+    repository_id := 1296268,
+    name := "pieces",
+    package_version := "1.0.0"
+};
+
+INSERT ProdDependency {
+    name := "vue",
+    dependency_version := "^3.3.8",
+    repository_id := 1296268,
+    repository := (SELECT Repository FILTER .repository_id = 1296268),
+    package_json := (SELECT PackageJson FILTER .repository_id = 1296268)
+};
+
+INSERT ProdDependency {
+    name := "moment",
+    dependency_version := "^2.29.4",
+    repository_id := 1296268,
+    repository := (SELECT Repository FILTER .repository_id = 1296268),
+    package_json := (SELECT PackageJson FILTER .repository_id = 1296268)
+};
+
+INSERT DevDependency {
+    name := "webpack",
+    dependency_version := "^5.89.0",
+    repository_id := 1296268,
+    repository := (SELECT Repository FILTER .repository_id = 1296268),
+    package_json := (SELECT PackageJson FILTER .repository_id = 1296268)
+};
+
+INSERT DevDependency {
+    name := "babel",
+    dependency_version := "^7.23.5",
+    repository_id := 1296268,   
+    repository := (SELECT Repository FILTER .repository_id = 1296268),
+    package_json := (SELECT PackageJson FILTER .repository_id = 1296268)
 };
 
 INSERT Permissions {
@@ -164,13 +167,13 @@ INSERT Permissions {
 INSERT ProdDependency {
     name := "express",
     dependency_version := "^4.18.2",
-    repository_id := 1296269,
+    repository_id := 1296271,
 };
 
 INSERT DevDependency {
     name := "typescript",
     dependency_version := "^5.3.3",
-    repository_id := 1296269,
+    repository_id := 1296271,
 };
 
 
@@ -178,3 +181,116 @@ INSERT DevDependency {
 
 
 
+insert FilePath {
+  repository_id := 1296269,
+  path := "package.json",
+  file_type := FileType.JSON,
+  file_name := "PackageJSON"
+};
+
+insert FilePath {
+  repository_id := 1296271,
+  path := "package.json",
+  file_type := FileType.JSON,
+  file_name := "PackageJSON"
+};
+
+insert FilePath {
+  repository_id := 3,
+  path := "packages/dep-one/package.json",
+  file_type := FileType.JSON,
+  file_name := "PackageJSON"
+};
+
+insert FilePath {
+  repository_id := 3,
+  path := "packages/dep-two/package.json",
+  file_type := FileType.JSON,
+  file_name := "PackageJSON"
+};
+
+insert FilePath {
+  repository_id := 4,
+  path := "package.json",
+  file_type := FileType.JSON,
+  file_name := "PackageJSON"
+};
+
+insert FilePath {
+  repository_id := 5,
+  path := "package.json",
+  file_type := FileType.JSON,
+  file_name := "PackageJSON"
+};
+
+insert FilePath {
+  repository_id := 6,
+  path := "package.json",
+  file_type := FileType.JSON,
+  file_name := "PackageJSON"
+};
+
+insert FilePath {
+  repository_id := 7,
+  path := "package.json",
+  file_type := FileType.JSON,
+  file_name := "PackageJSON"
+};
+
+
+
+
+
+
+# for inserting mock package.json and dependencies into the DB
+
+
+INSERT PackageJson {
+    repository_id := 1296269,
+    name := "Hello World",
+    package_version := "1.3.0"
+};
+
+INSERT ProdDependency {
+    name := "react",
+    dependency_version := "^18.2.0",
+    repository_id := 1296269,
+    package_json := (
+        SELECT PackageJson
+        FILTER .repository_id = 1296269
+        LIMIT 1
+    )
+};
+
+INSERT ProdDependency {
+    name := "lodash",
+    dependency_version := "^4.17.21",
+    repository_id := 1296269,
+    package_json := (
+        SELECT PackageJson
+        FILTER .repository_id = 1296269
+        LIMIT 1
+    )
+};
+
+INSERT DevDependency {
+    name := "eslint",
+    dependency_version := "^8.55.0",
+    repository_id := 1296269,
+    package_json := (
+        SELECT PackageJson
+        FILTER .repository_id = 1296269
+        LIMIT 1
+    )
+};
+
+INSERT DevDependency {
+    name := "prettier",
+    dependency_version := "^3.1.0",
+    repository_id := 1296269,
+    package_json := (
+        SELECT PackageJson
+        FILTER .repository_id = 1296269
+        LIMIT 1
+    )
+};

@@ -29,6 +29,13 @@ Step 1: Create A Gel Account
   - then type `pnpm generate queries --file` <-- this creates the query file inside the db schema.
   - submit PR [check]
 
+  ### Creating migrations
+
+  - update `default.gel`
+  - in a terminal, run `pnpm gel migration create` and answer the prompts
+  - then, `pnpm gel migrate`
+  - `pnpm gel ui` to see the changes!
+
 ## A Qwik City App ⚡️
 
 - [Qwik Docs](https://qwik.dev/)

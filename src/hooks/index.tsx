@@ -5,7 +5,7 @@ import * as queries from "../../dbschema/queries";
 import type {
   GetRepositoryReturns,
   GetPackageJsonReturns,
-  GetDependencyReturns,
+  GetDependenciesForRepoReturns,
   GetAllPackageJsonsReturns,
 } from "../../dbschema/queries";
 
@@ -63,10 +63,14 @@ export function useGetPackageJson(repoName: string) {
 }
 
 export function useGetDependenciesForRepo(repoId: number) {
-  const dependencies = useSignal<GetDependencyReturns>([]);
+  const dependencies = useSignal<GetDependenciesForRepoReturns>([]);
 
   useTask$(async () => {
-    const result = await queries.getDependency(createClient(), {
+    if (!repoId) {
+      dependencies.value = [];
+      return;
+    }
+    const result = await queries.getDependenciesForRepo(createClient(), {
       repository_id: repoId,
     });
     dependencies.value = result;

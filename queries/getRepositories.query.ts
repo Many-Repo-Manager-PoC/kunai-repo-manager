@@ -217,6 +217,26 @@ export type GetRepositoriesReturns = Array<{
     "id": string;
     "last_updated": Date | null;
   } | null;
+  "all_dependencies": Array<{
+    "dependency_version": string;
+    "name": string;
+    "id": string;
+    "last_updated": Date | null;
+    "dependency_type": ("Dev" | "Prod") | null;
+  }>;
+  "all_file_paths": Array<{
+    "last_updated": Date | null;
+    "id": string;
+    "file_name": string;
+    "file_type": ("PNG" | "JPG" | "JPEG" | "GIF" | "SVG" | "PSD" | "JSON" | "MD" | "TXT" | "LOG" | "ZIP" | "GEL" | "TOML" | "YML" | "YAML" | "JSONC" | "WOFF2" | "CSS" | "TS" | "TSX" | "JS" | "EDGEQL" | "XML" | "PDF" | "CSV" | "SQL" | "HTML");
+    "path": string;
+  }>;
+  "package_json": Array<{
+    "name": string;
+    "package_version": string;
+    "id": string;
+    "last_updated": Date | null;
+  }>;
 }>;
 
 export function getRepositories(client: Executor): Promise<GetRepositoriesReturns> {

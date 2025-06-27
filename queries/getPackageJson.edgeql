@@ -2,7 +2,7 @@
 # get packageJson by repoID
 select assert_single(
   PackageJson { ** }
-  filter assert_exists(PackageJson.repository_id) ?= <optional int64>$repository_id
+  filter assert_exists(Repository.repository_id) ?= <optional int64>$repository_id
 );
 
 # get packageJson by repo name

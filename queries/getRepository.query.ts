@@ -221,15 +221,35 @@ export type GetRepositoryReturns = {
     "id": string;
     "last_updated": Date | null;
   } | null;
+  "all_dependencies": Array<{
+    "dependency_version": string;
+    "name": string;
+    "id": string;
+    "last_updated": Date | null;
+    "dependency_type": ("Dev" | "Prod") | null;
+  }>;
+  "all_file_paths": Array<{
+    "last_updated": Date | null;
+    "id": string;
+    "file_name": string;
+    "file_type": ("PNG" | "JPG" | "JPEG" | "GIF" | "SVG" | "PSD" | "JSON" | "MD" | "TXT" | "LOG" | "ZIP" | "GEL" | "TOML" | "YML" | "YAML" | "JSONC" | "WOFF2" | "CSS" | "TS" | "TSX" | "JS" | "EDGEQL" | "XML" | "PDF" | "CSV" | "SQL" | "HTML");
+    "path": string;
+  }>;
+  "package_json": Array<{
+    "name": string;
+    "package_version": string;
+    "id": string;
+    "last_updated": Date | null;
+  }>;
 } | null;
 
 export function getRepository(client: Executor, args: GetRepositoryArgs): Promise<GetRepositoryReturns> {
   return client.querySingle(`\
-select assert_single(Repository { **
-}) filter (
+select Repository { **
+} filter (
   assert_exists(Repository.repository_id) ?= <optional int64>$repository_id or
   assert_exists(Repository.full_name) ?= <optional str>$name or
   assert_exists(Repository.name) ?= <optional str>$name
-);`, args);
+) limit 1;`, args);
 
 }

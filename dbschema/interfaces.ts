@@ -199,19 +199,24 @@ export namespace $default {
   export interface Timestamped extends std.$Object {
     "last_updated"?: Date | null;
   }
-  export interface RepositoryID extends std.$Object {
-    "repository_id": number;
-  }
-  export interface Dependency extends Timestamped, RepositoryID {
+  export interface Dependency extends Timestamped {
     "dependency_version": string;
     "name": string;
-    "dependency_type": DependencyType;
-    "package_json"?: PackageJson | null;
+    "dependency_type"?: DependencyType | null;
+    "package_json": PackageJson;
+    "repository": Repository;
   }
   export type DependencyType = "Dev" | "Prod";
   export interface DevDependency extends Dependency {
-    "dependency_type": DependencyType;
+    "dependency_type"?: DependencyType | null;
   }
+  export interface FilePath extends Timestamped {
+    "file_name": string;
+    "file_type": FileType;
+    "path": string;
+    "repository": Repository;
+  }
+  export type FileType = "PNG" | "JPG" | "JPEG" | "GIF" | "SVG" | "PSD" | "JSON" | "MD" | "TXT" | "LOG" | "ZIP" | "GEL" | "TOML" | "YML" | "YAML" | "JSONC" | "WOFF2" | "CSS" | "TS" | "TSX" | "JS" | "EDGEQL" | "XML" | "PDF" | "CSV" | "SQL" | "HTML";
   export interface License extends Timestamped {
     "html_url"?: string | null;
     "key": string;
@@ -220,11 +225,12 @@ export namespace $default {
     "spdx_id": string;
     "url": string;
   }
-  export interface PackageJson extends Timestamped, RepositoryID {
+  export interface PackageJson extends Timestamped {
     "name": string;
     "package_version": string;
-    "dev_dependencies": Dependency | DevDependency[];
-    "dependencies": Dependency | ProdDependency[];
+    "dev_dependencies": DevDependency[];
+    "dependencies": ProdDependency[];
+    "repository": Repository;
   }
   export interface Permissions extends Timestamped {
     "admin": boolean;
@@ -234,9 +240,9 @@ export namespace $default {
     "triage"?: boolean | null;
   }
   export interface ProdDependency extends Dependency {
-    "dependency_type": DependencyType;
+    "dependency_type"?: DependencyType | null;
   }
-  export interface Repository extends Timestamped, RepositoryID {
+  export interface Repository extends Timestamped {
     "clone_url"?: string | null;
     "allow_auto_merge"?: boolean | null;
     "allow_forking"?: boolean | null;
@@ -317,10 +323,14 @@ export namespace $default {
     "tags_url"?: string | null;
     "teams_url"?: string | null;
     "trees_url"?: string | null;
+    "repository_id": number;
     "license": License;
     "owner": User;
     "template_repository"?: Repository | null;
     "permissions"?: Permissions | null;
+    "all_dependencies": Dependency[];
+    "all_file_paths": FilePath[];
+    "package_json": PackageJson[];
   }
   export interface User extends Timestamped {
     "avatar_url": string;
@@ -348,10 +358,11 @@ export namespace $default {
   }
 }
 export type Timestamped = $default.Timestamped;
-export type RepositoryID = $default.RepositoryID;
 export type Dependency = $default.Dependency;
 export type DependencyType = $default.DependencyType;
 export type DevDependency = $default.DevDependency;
+export type FilePath = $default.FilePath;
+export type FileType = $default.FileType;
 export type License = $default.License;
 export type PackageJson = $default.PackageJson;
 export type Permissions = $default.Permissions;
@@ -634,10 +645,11 @@ export interface types {
   };
   "default": {
     "Timestamped": $default.Timestamped;
-    "RepositoryID": $default.RepositoryID;
     "Dependency": $default.Dependency;
     "DependencyType": $default.DependencyType;
     "DevDependency": $default.DevDependency;
+    "FilePath": $default.FilePath;
+    "FileType": $default.FileType;
     "License": $default.License;
     "PackageJson": $default.PackageJson;
     "Permissions": $default.Permissions;

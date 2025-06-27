@@ -2,26 +2,16 @@
 
 import type {Executor} from "gel";
 
+export type GetFilePathArgs = {
+  readonly "repository_id"?: number | null;
+};
 
-export type GetAllPackageJsonsReturns = Array<{
-  "name": string;
-  "package_version": string;
-  "id": string;
+export type GetFilePathReturns = {
   "last_updated": Date | null;
-  "dependencies": Array<{
-    "last_updated": Date | null;
-    "id": string;
-    "name": string;
-    "dependency_version": string;
-    "dependency_type": ("Dev" | "Prod") | null;
-  }>;
-  "dev_dependencies": Array<{
-    "last_updated": Date | null;
-    "id": string;
-    "name": string;
-    "dependency_version": string;
-    "dependency_type": ("Dev" | "Prod") | null;
-  }>;
+  "id": string;
+  "file_name": string;
+  "file_type": ("PNG" | "JPG" | "JPEG" | "GIF" | "SVG" | "PSD" | "JSON" | "MD" | "TXT" | "LOG" | "ZIP" | "GEL" | "TOML" | "YML" | "YAML" | "JSONC" | "WOFF2" | "CSS" | "TS" | "TSX" | "JS" | "EDGEQL" | "XML" | "PDF" | "CSV" | "SQL" | "HTML");
+  "path": string;
   "repository": {
     "branches_url": string | null;
     "clone_url": string | null;
@@ -107,11 +97,15 @@ export type GetAllPackageJsonsReturns = Array<{
     "id": string;
     "last_updated": Date | null;
   };
-}>;
+} | null;
 
-export function getAllPackageJsons(client: Executor): Promise<GetAllPackageJsonsReturns> {
-  return client.query(`\
-# return all packageJsons
-select PackageJson { ** };`);
+export function getFilePath(client: Executor, args: GetFilePathArgs): Promise<GetFilePathReturns> {
+  return client.querySingle(`\
+# get FilePath by repoID
+select assert_single(
+  FilePath { ** }
+  filter assert_exists(Repository.repository_id) ?= <optional int64>$repository_id
+  and FilePath.file_type = FileType.JSON
+) limit 1;`, args);
 
 }

@@ -2,26 +2,23 @@
 
 import type {Executor} from "gel";
 
+export type GetDependenciesForRepoArgs = {
+  readonly "repository_id"?: number | null;
+  readonly "package_json_name"?: string | null;
+};
 
-export type GetAllPackageJsonsReturns = Array<{
+export type GetDependenciesForRepoReturns = Array<{
+  "dependency_version": string;
   "name": string;
-  "package_version": string;
   "id": string;
   "last_updated": Date | null;
-  "dependencies": Array<{
-    "last_updated": Date | null;
-    "id": string;
+  "dependency_type": ("Dev" | "Prod") | null;
+  "package_json": {
     "name": string;
-    "dependency_version": string;
-    "dependency_type": ("Dev" | "Prod") | null;
-  }>;
-  "dev_dependencies": Array<{
-    "last_updated": Date | null;
+    "package_version": string;
     "id": string;
-    "name": string;
-    "dependency_version": string;
-    "dependency_type": ("Dev" | "Prod") | null;
-  }>;
+    "last_updated": Date | null;
+  };
   "repository": {
     "branches_url": string | null;
     "clone_url": string | null;
@@ -109,9 +106,14 @@ export type GetAllPackageJsonsReturns = Array<{
   };
 }>;
 
-export function getAllPackageJsons(client: Executor): Promise<GetAllPackageJsonsReturns> {
+export function getDependenciesForRepo(client: Executor, args: GetDependenciesForRepoArgs): Promise<GetDependenciesForRepoReturns> {
   return client.query(`\
-# return all packageJsons
-select PackageJson { ** };`);
+# Get all dependencies by repository_id or package_json name
+select Dependency {
+  **
+} filter (
+  assert_exists(Repository.repository_id) ?= <optional int64>$repository_id 
+  or assert_exists(Dependency.package_json.name) ?= <optional str>$package_json_name
+);`, args);
 
 }
