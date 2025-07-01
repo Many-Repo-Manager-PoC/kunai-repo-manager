@@ -9,7 +9,7 @@ import {
   type GitHubTreeItem,
   type TreeItemInput,
 } from "~/db/types";
-import { parseFileContents } from "~/util/oxc-utils";
+import { getDependencyPaths } from "~/util/oxc-utils";
 
 export const createComponentCopySchema = z.object({
   targetRepo: z.string().min(1, "Target repository is required"),
@@ -45,21 +45,10 @@ export const useCreateComponentCopy = formAction$<CreateComponentCopyFormType>(
       });
 
       // get a list of the component files with their content in the format needed for the createTree API
-      // const componentTreeList = await getComponentTreeList(
-      //   octokit,
-      //   sourceRepoOwner,
-      //   sourceRepoName,
-      //   componentPaths,
-      //   basePathOverride,
-      // );
-
       const componentTreeList = await getComponentListForDependencyTree(
         componentPaths,
         basePathOverride,
       );
-
-      // const componentTreeList = treeItems as TreeItemInput[];
-      // console.log("componentTreeList", componentTreeList);
 
       const newTree = await octokit.rest.git.createTree({
         owner: targetRepoOwner,
@@ -128,7 +117,7 @@ const findComponentFiles = async (
     recursive: "true",
   });
 
-  const tsxComponentFiles: GitHubTreeItem[] = tree.data.tree.filter(
+  const tsxComponentFiles = tree.data.tree.filter(
     (item) =>
       item.type === FileType.blob &&
       item.mode === FileMode.blob &&
@@ -137,54 +126,6 @@ const findComponentFiles = async (
   );
 
   return tsxComponentFiles;
-};
-
-// get the component tree list for the source repo
-const getComponentTreeList = async (
-  octokit: Octokit,
-  sourceRepoOwner: string,
-  sourceRepoName: string,
-  componentPaths: string[],
-  basePathOverride?: string,
-) => {
-  const tsxComponentFiles = await findComponentFiles(
-    octokit,
-    sourceRepoOwner,
-    sourceRepoName,
-    componentPaths,
-  );
-
-  // create the tree items for the new tree by copying the tsx files from the source repo
-  const treeItems = await Promise.all(
-    tsxComponentFiles.map(async (item) => {
-      // get the file content from the source repo
-      const fileContent = await octokit.rest.repos.getContent({
-        owner: sourceRepoOwner,
-        repo: sourceRepoName,
-        path: item.path,
-      });
-
-      if (
-        !Array.isArray(fileContent.data) &&
-        fileContent.data.type === "file" &&
-        "content" in fileContent.data
-      ) {
-        const newPath = basePathOverride
-          ? item.path.replace("src/components", basePathOverride) // TODO: See above comment about dynamic component paths
-          : item.path;
-
-        return {
-          path: newPath,
-          type: item.type as FileType,
-          content: Buffer.from(fileContent.data.content, "base64").toString(), // Decode the base64 content
-          mode: item.mode as FileMode,
-        } satisfies TreeItemInput;
-      }
-    }),
-  );
-
-  const filteredTreeItems = treeItems.filter((item) => item !== undefined);
-  return filteredTreeItems;
 };
 
 const createPullRequest = async (
@@ -278,36 +219,30 @@ export const getComponentListForDependencyTree = server$(async function (
         "base64",
       ).toString();
 
-      const treeItem: TreeItemInput = {
+      treeItems.push({
         path: newPath,
         type: item.type as FileType,
         content: stringContent, // Decode the base64 content
         mode: item.mode as FileMode,
-      } satisfies TreeItemInput;
+      } satisfies TreeItemInput);
 
-      treeItems.push(treeItem);
-
-      const importPaths = parseFileContents(stringContent, item.path);
-      console.log("importPaths", importPaths);
+      const dependencyPaths = getDependencyPaths(stringContent, item.path);
+      console.debug("dependencyPaths", dependencyPaths);
 
       // TODO: Probably want to update this to avoid the inner search for the import item
-      for (const importPath of importPaths) {
-        const importItem = allTsxComponentFiles.find(
-          (i) => i.path === importPath,
+      for (const dependencyPath of dependencyPaths) {
+        const dependencyItem = allTsxComponentFiles.find(
+          (i) => i.path === dependencyPath,
         );
-        console.log("importItem", importItem);
-        if (importItem) {
-          await buildDependencyTree(importItem);
+        console.debug("dependencyItem", dependencyItem);
+        if (dependencyItem) {
+          await buildDependencyTree(dependencyItem);
         }
       }
     }
   };
 
-  await Promise.all(
-    userSelectedTsxComponentFiles.map(async (item) => {
-      await buildDependencyTree(item);
-    }),
-  );
+  await Promise.all(userSelectedTsxComponentFiles.map(buildDependencyTree));
   console.log("treeItems", treeItems);
   return treeItems;
 });

@@ -1,21 +1,9 @@
-import { ParseResult, parseSync } from "oxc-parser";
-import { walk, parseAndWalk } from "oxc-walker";
-import { ResolverFactory } from "oxc-resolver";
-import type {} from "@oxc-project/types";
-import path, { dirname, relative, resolve } from "node:path";
+import { parseSync } from "oxc-parser";
+import path, { dirname } from "node:path";
 
-// const resolver = new ResolverFactory({
-//   extensions: [".tsx", ".ts", ".js", ".jsx"],
-//   preferRelative: true,
-//   resolveToContext: true,
-//   roots: ["src/components"],
-// });
-
-export const parseFileContents = (fileContent: string, filePath: string) => {
+export const getDependencyPaths = (fileContent: string, filePath: string) => {
   const filename = path.basename(filePath);
   const resolvedPaths: string[] = [];
-  console.log("filePath", filePath);
-  const dir = process.cwd();
 
   // Step 1: Parse the file to get the AST
   const ast = parseSync(filename, fileContent, {
@@ -24,7 +12,7 @@ export const parseFileContents = (fileContent: string, filePath: string) => {
     lang: "tsx",
   });
 
-  // Step 2: Get all import paths (e.g. "~/components/Button")
+  // Step 2: Get all import paths (e.g. "./Button")
   const importPaths = ast.module.staticImports.map((imports) => {
     return imports.moduleRequest.value;
   });
@@ -43,6 +31,4 @@ export const parseFileContents = (fileContent: string, filePath: string) => {
 };
 
 // Check if the import path is a local import
-const isLocalImport = (importPath: string): boolean => {
-  return importPath.startsWith(".") || importPath.startsWith("~");
-};
+const isLocalImport = (importPath: string) => importPath.startsWith(".");
