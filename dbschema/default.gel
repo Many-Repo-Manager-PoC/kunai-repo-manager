@@ -39,7 +39,7 @@ module default {
     required labels_url: str;
     required language: str;
     required languages_url: str;
-    required license: License;
+    license: License;
     required name: str;
     required node_id: str;
     required notifications_url: str;
@@ -132,6 +132,7 @@ module default {
     required push: bool;
     triage: bool;
     required pull: bool;
+    user: User;
  }
 
  type User extending Timestamped {

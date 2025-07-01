@@ -4,7 +4,7 @@ import e from "../../dbschema/edgeql-js";
 import type { Octokit } from "octokit";
 import { OCTOKIT_CLIENT } from "../routes/plugin@octokit";
 import metadata from "../db/metadata.json";
-
+import { type RequestEvent } from "@builder.io/qwik-city";
 // Import the functions from the existing actions file
 import {
   insertPackageJson,
@@ -14,9 +14,10 @@ import {
 
 export const useRefreshPackageJson = server$(async function (
   repositoryName: string,
+  event: RequestEvent,
 ) {
   try {
-    const octokit: Octokit = this.sharedMap.get(OCTOKIT_CLIENT);
+    const octokit: Octokit = event.sharedMap.get(OCTOKIT_CLIENT);
     const client = createClient();
 
     // Find the dependency path for the specified repository
@@ -83,8 +84,6 @@ export const useRefreshPackageJson = server$(async function (
     formData.append("version", packageJson.version || "1.0.0");
     formData.append("dependencies", JSON.stringify(dependencies));
     formData.append("devDependencies", JSON.stringify(devDependencies));
-
-    // console.log("formData is", formData);
 
     await updatePackageJson(formData);
 

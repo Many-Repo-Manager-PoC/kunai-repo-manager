@@ -238,6 +238,7 @@ export namespace $default {
     "pull": boolean;
     "push": boolean;
     "triage"?: boolean | null;
+    "user"?: User | null;
   }
   export interface ProdDependency extends Dependency {
     "dependency_type"?: DependencyType | null;
@@ -324,9 +325,9 @@ export namespace $default {
     "teams_url"?: string | null;
     "trees_url"?: string | null;
     "repository_id": number;
-    "license": License;
     "owner": User;
     "template_repository"?: Repository | null;
+    "license"?: License | null;
     "permissions"?: Permissions | null;
     "all_dependencies": Dependency[];
     "all_file_paths": FilePath[];

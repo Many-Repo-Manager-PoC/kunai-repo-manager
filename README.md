@@ -36,6 +36,13 @@ Step 1: Create A Gel Account
   - then, `pnpm gel migrate`
   - `pnpm gel ui` to see the changes!
 
+### Updating types/queries/interfaces
+
+- you need to do this when you make changes to schema and types so that you don't get incorrect typescript errors in your code
+- in a terminal type `pnpm generate queries`
+- then type `pnpm generate queries --file` <-- this creates the query file inside the db schema. -`pnpm generate interfaces`
+- `pnpm generate edgeql-js`
+
 ## A Qwik City App ⚡️
 
 - [Qwik Docs](https://qwik.dev/)

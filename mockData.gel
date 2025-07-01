@@ -125,32 +125,29 @@ INSERT PackageJson {
 };
 
 INSERT ProdDependency {
-    name := "vue",
-    dependency_version := "^3.3.8",
-    repository_id := 1296268,
-    repository := (SELECT Repository FILTER .repository_id = 1296268),
-    package_json := (SELECT PackageJson FILTER .repository_id = 1296268)
+    name := "quixotic-utils",
+    dependency_version := "^2.1.4",
 };
 
 INSERT ProdDependency {
-    name := "moment",
-    dependency_version := "^2.29.4",
+    name := "nebula-core",
+    dependency_version := "^1.7.3",
     repository_id := 1296268,
     repository := (SELECT Repository FILTER .repository_id = 1296268),
     package_json := (SELECT PackageJson FILTER .repository_id = 1296268)
 };
 
 INSERT DevDependency {
-    name := "webpack",
-    dependency_version := "^5.89.0",
+    name := "phantom-bundler",
+    dependency_version := "^3.2.1",
     repository_id := 1296268,
     repository := (SELECT Repository FILTER .repository_id = 1296268),
     package_json := (SELECT PackageJson FILTER .repository_id = 1296268)
 };
 
 INSERT DevDependency {
-    name := "babel",
-    dependency_version := "^7.23.5",
+    name := "shadow-linter",
+    dependency_version := "^7.8.9",
     repository_id := 1296268,   
     repository := (SELECT Repository FILTER .repository_id = 1296268),
     package_json := (SELECT PackageJson FILTER .repository_id = 1296268)

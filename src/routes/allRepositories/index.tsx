@@ -7,7 +7,8 @@ import { PageTitle } from "~/components/page/pageTitle";
 import { LuRotateCcw } from "@qwikest/icons/lucide";
 export { usePutBulkTopics } from "~/db/putTopics";
 import type { GetRepositoryReturns } from "../../../dbschema/queries";
-import { useGetRepositories, useGetRepositoriesForAllTopics } from "~/hooks";
+import { useGetRepositoriesForAllTopics, useGetRepositories } from "~/hooks";
+import { useRefreshRepositories } from "~/actions/repository.server";
 
 export default component$(() => {
   const searchQuery = useSignal("");
@@ -15,11 +16,14 @@ export default component$(() => {
   const selectedRepos = useSignal<string[]>([]);
   const isShow = useSignal(false);
   const navigate = useNavigate();
-  const repositories = useGetRepositories();
+
+  useRefreshRepositories();
+  const queriedRepositories = useGetRepositories().value;
 
   const allTopics = useGetRepositoriesForAllTopics();
+  console.log("allTopics", queriedRepositories);
 
-  const repoTopicsMap = repositories.value?.reduce(
+  const repoTopicsMap = queriedRepositories?.reduce(
     (acc: Record<string, string[]>, repo) => {
       if (repo?.name) {
         acc[repo.name] = repo.topics || [];
@@ -30,7 +34,7 @@ export default component$(() => {
   );
 
   const handleSelectAll = $(() => {
-    const filteredRepos = repositories.value
+    const filteredRepos = queriedRepositories
       ?.filter((repo): repo is NonNullable<typeof repo> => {
         if (!repo) return false;
         const matchesSearch =
@@ -152,8 +156,8 @@ export default component$(() => {
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {repositories.value &&
-            repositories.value
+          {queriedRepositories &&
+            queriedRepositories
               .filter((repo) => {
                 const matchesSearch = repo?.name
                   ?.toLowerCase()

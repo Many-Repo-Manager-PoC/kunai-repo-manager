@@ -9,6 +9,14 @@ export type GetUserArgs = {
 
 export type GetUserReturns = Array<{
   "avatar_url": string;
+  "login": string;
+  "role_type": string;
+  "site_admin": boolean;
+  "starred_at": string | null;
+  "user_id": number;
+  "user_view_type": string | null;
+  "id": string;
+  "last_updated": Date | null;
   "email": string;
   "events_url": string | null;
   "followers_url": string | null;
@@ -16,22 +24,14 @@ export type GetUserReturns = Array<{
   "gists_url": string | null;
   "gravatar_id": string | null;
   "html_url": string | null;
-  "login": string;
   "name": string;
   "node_id": string | null;
   "organizations_url": string | null;
   "received_events_url": string | null;
   "repos_url": string | null;
-  "role_type": string;
-  "site_admin": boolean;
-  "starred_at": string | null;
   "starred_url": string | null;
   "subscriptions_url": string | null;
   "url": string | null;
-  "user_id": number;
-  "user_view_type": string | null;
-  "id": string;
-  "last_updated": Date | null;
 }>;
 
 export function getUser(client: Executor, args: GetUserArgs): Promise<GetUserReturns> {
