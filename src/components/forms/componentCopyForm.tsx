@@ -1,10 +1,11 @@
-import { $, component$, useComputed$ } from "@builder.io/qwik";
+import { $, component$, useComputed$, useSignal } from "@builder.io/qwik";
 import {
   useForm,
   zodForm$,
   reset,
   setValue,
   getValue,
+  validate,
 } from "@modular-forms/qwik";
 import { TextInput } from "~/components/formInputs/textInput";
 import { SelectInput } from "~/components/formInputs/selectInput";
@@ -13,10 +14,13 @@ import { useCreateComponentCopy } from "~/routes/layout";
 import {
   type CreateComponentCopyFormType,
   createComponentCopySchema,
+  getComponentListForDependencyTree,
 } from "~/db/createComponentCopy";
 import type { Repo, GitHubTreeItem } from "~/db/types";
 import { FileTree } from "~/components/tree/fileTree";
 import { buildTree } from "~/util/tree";
+import { CopyComponentsModal } from "../modals/copyComponentsModal";
+import { useLocation } from "@builder.io/qwik-city";
 
 export interface ComponentCopyFormProps {
   repositories: Repo[];
@@ -44,8 +48,9 @@ export const ComponentCopyForm = component$<ComponentCopyFormProps>(
           targetBranch: "",
           targetPath: "src/components",
           componentPaths: [
-            "src/components/Button",
-            "src/components/Button/Button.tsx",
+            // "src/components/Button",
+            // "src/components/Button/Button.tsx",
+            "src/components/Cards/BasicCard.tsx",
           ],
         },
       },
@@ -66,6 +71,20 @@ export const ComponentCopyForm = component$<ComponentCopyFormProps>(
     const handleReset = $(() => {
       reset(form);
     });
+
+    const isOpen = useSignal(false);
+
+    // const onModalOpen = $(async () => {
+    //   const isValid = await validate(form);
+
+    //   if (isValid) {
+    //     isOpen.value = true;
+    //     // Fetch component info and build dependency tree
+    //     const treeItems = await getComponentListForDependencyTree(
+    //       form.internal.fields.componentPaths?.value ?? [],
+    //     );
+    //   }
+    // });
 
     return (
       <div>
@@ -126,7 +145,7 @@ export const ComponentCopyForm = component$<ComponentCopyFormProps>(
                     <FileTree
                       error={field.error}
                       value={field.value ?? []}
-                      defaultOpenKeys={["src", "components", "Button"]}
+                      defaultOpenKeys={["src", "components", "Button", "Cards"]}
                       treeData={treeData.value}
                       onChange$={handleChange}
                     />
@@ -150,11 +169,31 @@ export const ComponentCopyForm = component$<ComponentCopyFormProps>(
                 class="cursor-pointer"
                 type="submit"
                 disabled={form.submitting}
+                // onClick$={onModalOpen}
               >
                 Copy Components
               </Button>
             </div>
-
+            <div class="flex justify-center items-center w-full">
+              <CopyComponentsModal openSignal={isOpen}>
+                <div class="flex flex-col gap-4">
+                  <label class="text-sm font-medium text-gray-900 dark:text-gray-100">
+                    Select Components to Copy
+                  </label>
+                  <Field name="componentPaths" type="string[]">
+                    {(field) => (
+                      <FileTree
+                        error={field.error}
+                        value={field.value ?? []}
+                        defaultOpenKeys={["src", "components", "Button"]}
+                        treeData={treeData.value}
+                        onChange$={handleChange}
+                      />
+                    )}
+                  </Field>
+                </div>
+              </CopyComponentsModal>
+            </div>
             {/* Status Messages */}
             <div class="flex gap-4 justify-end">
               {form.submitting && (
