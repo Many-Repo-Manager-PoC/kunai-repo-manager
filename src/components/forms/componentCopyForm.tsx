@@ -37,16 +37,16 @@ export const ComponentCopyForm = component$<ComponentCopyFormProps>(
       );
     });
 
-    const [form, { Form, Field }] = useForm<CreateComponentCopyFormType>({
+    const [form, { Form, Field }] = useForm<
+      CreateComponentCopyFormType,
+      { url: string }
+    >({
       loader: {
         value: {
           targetRepo: "",
           targetBranch: "",
           targetPath: "src/components",
-          componentPaths: [
-            "src/components/Button",
-            "src/components/Button/Button.tsx",
-          ],
+          componentPaths: [],
         },
       },
       validate: zodForm$(createComponentCopySchema),
@@ -126,7 +126,7 @@ export const ComponentCopyForm = component$<ComponentCopyFormProps>(
                     <FileTree
                       error={field.error}
                       value={field.value ?? []}
-                      defaultOpenKeys={["src", "components", "Button"]}
+                      defaultOpenKeys={["src", "components"]}
                       treeData={treeData.value}
                       onChange$={handleChange}
                     />
@@ -161,9 +161,18 @@ export const ComponentCopyForm = component$<ComponentCopyFormProps>(
                 <span class="text-sm text-gray-500">Submitting...</span>
               )}
               {form.response.status === "success" && (
-                <span class="text-sm text-green-500">
-                  {form.response.message}
-                </span>
+                <>
+                  <div class="text-sm text-green-500">
+                    {form.response.message}
+                  </div>
+                  <a
+                    href={form.response.data?.url}
+                    target="_blank"
+                    class="dark:text-white"
+                  >
+                    View on GitHub
+                  </a>
+                </>
               )}
               {form.response.status === "error" && (
                 <span class="text-sm text-red-500">

@@ -23,68 +23,70 @@ export type CreateComponentCopyFormType = z.infer<
   typeof createComponentCopySchema
 >;
 
-export const useCreateComponentCopy = formAction$<CreateComponentCopyFormType>(
-  async (data, { sharedMap, params }) => {
-    try {
-      const octokit: Octokit = sharedMap.get(OCTOKIT_CLIENT);
-      const { repoOwner: sourceRepoOwner, name: sourceRepoName } = params;
-      const {
-        targetRepo,
-        targetBranch: targetBranchName,
-        targetPath: basePathOverride,
-        componentPaths,
-      } = data;
-      const [targetRepoOwner, targetRepoName] = targetRepo.split("/");
+export const useCreateComponentCopy = formAction$<
+  CreateComponentCopyFormType,
+  { url: string }
+>(async (data, { sharedMap, params }) => {
+  try {
+    const octokit: Octokit = sharedMap.get(OCTOKIT_CLIENT);
+    const { repoOwner: sourceRepoOwner, name: sourceRepoName } = params;
+    const {
+      targetRepo,
+      targetBranch: targetBranchName,
+      targetPath: basePathOverride,
+      componentPaths,
+    } = data;
+    const [targetRepoOwner, targetRepoName] = targetRepo.split("/");
 
-      // First get the SHA of the main branch for the target repo
-      const mainBranch = await octokit.rest.repos.getBranch({
-        owner: targetRepoOwner,
-        repo: targetRepoName,
-        branch: "main",
-      });
+    // First get the SHA of the main branch for the target repo
+    const mainBranch = await octokit.rest.repos.getBranch({
+      owner: targetRepoOwner,
+      repo: targetRepoName,
+      branch: "main",
+    });
 
-      // get a list of the component files with their content in the format needed for the createTree API
-      const componentTreeList = await getComponentTreeList(
-        octokit,
-        sourceRepoOwner,
-        sourceRepoName,
-        componentPaths,
-        basePathOverride,
-      );
+    // get a list of the component files with their content in the format needed for the createTree API
+    const componentTreeList = await getComponentTreeList(
+      octokit,
+      sourceRepoOwner,
+      sourceRepoName,
+      componentPaths,
+      basePathOverride,
+    );
 
-      const newTree = await octokit.rest.git.createTree({
-        owner: targetRepoOwner,
-        repo: targetRepoName,
-        tree: componentTreeList,
-        base_tree: mainBranch.data.commit.sha,
-      });
+    const newTree = await octokit.rest.git.createTree({
+      owner: targetRepoOwner,
+      repo: targetRepoName,
+      tree: componentTreeList,
+      base_tree: mainBranch.data.commit.sha,
+    });
 
-      // create the new PR for the target repo with the new tree and the main branch as the base
-      await createPullRequest(
-        octokit,
-        sourceRepoOwner,
-        sourceRepoName,
-        targetRepo,
-        targetBranchName,
-        newTree.data.sha,
-        mainBranch.data.commit.sha,
-      );
+    // create the new PR for the target repo with the new tree and the main branch as the base
+    const pr = await createPullRequest(
+      octokit,
+      sourceRepoOwner,
+      sourceRepoName,
+      targetRepo,
+      targetBranchName,
+      newTree.data.sha,
+      mainBranch.data.commit.sha,
+    );
 
-      return {
-        status: "success",
-        message: "Component copy created",
-      };
-    } catch (error) {
-      console.error("Error dispatching workflow:", error);
-      return {
-        status: "error",
-        error:
-          error instanceof Error ? error.message : "Unknown error occurred",
-      };
-    }
-  },
-  zodForm$(createComponentCopySchema),
-);
+    return {
+      status: "success",
+      message: "Component copy created",
+      data: {
+        url: pr.data.html_url,
+      },
+    };
+  } catch (error) {
+    console.error("Error dispatching workflow:", error);
+    return {
+      status: "error",
+      error: error instanceof Error ? error.message : "Unknown error occurred",
+    };
+  }
+}, zodForm$(createComponentCopySchema));
 
 // get the component tree for the source repo - route loader
 // eslint-disable-next-line qwik/loader-location
@@ -207,7 +209,7 @@ const createPullRequest = async (
   });
 
   // create a new PR for the target repo
-  await octokit.rest.pulls.create({
+  const pr = await octokit.rest.pulls.create({
     owner: targetRepoOwner,
     repo: targetRepoName,
     head: targetBranch.data.ref,
@@ -215,4 +217,6 @@ const createPullRequest = async (
     title: `Component Copy: ${sourceRepoOwner}/${sourceRepoName} -> ${targetRepoOwner}/${targetRepoName}`,
     body: "",
   });
+
+  return pr;
 };
