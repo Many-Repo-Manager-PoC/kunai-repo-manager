@@ -29,7 +29,7 @@ export default component$(() => {
       <PageTitle />
       <TabbedCard tabList={tabList}>
         <div q:slot="Details">
-          <RepoDetails repoDetails={repo} isDesignSystem />
+          <RepoDetails repoDetails={repo} isDesignSystem={isDesignSystem} />
         </div>
         <div q:slot="Dependencies">
           <RepoDependencyCard
