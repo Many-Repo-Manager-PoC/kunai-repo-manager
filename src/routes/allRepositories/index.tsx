@@ -7,6 +7,7 @@ import { useGetRepos } from "~/routes/layout";
 import { BulkTopicsModal } from "~/components/modals/bulkTopicsModal";
 import { PageTitle } from "~/components/page/pageTitle";
 import { LuRotateCcw } from "@qwikest/icons/lucide";
+import { Routes } from "~/config/routes";
 export { usePutBulkTopics } from "~/db/putTopics";
 
 export default component$(() => {
@@ -83,7 +84,7 @@ export default component$(() => {
 
   const handleCardClick = $((repo: Repo) => {
     if (!isShow.value) {
-      navigate(`/allRepositories/${repo.repoOwner}/${repo.name}`);
+      navigate(Routes.repoDetails(repo.repoOwner, repo.name));
     }
   });
 

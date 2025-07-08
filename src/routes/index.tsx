@@ -4,6 +4,7 @@ import { Form, Link, useLocation } from "@builder.io/qwik-city";
 import { useSignOut } from "~/routes/plugin@auth";
 import { Button } from "@kunai-consulting/kunai-design-system";
 import { DashboardCard } from "~/components/cards/dashboardCard";
+import { Routes } from "~/config/routes";
 
 export default component$(() => {
   const signOutSig = useSignOut();
@@ -25,14 +26,14 @@ export default component$(() => {
       </div>
       <div class="container mx-auto px-4 flex flex-col gap-4 mt-4 text-center items-center justify-center">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-max-3 gap-6 max-w-7xl mx-auto justify-center">
-          <Link href="/createRepositories" class="block">
+          <Link href={Routes.createRepos()} class="block">
             <DashboardCard
               title="Create Repositories"
               description="Set up new repositories with ease"
             />
           </Link>
 
-          <Link href="/allRepositories" class="block">
+          <Link href={Routes.allRepos()} class="block">
             <DashboardCard
               title="All Repositories"
               description="Browse and manage your repositories"
@@ -40,7 +41,7 @@ export default component$(() => {
           </Link>
 
           {owner && repoName && (
-            <Link href={`/allRepositories/${owner}/${repoName}`} class="block">
+            <Link href={Routes.repoDetails(owner, repoName)} class="block">
               <DashboardCard
                 title="Repository Details"
                 description={`View details for ${repoName}`}

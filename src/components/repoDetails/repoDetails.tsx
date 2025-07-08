@@ -9,7 +9,7 @@ import {
   GitHubIcon,
 } from "~/components/icons";
 import { TopicsModal } from "~/components/modals/topicsModal";
-import { useLocation } from "@builder.io/qwik-city";
+import { Routes } from "~/config/routes";
 export interface RepoDetailsProps {
   repoDetails?: Repo;
   isDesignSystem?: boolean;
@@ -18,7 +18,6 @@ export interface RepoDetailsProps {
 export const RepoDetails = component$<RepoDetailsProps>(
   ({ repoDetails, isDesignSystem }) => {
     const repoTopics = useSignal(repoDetails?.topics || []);
-    const location = useLocation();
     return (
       <div class="flex flex-col gap-6 w-full">
         <div class="flex justify-between items-center">
@@ -78,7 +77,12 @@ export const RepoDetails = component$<RepoDetailsProps>(
               <div class="py-3 flex dark:text-white">
                 <span class="font-medium w-1/3">Actions</span>
                 <Button asChild>
-                  <a href={`${location.url.pathname}/componentCopy`}>
+                  <a
+                    href={Routes.componentCopy(
+                      repoDetails?.repoOwner,
+                      repoDetails?.name,
+                    )}
+                  >
                     Copy Components
                   </a>
                 </Button>
