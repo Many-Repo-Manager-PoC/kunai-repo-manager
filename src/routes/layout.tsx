@@ -5,9 +5,11 @@ import Page from "~/components/page/page";
 import Header from "~/components/header/header";
 import Footer from "~/components/footer/footer";
 import Toggle from "~/components/toggle/toggle";
-import { useCreateRepository } from "~/db/createRepository";
 import { ApplicationError } from "~/util/errors";
-export { useCreateRepository };
+export {
+  useCreateRepository,
+  useCreateTemplateRepository,
+} from "~/db/createRepository";
 export { useGetRepos } from "~/db/getRepositories";
 export { useGetPackageJson } from "~/db/getPackageJson";
 export { postWorkflowDispatchEvent } from "~/db/postWorkflowDispatchEvent";
