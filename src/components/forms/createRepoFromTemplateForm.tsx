@@ -3,7 +3,7 @@ import { useForm, zodForm$, reset } from "@modular-forms/qwik";
 import { TextInput } from "~/components/formInputs/textInput";
 import { SelectInput } from "~/components/formInputs/selectInput";
 import { Button } from "@kunai-consulting/kunai-design-system";
-import { useCreateTemplateRepository, useGetRepos } from "~/routes/layout";
+import { useCreateTemplateRepository } from "~/routes/layout";
 import {
   type CreateRepositoryFromTemplateFormType,
   createRepositoryFromTemplateSchema,

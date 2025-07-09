@@ -1,5 +1,5 @@
 import { component$ } from "@builder.io/qwik";
-import { type DocumentHead, Link, useLocation } from "@builder.io/qwik-city";
+import { type DocumentHead, useLocation } from "@builder.io/qwik-city";
 import { useGetPackageJson, useGetRepos } from "~/routes/layout";
 import { TabbedCard } from "~/components/cards/tabbedCard";
 import { PageTitle } from "~/components/page/pageTitle";
@@ -8,12 +8,10 @@ import type { Repo } from "~/db/types";
 import { RepoDetails } from "~/components/repoDetails/repoDetails";
 import { RepoDependencyCard } from "~/components/cards/repoDependencyCard";
 import { Routes } from "~/config/routes";
-import { Button } from "@kunai-consulting/kunai-design-system";
 
 export default component$(() => {
   const repos = useGetRepos();
   const packageJson = useGetPackageJson();
-  const location = useLocation();
   const { name: repoName } = useLocation().params;
   const tabList = ["Details", "Dependencies"];
 
