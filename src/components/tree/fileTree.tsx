@@ -1,6 +1,6 @@
 /* TODO: Follow-up work - Refactor into a more generic tree component and likely split into multiple files */
 
-import { component$, type QRL, useSignal } from "@builder.io/qwik";
+import { component$, type QRL, useSignal } from "@qwik.dev/core";
 import { Checkbox } from "@kunai-consulting/kunai-design-system";
 import { Tree } from "@kunai-consulting/qwik";
 import { HiExclamationTriangleMini } from "@qwikest/icons/heroicons";

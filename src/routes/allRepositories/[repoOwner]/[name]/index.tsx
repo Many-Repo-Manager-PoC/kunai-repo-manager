@@ -1,5 +1,5 @@
-import { component$ } from "@builder.io/qwik";
-import { type DocumentHead, useLocation } from "@builder.io/qwik-city";
+import { component$ } from "@qwik.dev/core";
+import { type DocumentHead, useLocation } from "@qwik.dev/router";
 import { useGetPackageJson, useGetRepos } from "~/routes/layout";
 import { TabbedCard } from "~/components/cards/tabbedCard";
 import { PageTitle } from "~/components/page/pageTitle";

@@ -1,5 +1,5 @@
-import { component$, useSignal, $, useComputed$ } from "@builder.io/qwik";
-import { useNavigate, type DocumentHead } from "@builder.io/qwik-city";
+import { component$, useSignal, $, useComputed$ } from "@qwik.dev/core";
+import { useNavigate, type DocumentHead } from "@qwik.dev/router";
 import { RepositoryCard } from "~/components/cards/repositoryCard";
 import type { Repo } from "~/db/types";
 import { Button, Chip } from "@kunai-consulting/kunai-design-system";

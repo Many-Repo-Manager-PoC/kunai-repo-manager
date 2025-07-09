@@ -1,4 +1,4 @@
-import { component$, type QRL } from "@builder.io/qwik";
+import { component$, type QRL } from "@qwik.dev/core";
 import { Checkbox } from "@kunai-consulting/kunai-design-system";
 
 export interface CheckboxInputProps {

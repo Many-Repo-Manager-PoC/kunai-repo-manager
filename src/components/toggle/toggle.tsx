@@ -1,4 +1,4 @@
-import { component$ } from "@builder.io/qwik";
+import { component$ } from "@qwik.dev/core";
 import { LuSun, LuMoon } from "@qwikest/icons/lucide";
 
 export default component$(() => {

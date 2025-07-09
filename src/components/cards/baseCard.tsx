@@ -1,5 +1,5 @@
 import { Card, Divider } from "@kunai-consulting/kunai-design-system";
-import { component$, type QRL, Slot } from "@builder.io/qwik";
+import { component$, type QRL, Slot } from "@qwik.dev/core";
 
 export interface BaseCardProps {
   rootClassNames?: string;
