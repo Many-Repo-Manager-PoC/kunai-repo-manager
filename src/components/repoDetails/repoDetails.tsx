@@ -11,7 +11,7 @@ import {
 import { TopicsModal } from "~/components/modals/topicsModal";
 import { Routes } from "~/config/routes";
 export interface RepoDetailsProps {
-  repoDetails?: Repo | null;
+  repoDetails?: Repo;
   isDesignSystem?: boolean;
 }
 

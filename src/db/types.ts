@@ -27,8 +27,6 @@ export interface Repo {
     type: string;
   };
   repoOwner?: string;
-  is_template?: boolean;
-  template_repository?: Repo | null;
 }
 
 export interface Dependency {

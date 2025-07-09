@@ -42,18 +42,7 @@ export const createRepositorySchema = z
     { message: "At least one merge method must be enabled" },
   );
 
-export const createRepositoryFromTemplateSchema = z.object({
-  repoType: z.enum(["user", "org"]).default("user"),
-  repoName: z.string().min(1, "Repository name is required"),
-  repoDescription: z.string().optional(),
-  visibility: z.enum(["public", "private"]).default("public").optional(),
-  templateRepo: z.string(),
-});
-
 export type CreateRepositoryFormType = z.infer<typeof createRepositorySchema>;
-export type CreateRepositoryFromTemplateFormType = z.infer<
-  typeof createRepositoryFromTemplateSchema
->;
 
 /**
  * Creates a new GitHub repository based on the provided form data.
@@ -119,7 +108,6 @@ export const useCreateRepository = formAction$<
       });
       url = repo.data.html_url;
     }
-
     return {
       data: { url },
       status: "success",
@@ -134,23 +122,3 @@ export const useCreateRepository = formAction$<
     };
   }
 }, zodForm$(createRepositorySchema));
-
-export const useCreateTemplateRepository = formAction$<
-  CreateRepositoryFromTemplateFormType,
-  { url: string }
->(async (formData, event) => {
-  const octokit: Octokit = event.sharedMap.get(OCTOKIT_CLIENT);
-  const repo = await octokit.rest.repos.createUsingTemplate({
-    template_owner: metadata.owner,
-    template_repo: formData.templateRepo,
-    owner: formData.repoType === "org" ? metadata.owner : undefined,
-    name: formData.repoName,
-    description: formData.repoDescription,
-    private: formData.visibility === "private",
-  });
-  return {
-    data: { url: repo.data.html_url },
-    status: "success",
-    message: "Repository created successfully",
-  };
-}, zodForm$(createRepositoryFromTemplateSchema));
