@@ -142,7 +142,7 @@ export const useCreateTemplateRepository = formAction$<
   const octokit: Octokit = event.sharedMap.get(OCTOKIT_CLIENT);
   const repo = await octokit.rest.repos.createUsingTemplate({
     template_owner: metadata.owner,
-    template_repo: formData.templateRepo!,
+    template_repo: formData.templateRepo,
     owner: formData.repoType === "org" ? metadata.owner : undefined,
     name: formData.repoName,
     description: formData.repoDescription,
