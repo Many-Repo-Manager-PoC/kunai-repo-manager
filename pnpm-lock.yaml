@@ -91,7 +91,7 @@ importers:
         specifier: ^4.2.1
         version: 4.3.2(typescript@5.4.5)(vite@5.3.5(@types/node@20.14.11)(lightningcss@1.29.2))
       wrangler:
-        specifier: ^3.0.0
+        specifier: ^3.91.0
         version: 3.114.8(@cloudflare/workers-types@4.20250508.0)
 
 packages:
