@@ -50,7 +50,7 @@
     "undici": "*",
     "vite": "5.3.5",
     "vite-tsconfig-paths": "^4.2.1",
-    "wrangler": "^3.0.0"
+    "wrangler": "^3.91.0"
   },
   "dependencies": {
     "@fontsource-variable/work-sans": "^5.2.5",
