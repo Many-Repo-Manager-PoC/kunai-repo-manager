@@ -1,6 +1,7 @@
 module default {
 
  scalar type DependencyType extending enum <Dev, Prod>;
+ scalar type Visibility extending enum <Public, Private>;
 
  abstract type Timestamped {
     last_updated: datetime {
@@ -8,7 +9,45 @@ module default {
     };
   }
 
+
+  type OrganizationRepository extending Timestamped, Repository {
+   # this will only be populated if it is an organization repository
+   required organization: Organization;
+   # this is only valid if creating an organization repository 
+   team_id: int64;
+  }
+
+  type UserRepository extending Timestamped, Repository {
+    # this will only be populated if it is a user repository
+    required user: User;
+  }
+
  type Repository extending Timestamped {
+   required name: str;
+    description: str;
+    homepage: str;
+   private:bool{
+      default := false;
+   };
+   visibility: Visibility;
+   has_issues: bool{
+      default := true;
+   };
+   has_projects: bool{
+      default := true;
+   };
+   has_wiki: bool{
+      default := true;
+   };
+   has_downloads: bool{
+      default := true;
+   };
+   is_template: bool{
+      default := false;
+   };
+   auto_init: bool{
+      default := false;
+   };
     required repository_id: int64;
     required archived: bool;
     required contents_url: str;
@@ -16,7 +55,7 @@ module default {
     required created_at: str;
     required default_branch: str;
     required deployments_url: str;
-    required description: str;
+
     required disabled: bool;
     required downloads_url: str;
     required events_url: str;
@@ -25,11 +64,10 @@ module default {
     required forks_count: int64;
     required full_name: str;
     required has_discussions: bool;
-    required has_issues: bool;
     required has_pages: bool;
-    required has_projects: bool;
-    required has_wiki: bool;
-    required homepage: str;
+
+
+
     required hooks_url: str;
     required html_url: str;
     required issue_comment_url: str;
@@ -40,13 +78,11 @@ module default {
     required language: str;
     required languages_url: str;
     license: License;
-    required name: str;
     required node_id: str;
     required notifications_url: str;
     required open_issues: int64;
     required open_issues_count: int64;
     required owner: User;
-    required private: bool;
     required pushed_at: str;
     required url: str;
     required ssh_url: str;
@@ -87,9 +123,22 @@ module default {
     allow_squash_merge: bool;
     delete_branch_on_merge: bool;
     forks_url: str;
-    has_downloads: bool;
-    is_template: bool;
+
     master_branch: str;
+   temp_clone_token: str;
+   squash_merge_commit_title: str;
+   squash_merge_commit_message: str;
+   merge_commit_title: str;
+   merge_commit_message: str;
+   subscribers_count: int64;
+   network_count: int64;
+   overloaded parent:  Repository;
+   overloaded source: Repository;
+   anonymous_access_enabled: bool;
+   code_of_conduct: CodeOfConduct;
+   security_and_analysis: SecurityAndAnalysis;
+   custom_properties: json;
+
     permissions: Permissions {
          on source delete delete target;
     };
@@ -97,7 +146,7 @@ module default {
     # put the list of topics in as unordered set of strings
     # will make much easier to query and modify
     multi topics: str;
-    visibility: str;
+
     
 
     package_json := (.<repository[is PackageJson]);
@@ -115,11 +164,68 @@ module default {
 
  }
 
+ type CodeOfConduct extending Timestamped {
+     required repository: Repository;
+     key: str;
+     name: str;
+     url: str;
+     spdx_id: str;
+     node_id: str;
+
+     constraint exclusive on (.node_id);
+ }
+
+
+type Organization extending Timestamped {
+      organization_id: int64;
+      required login: str;
+      required avatar_url: str;
+      name: str;
+      email: str;
+      required id: integer;
+      required node_id: str;
+      required gravatar_id: str | null;
+      required url: str;
+      required html_url: str;
+      required followers_url: str;
+      required following_url: str;
+      required gists_url: str;
+      required starred_url: str;
+      required subscriptions_url: str;
+      required organizations_url: str;
+      required repos_url: str;
+      required events_url: str;
+      required received_events_url: str;
+      required role_type: str;
+      required site_admin: bool;
+      starred_at: str;
+      user_view_type: str;
+
+    constraint exclusive on (.organization_id);
+    constraint exclusive on (.login);
+
+    index on (.login);
+    index on (.organization_id);
+}
+
+ type SecurityAndAnalysis extending Timestamped {
+      required repository: Repository;
+      advanced_security_status: str;
+      code_security_status: str;
+      dependabot_security_updates_status: str;
+      secret_scanning_status: str;
+      secret_scanning_push_protection_status: str;
+      secret_scanning_non_provider_patterns_status: str;
+      secret_scanning_ai_detection_status: str;
+
+      constraint exclusive on (.repository);
+ }
+
  type License extending Timestamped {
     required key: str;
     required name: str;
-    required url: str;
-    required spdx_id: str;
+    url: str;
+    spdx_id: str;
     required node_id: str;
     html_url: str;
 
@@ -133,6 +239,8 @@ module default {
     triage: bool;
     required pull: bool;
     user: User;
+
+    constraint exclusive on (.user);
  }
 
  type User extending Timestamped {
@@ -208,6 +316,7 @@ type PackageJson extending Timestamped {
     constraint exclusive on (.repository){
       annotation description := 'User can only have one PackageJson per repository';
     };
+
 }
 
 
@@ -230,3 +339,4 @@ type PackageJson extending Timestamped {
 
 
 
+    

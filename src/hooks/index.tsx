@@ -7,6 +7,8 @@ import type {
   GetPackageJsonReturns,
   GetDependenciesForRepoReturns,
   GetAllPackageJsonsReturns,
+  InsertOrUpdateRepositoryReturns,
+  InsertOrUpdateRepositoryArgs,
 } from "../../dbschema/queries";
 
 export function useGetRepositories() {
@@ -86,4 +88,17 @@ export function useGetAllPackageJsons() {
     packageJsons.value = result;
   });
   return packageJsons;
+}
+
+export function useInsertOrUpdateRepository(
+  args: InsertOrUpdateRepositoryArgs,
+) {
+  const insertOrUpdateRepository =
+    useSignal<InsertOrUpdateRepositoryReturns | null>(null);
+
+  useTask$(async () => {
+    const result = await queries.insertOrUpdateRepository(createClient(), args);
+    insertOrUpdateRepository.value = result;
+  });
+  return insertOrUpdateRepository;
 }
