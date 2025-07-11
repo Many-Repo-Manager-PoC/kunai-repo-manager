@@ -1,6 +1,6 @@
 import type { Octokit } from "octokit";
 import metadata from "./metadata.json";
-import { routeAction$, type JSONObject } from "@builder.io/qwik-city";
+import { routeAction$, type JSONObject } from "@qwik.dev/router";
 import { OCTOKIT_CLIENT } from "~/routes/plugin@octokit";
 
 /**

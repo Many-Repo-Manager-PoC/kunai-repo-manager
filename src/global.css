@@ -152,3 +152,20 @@ h4,
 .dark .h4 {
   color: theme("colors.kunai.blue.400");
 }
+
+select,
+::picker(select) {
+  appearance: base-select;
+}
+
+::picker(select) {
+  border: none;
+  background-color: transparent;
+  top: calc(anchor(bottom) + 1px);
+  box-shadow: 3px 3px 3px 1px rgba(0, 0, 0, 0.1);
+  border-radius: 0.5rem;
+}
+
+option::checkmark {
+  content: "";
+}

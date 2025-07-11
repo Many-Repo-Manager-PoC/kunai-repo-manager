@@ -1,4 +1,4 @@
-import { component$, type QRL } from "@builder.io/qwik";
+import { component$, type QRL } from "@qwik.dev/core";
 import { Field } from "@kunai-consulting/kunai-design-system";
 import { HiExclamationTriangleMini } from "@qwikest/icons/heroicons";
 

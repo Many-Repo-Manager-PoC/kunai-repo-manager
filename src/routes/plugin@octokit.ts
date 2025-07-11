@@ -15,7 +15,7 @@
  */
 
 import { Octokit } from "octokit";
-import type { RequestHandler } from "@builder.io/qwik-city";
+import type { RequestHandler } from "@qwik.dev/router";
 import type { Session } from "@auth/qwik";
 import { ApplicationError } from "~/util/errors";
 

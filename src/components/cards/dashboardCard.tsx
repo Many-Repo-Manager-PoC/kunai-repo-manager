@@ -1,6 +1,6 @@
-import { component$ } from "@builder.io/qwik";
+import { component$ } from "@qwik.dev/core";
 import { BaseCard } from "./baseCard";
-import { Slot } from "@builder.io/qwik";
+import { Slot } from "@qwik.dev/core";
 
 export interface DashboardCardProps {
   title: string;

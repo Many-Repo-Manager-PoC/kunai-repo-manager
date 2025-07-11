@@ -2,7 +2,7 @@ import type { Octokit } from "octokit";
 import { OCTOKIT_CLIENT } from "~/routes/plugin@octokit";
 import { z } from "zod";
 import { formAction$, zodForm$ } from "@modular-forms/qwik";
-import { routeLoader$ } from "@builder.io/qwik-city";
+import { routeLoader$ } from "@qwik.dev/router";
 import {
   FileMode,
   FileType,
