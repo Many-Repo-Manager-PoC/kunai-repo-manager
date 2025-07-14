@@ -175,8 +175,9 @@ const getComponentTreeList = async (
       }
     }),
   );
-
-  const filteredTreeItems = treeItems.filter((item) => item !== undefined);
+  const filteredTreeItems = treeItems.filter(
+    (item): item is TreeItemInput => item !== undefined,
+  );
   return filteredTreeItems;
 };
 
