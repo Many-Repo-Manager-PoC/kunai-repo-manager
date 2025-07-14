@@ -7,10 +7,14 @@
   "name": "kunai-repo-manager",
   "compatibility_date": "2025-04-29",
   "compatibility_flags": ["nodejs_compat"],
-  "pages_build_output_dir": "./dist",
   "observability": {
-    "enabled": true,
+    "enabled": true
   },
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-paqe"
+  },
+  "main": "./dist/_worker.js"
   /**
    * Smart Placement
    * Docs: https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
