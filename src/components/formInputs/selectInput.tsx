@@ -1,4 +1,4 @@
-import { component$, type QRL } from "@qwik.dev/core";
+import { component$ } from "@qwik.dev/core";
 
 export type SelectOption = {
   value: string;
@@ -12,15 +12,14 @@ export interface SelectInputProps {
   value?: string;
   error: string;
   required?: boolean;
-  ref: QRL<(element: HTMLInputElement) => void>;
-  onInput$: (event: Event, element: HTMLInputElement) => void;
-  onChange$: (event: Event, element: HTMLInputElement) => void;
-  onBlur$: (event: Event, element: HTMLInputElement) => void;
+  onInput$: (event: Event, element: HTMLSelectElement) => void;
+  onChange$: (event: Event, element: HTMLSelectElement) => void;
+  onBlur$: (event: Event, element: HTMLSelectElement) => void;
   options: SelectOption[];
 }
 
 export const SelectInput = component$<SelectInputProps>(
-  ({ label, placeholder, error, options, ...props }) => {
+  ({ label, error, options, ...props }) => {
     const isInvalid = error && error.length > 0;
     return (
       <div>
@@ -30,7 +29,10 @@ export const SelectInput = component$<SelectInputProps>(
           {label}
         </label>
 
-        <select class="w-full cursor-pointer text-sm bg-white rounded-md p-2.5">
+        <select
+          {...props}
+          class="w-full cursor-pointer text-sm bg-white rounded-md p-2.5"
+        >
           {options.map((option, index) => (
             <option
               class="flex p-2 hover:bg-gray-200 transition-colors duration-200 bg-white cursor-pointer "
