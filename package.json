@@ -48,7 +48,7 @@
     "undici": "*",
     "vite": "5.3.5",
     "vite-tsconfig-paths": "^4.2.1",
-    "wrangler": "^3.0.0",
+    "wrangler": "^3.91.0",
     "@qwik.dev/router": "2.0.0-beta.5",
     "@qwik.dev/core": "2.0.0-beta.5"
   },
