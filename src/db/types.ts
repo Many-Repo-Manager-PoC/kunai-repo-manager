@@ -1,4 +1,4 @@
-import { type FailReturn } from "@builder.io/qwik-city";
+import { type FailReturn } from "@qwik.dev/router";
 import { type ErrorContext } from "~/util/errors";
 
 export interface Repo {

@@ -1,6 +1,6 @@
-import { component$ } from "@builder.io/qwik";
-import type { DocumentHead } from "@builder.io/qwik-city";
-import { Form, Link, useLocation } from "@builder.io/qwik-city";
+import { component$ } from "@qwik.dev/core";
+import type { DocumentHead } from "@qwik.dev/router";
+import { Form, Link, useLocation } from "@qwik.dev/router";
 import { useSignOut } from "~/routes/plugin@auth";
 import { Button } from "@kunai-consulting/kunai-design-system";
 import { DashboardCard } from "~/components/cards/dashboardCard";

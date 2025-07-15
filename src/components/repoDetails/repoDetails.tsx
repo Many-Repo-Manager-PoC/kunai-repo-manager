@@ -1,4 +1,4 @@
-import { component$, useSignal } from "@builder.io/qwik";
+import { component$, useSignal } from "@qwik.dev/core";
 import { Button, Chip } from "@kunai-consulting/kunai-design-system";
 import type { Repo } from "~/db/types";
 import {
