@@ -1,15 +1,15 @@
 import { component$ } from "@builder.io/qwik";
 import { type DocumentHead } from "@builder.io/qwik-city";
 import { BaseCard } from "~/components/cards/baseCard";
-// import { ComponentCopyForm } from "~/components/forms/componentCopyForm";
+import { ComponentCopyForm } from "~/components/forms/componentCopyForm";
 import { PageTitle } from "~/components/page/pageTitle";
-// import { useGetRepos } from "~/db/getRepositories";
-// import { useGetRepositoryComponentTree } from "~/db/createComponentCopy";
-// export { useGetRepositoryComponentTree };
+import { useGetRepos } from "~/db/getRepositories";
+import { useGetRepositoryComponentTree } from "~/db/createComponentCopy";
+export { useGetRepositoryComponentTree };
 
 export default component$(() => {
-  // const sourceComponentTree = useGetRepositoryComponentTree();
-  // const repos = useGetRepos();
+  const sourceComponentTree = useGetRepositoryComponentTree();
+  const repos = useGetRepos();
   return (
     <div class="container container-center">
       <PageTitle />
@@ -18,10 +18,10 @@ export default component$(() => {
         divider={false}
       >
         <div q:slot="body">
-          {/* <ComponentCopyForm
+          <ComponentCopyForm
             repositories={repos.value.data?.repositories ?? []}
             sourceComponentTree={sourceComponentTree.value}
-          /> */}
+          />
         </div>
       </BaseCard>
     </div>
