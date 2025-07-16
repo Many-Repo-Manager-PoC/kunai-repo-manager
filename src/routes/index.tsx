@@ -26,14 +26,14 @@ export default component$(() => {
       </div>
       <div class="container mx-auto px-4 flex flex-col gap-4 mt-4 text-center items-center justify-center">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-max-3 gap-6 max-w-7xl mx-auto justify-center">
-          <Link href={Routes.createRepos()} class="block">
+          <Link href={Routes.createRepos()} class="block" prefetch={false}>
             <DashboardCard
               title="Create Repositories"
               description="Set up new repositories with ease"
             />
           </Link>
 
-          <Link href={Routes.allRepos()} class="block">
+          <Link href={Routes.allRepos()} class="block" prefetch={false}>
             <DashboardCard
               title="All Repositories"
               description="Browse and manage your repositories"
