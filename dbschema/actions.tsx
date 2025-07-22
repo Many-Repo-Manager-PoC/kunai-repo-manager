@@ -1,5 +1,5 @@
 import { createClient } from "gel";
-import e from "../dbschema/edgeql-js";
+import e from "./edgeql-js";
 
 export async function insertPackageJson(formData: FormData) {
   const client = createClient();

@@ -129,7 +129,6 @@ export const useRefreshRepositories = server$(async function () {
           stargazers_count: repository.stargazers_count ?? 0,
           stargazers_url: repository.stargazers_url ?? "",
           statuses_url: repository.statuses_url ?? "",
-          subscribers_count: repository.subscribers_count ?? 0,
           subscribers_url: repository.subscribers_url ?? "",
           subscription_url: repository.subscription_url ?? "",
           svn_url: repository.svn_url ?? "",
@@ -138,7 +137,6 @@ export const useRefreshRepositories = server$(async function () {
           trees_url: repository.trees_url ?? "",
           updated_at: repository.updated_at ?? "",
           url: repository.url ?? "",
-          watchers: repository.watchers ?? 0,
           watchers_count: repository.watchers_count ?? 0,
           forks_url: repository.forks_url ?? "",
         };
