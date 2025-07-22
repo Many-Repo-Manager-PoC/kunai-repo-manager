@@ -5,6 +5,7 @@ import { Button, Chip } from "@kunai-consulting/kunai-design-system";
 import { BulkTopicsModal } from "~/components/modals/bulkTopicsModal";
 import { PageTitle } from "~/components/page/pageTitle";
 import { LuRotateCcw } from "@qwikest/icons/lucide";
+import { Routes } from "~/config/routes";
 export { usePutBulkTopics } from "~/db/putTopics";
 import type { GetRepositoryReturns } from "../../../dbschema/queries";
 import { useGetRepositoriesForAllTopics, useGetRepositories } from "~/hooks";
@@ -73,7 +74,7 @@ export default component$(() => {
 
   const handleCardClick = $((repo: GetRepositoryReturns) => {
     if (!isShow.value) {
-      navigate(`/allRepositories/${repo?.owner}/${repo?.name}`);
+      navigate(Routes.repoDetails(repo?.owner.name, repo?.name));
     }
   });
 

@@ -29,7 +29,9 @@ export const SelectInput = component$<SelectInputProps>(
     const isInvalid = error && error.length > 0;
     return (
       <Select.Root>
-        <Select.Label class={isInvalid ? "text-red-500" : ""}>
+        <Select.Label
+          class={isInvalid ? "text-red-500" : "dark:text-white text-black"}
+        >
           {label}
         </Select.Label>
         <Select.Trigger class="w-full">

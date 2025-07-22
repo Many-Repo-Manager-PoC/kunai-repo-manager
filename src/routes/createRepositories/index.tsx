@@ -8,7 +8,10 @@ export default component$(() => {
   return (
     <div class="container container-center">
       <PageTitle />
-      <BaseCard divider={false}>
+      <BaseCard
+        divider={false}
+        rootClassNames="bg-white/50 dark:bg-kunai-blue-600/50"
+      >
         <div q:slot="header">
           <h4>New Repository</h4>
         </div>

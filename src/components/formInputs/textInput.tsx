@@ -21,7 +21,7 @@ export const TextInput = component$<TextInputProps>(
     const isInvalid = error && error.length > 0;
     return (
       <Field.Root>
-        <Field.Label class="mb-1" for={name}>
+        <Field.Label class="mb-1 dark:text-white text-black" for={name}>
           {label}
         </Field.Label>
         <Field.Box>

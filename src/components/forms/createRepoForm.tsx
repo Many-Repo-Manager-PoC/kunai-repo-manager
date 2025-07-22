@@ -13,7 +13,10 @@ import {
 
 export const CreateRepositoryForm = component$(() => {
   const createRepository = useCreateRepository();
-  const [form, { Form, Field }] = useForm<CreateRepositoryFormType>({
+  const [form, { Form, Field }] = useForm<
+    CreateRepositoryFormType,
+    { url: string }
+  >({
     loader: {
       value: {
         repoType: "user",
@@ -54,7 +57,9 @@ export const CreateRepositoryForm = component$(() => {
     <div>
       <Form>
         <div class="grid grid-cols-2 gap-4">
-          <h5 class="text-lg font-semibold col-span-2">General Information</h5>
+          <h5 class="text-lg dark:text-white font-semibold col-span-2">
+            General Information
+          </h5>
           <Field name="repoType">
             {(field, props) => {
               return (
@@ -129,7 +134,9 @@ export const CreateRepositoryForm = component$(() => {
               );
             }}
           </Field>
-          <h5 class="text-lg font-semibold col-span-2">Features</h5>
+          <h5 class="text-lg dark:text-white font-semibold col-span-2">
+            Features
+          </h5>
           <Field name="hasIssues" type="boolean">
             {(field, props) => {
               return (
@@ -178,7 +185,7 @@ export const CreateRepositoryForm = component$(() => {
               );
             }}
           </Field>
-          <h5 class="text-lg font-semibold col-span-2">
+          <h5 class="text-lg dark:text-white font-semibold col-span-2">
             Initialize Repository
           </h5>
           <Field name="autoInit" type="boolean">
@@ -241,31 +248,34 @@ export const CreateRepositoryForm = component$(() => {
               );
             }}
           </Field>
-          <h5 class="text-lg font-semibold col-span-2">Merge Settings</h5>
+          <h5 class="text-lg dark:text-white font-semibold col-span-2">
+            Merge Settings
+          </h5>
           <Field name="allowSquashMerge" type="boolean">
             {(field, props) => {
               return (
                 <CheckboxInput
                   {...props}
-                  label="Allow Squash Merge"
+                  label="Allow squash merge"
                   value={field.value}
                   error={field.error}
                 />
               );
             }}
           </Field>
-          <Field name="allowMergeCommit" type="boolean">
+          <Field name="deleteBranchOnMerge" type="boolean">
             {(field, props) => {
               return (
                 <CheckboxInput
                   {...props}
-                  label="Allow merge commits"
+                  label="Delete branch on merge"
                   value={field.value}
                   error={field.error}
                 />
               );
             }}
           </Field>
+
           <Field name="allowRebaseMerge" type="boolean">
             {(field, props) => {
               return (
@@ -290,12 +300,12 @@ export const CreateRepositoryForm = component$(() => {
               );
             }}
           </Field>
-          <Field name="deleteBranchOnMerge" type="boolean">
+          <Field name="allowMergeCommit" type="boolean">
             {(field, props) => {
               return (
                 <CheckboxInput
                   {...props}
-                  label="Delete branch on merge"
+                  label="Allow merge commits"
                   value={field.value}
                   error={field.error}
                 />
@@ -326,7 +336,20 @@ export const CreateRepositoryForm = component$(() => {
             <span class="text-sm text-gray-500">Submitting...</span>
           )}
           {form.response.status === "success" && (
-            <span class="text-sm text-green-500">{form.response.message}</span>
+            <>
+              <div class="text-sm text-green-500">{form.response.message}</div>
+              <a
+                href={form.response.data?.url}
+                target="_blank"
+                class="dark:text-white"
+              >
+                View on GitHub
+              </a>
+            </>
+          )}
+
+          {form.response.status === "error" && (
+            <span class="text-sm text-red-500">{form.response.message}</span>
           )}
         </div>
       </Form>

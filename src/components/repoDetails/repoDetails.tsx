@@ -1,5 +1,5 @@
-import { component$ } from "@builder.io/qwik";
-import { Chip } from "@kunai-consulting/kunai-design-system";
+import { component$, useSignal } from "@builder.io/qwik";
+import { Button, Chip } from "@kunai-consulting/kunai-design-system";
 import {
   StarIcon,
   GitForkIcon,
@@ -8,14 +8,16 @@ import {
   GitHubIcon,
 } from "~/components/icons";
 import { TopicsModal } from "~/components/modals/topicsModal";
+import { Routes } from "~/config/routes";
 import type { GetRepositoryReturns } from "../../../dbschema/queries";
 export interface RepoDetailsProps {
   repoDetails?: GetRepositoryReturns;
-  repoTopics: string[] | undefined;
+  isDesignSystem?: boolean;
 }
 
 export const RepoDetails = component$<RepoDetailsProps>(
-  ({ repoDetails, repoTopics }) => {
+  ({ repoDetails, isDesignSystem }) => {
+    const repoTopics = useSignal(repoDetails?.topics || []);
     return (
       <div class="flex flex-col gap-6 w-full">
         <div class="flex justify-between items-center">
@@ -71,6 +73,21 @@ export const RepoDetails = component$<RepoDetailsProps>(
             <span class="dark:text-white">Repository Information</span>
           </h4>
           <div class="border-t border-gray-500 dark:border-gray-300 divide-y divide-gray-500 dark:divide-gray-300">
+            {isDesignSystem && (
+              <div class="py-3 flex dark:text-white">
+                <span class="font-medium w-1/3">Actions</span>
+                <Button asChild>
+                  <a
+                    href={Routes.componentCopy(
+                      repoDetails?.owner.name,
+                      repoDetails?.name,
+                    )}
+                  >
+                    Copy Components
+                  </a>
+                </Button>
+              </div>
+            )}
             <div class="py-3 flex dark:text-white">
               <span class="font-medium w-1/3">Language</span>
               <div class="flex items-center gap-2">
@@ -98,7 +115,7 @@ export const RepoDetails = component$<RepoDetailsProps>(
             </div>
 
             {repoDetails?.homepage && (
-              <div class="py-3 flex  dark:text-white">
+              <div class="py-3 flex">
                 <span class="font-medium w-1/3">Homepage</span>
                 <a
                   href={repoDetails.homepage}
@@ -119,19 +136,23 @@ export const RepoDetails = component$<RepoDetailsProps>(
             </h4>
             <TopicsModal
               selectedRepo={repoDetails?.name || ""}
-              topicsMap={repoTopics || []}
+              topicsMap={repoTopics.value}
             />
           </div>
           <div class="flex flex-wrap gap-2">
-            {repoTopics?.map((topic) => (
-              <Chip.Root
-                class="bg-gray-100 dark:bg-kunai-blue-300 text-sm"
-                variant="outline"
-                key={topic}
-              >
-                <span class="truncate">{topic}</span>
-              </Chip.Root>
-            ))}
+            {repoDetails?.topics && repoDetails.topics.length > 0 ? (
+              repoDetails.topics.map((topic) => (
+                <Chip.Root
+                  class="bg-gray-100 dark:bg-kunai-blue-300 text-sm"
+                  variant="outline"
+                  key={topic}
+                >
+                  <span class="truncate">{topic}</span>
+                </Chip.Root>
+              ))
+            ) : (
+              <span class="text-sm text-gray-500">No topics available</span>
+            )}
           </div>
         </div>
       </div>

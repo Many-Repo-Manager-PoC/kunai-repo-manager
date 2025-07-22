@@ -11,7 +11,7 @@ export { useCreateRepository };
 export { useGetRepos } from "~/db/getRepositories";
 export { useGetPackageJson } from "~/db/getPackageJson";
 export { postWorkflowDispatchEvent } from "~/db/postWorkflowDispatchEvent";
-export { createCodeCopyWorkflow } from "~/db/createCodeCopyWorkflow";
+export { useCreateComponentCopy } from "~/db/createComponentCopy";
 export { usePutTopics } from "~/db/putTopics";
 
 export const onGet: RequestHandler = async ({ cacheControl, sharedMap }) => {
