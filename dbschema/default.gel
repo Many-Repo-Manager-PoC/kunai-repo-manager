@@ -1,7 +1,7 @@
 module default {
 
  scalar type DependencyType extending enum <Dev, Prod>;
- scalar type Visibility extending enum <Public, Private>;
+ scalar type Visibility extending enum <public, private>;
 
  abstract type Timestamped {
     last_updated: datetime {
@@ -9,22 +9,12 @@ module default {
     };
   }
 
-
-  type OrganizationRepository extending Timestamped, Repository {
-   # this will only be populated if it is an organization repository
-   required organization: Organization;
-   # this is only valid if creating an organization repository 
-   team_id: int64;
-  }
-
-  type UserRepository extending Timestamped, Repository {
-    # this will only be populated if it is a user repository
-    required user: User;
-  }
-
- type Repository extending Timestamped {
-   required name: str;
+  type Repository extending Timestamped {
+    required name: str;
     description: str;
+    user: User;
+    organization: Organization;
+    team_id: int64;
     homepage: str;
    private:bool{
       default := false;
@@ -48,6 +38,7 @@ module default {
    auto_init: bool{
       default := false;
    };
+   
     required repository_id: int64;
     required archived: bool;
     required contents_url: str;
@@ -65,7 +56,6 @@ module default {
     required full_name: str;
     required has_discussions: bool;
     required has_pages: bool;
-
 
 
     required hooks_url: str;
@@ -132,30 +122,22 @@ module default {
    merge_commit_message: str;
    subscribers_count: int64;
    network_count: int64;
-   overloaded parent:  Repository;
-   overloaded source: Repository;
    anonymous_access_enabled: bool;
    code_of_conduct: CodeOfConduct;
    security_and_analysis: SecurityAndAnalysis;
    custom_properties: json;
-
-    permissions: Permissions {
-         on source delete delete target;
-    };
-    template_repository: Repository;
+   template_repository: Repository;
     # put the list of topics in as unordered set of strings
     # will make much easier to query and modify
     multi topics: str;
-
-    
 
     package_json := (.<repository[is PackageJson]);
     all_dependencies := (.<repository[is Dependency]);
     all_file_paths := (.<repository[is FilePath]);
 
 
-    constraint exclusive on (.repository_id);
     constraint exclusive on (.name);
+    constraint exclusive on (.repository_id);
 
     index on (.full_name);
     index on (.name);
@@ -182,9 +164,8 @@ type Organization extending Timestamped {
       required avatar_url: str;
       name: str;
       email: str;
-      required id: integer;
       required node_id: str;
-      required gravatar_id: str | null;
+      required gravatar_id: str;
       required url: str;
       required html_url: str;
       required followers_url: str;
@@ -238,9 +219,15 @@ type Organization extending Timestamped {
     required push: bool;
     triage: bool;
     required pull: bool;
-    user: User;
+    user: User {
+      on source delete delete target;
+    };
+    repository: Repository {
+      on source delete delete target;
+    };
 
     constraint exclusive on (.user);
+    constraint exclusive on (.repository);
  }
 
  type User extending Timestamped {
@@ -303,6 +290,7 @@ abstract type Dependency extending Timestamped {
     };
 
 }
+
 
 type PackageJson extending Timestamped {
     required name: str;

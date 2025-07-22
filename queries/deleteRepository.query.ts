@@ -8,6 +8,17 @@ export type DeleteRepositoryArgs = {
 };
 
 export type DeleteRepositoryReturns = Array<{
+  "temp_clone_token": string | null;
+  "team_id": number | null;
+  "subscribers_count": number | null;
+  "squash_merge_commit_title": string | null;
+  "squash_merge_commit_message": string | null;
+  "network_count": number | null;
+  "merge_commit_title": string | null;
+  "merge_commit_message": string | null;
+  "custom_properties": unknown | null;
+  "auto_init": boolean | null;
+  "anonymous_access_enabled": boolean | null;
   "repository_id": number;
   "id": string;
   "last_updated": Date | null;
@@ -36,7 +47,7 @@ export type DeleteRepositoryReturns = Array<{
   "blobs_url": string | null;
   "assignees_url": string | null;
   "watchers_count": number;
-  "visibility": string | null;
+  "visibility": ("public" | "private") | null;
   "url": string;
   "updated_at": string;
   "topics": Array<string>;
@@ -44,7 +55,7 @@ export type DeleteRepositoryReturns = Array<{
   "ssh_url": string;
   "size": number;
   "pushed_at": string;
-  "private": boolean;
+  "private": boolean | null;
   "open_issues_count": number;
   "open_issues": number;
   "notifications_url": string;
@@ -61,11 +72,11 @@ export type DeleteRepositoryReturns = Array<{
   "is_template": boolean | null;
   "html_url": string;
   "hooks_url": string;
-  "homepage": string;
-  "has_wiki": boolean;
-  "has_projects": boolean;
+  "homepage": string | null;
+  "has_wiki": boolean | null;
+  "has_projects": boolean | null;
   "has_pages": boolean;
-  "has_issues": boolean;
+  "has_issues": boolean | null;
   "has_downloads": boolean | null;
   "has_discussions": boolean;
   "full_name": string;
@@ -76,7 +87,7 @@ export type DeleteRepositoryReturns = Array<{
   "events_url": string;
   "downloads_url": string;
   "disabled": boolean;
-  "description": string;
+  "description": string | null;
   "deployments_url": string;
   "delete_branch_on_merge": boolean | null;
   "default_branch": string;
@@ -91,6 +102,78 @@ export type DeleteRepositoryReturns = Array<{
   "allow_forking": boolean | null;
   "allow_auto_merge": boolean | null;
   "clone_url": string | null;
+  "user": {
+    "avatar_url": string;
+    "login": string;
+    "role_type": string;
+    "site_admin": boolean;
+    "starred_at": string | null;
+    "user_id": number;
+    "user_view_type": string | null;
+    "id": string;
+    "last_updated": Date | null;
+    "email": string;
+    "events_url": string | null;
+    "followers_url": string | null;
+    "following_url": string | null;
+    "gists_url": string | null;
+    "gravatar_id": string | null;
+    "html_url": string | null;
+    "name": string;
+    "node_id": string | null;
+    "organizations_url": string | null;
+    "received_events_url": string | null;
+    "repos_url": string | null;
+    "starred_url": string | null;
+    "subscriptions_url": string | null;
+    "url": string | null;
+  } | null;
+  "security_and_analysis": {
+    "last_updated": Date | null;
+    "id": string;
+    "advanced_security_status": string | null;
+    "code_security_status": string | null;
+    "dependabot_security_updates_status": string | null;
+    "secret_scanning_ai_detection_status": string | null;
+    "secret_scanning_non_provider_patterns_status": string | null;
+    "secret_scanning_push_protection_status": string | null;
+    "secret_scanning_status": string | null;
+  } | null;
+  "organization": {
+    "last_updated": Date | null;
+    "id": string;
+    "login": string;
+    "organization_id": number | null;
+    "avatar_url": string;
+    "email": string | null;
+    "events_url": string;
+    "followers_url": string;
+    "following_url": string;
+    "gists_url": string;
+    "gravatar_id": string;
+    "html_url": string;
+    "name": string | null;
+    "node_id": string;
+    "organizations_url": string;
+    "received_events_url": string;
+    "repos_url": string;
+    "role_type": string;
+    "site_admin": boolean;
+    "starred_at": string | null;
+    "starred_url": string;
+    "subscriptions_url": string;
+    "url": string;
+    "user_view_type": string | null;
+  } | null;
+  "code_of_conduct": {
+    "last_updated": Date | null;
+    "id": string;
+    "node_id": string | null;
+    "key": string | null;
+    "name": string | null;
+    "spdx_id": string | null;
+    "url": string | null;
+  } | null;
   "package_json": Array<{
     "name": string;
     "package_version": string;
@@ -111,22 +194,13 @@ export type DeleteRepositoryReturns = Array<{
     "last_updated": Date | null;
     "id": string;
   }>;
-  "permissions": {
-    "admin": boolean;
-    "maintain": boolean | null;
-    "pull": boolean;
-    "push": boolean;
-    "triage": boolean | null;
-    "id": string;
-    "last_updated": Date | null;
-  } | null;
   "license": {
     "html_url": string | null;
     "key": string;
     "name": string;
     "node_id": string;
-    "spdx_id": string;
-    "url": string;
+    "spdx_id": string | null;
+    "url": string | null;
     "id": string;
     "last_updated": Date | null;
   } | null;
@@ -145,7 +219,7 @@ export type DeleteRepositoryReturns = Array<{
     "default_branch": string;
     "delete_branch_on_merge": boolean | null;
     "deployments_url": string;
-    "description": string;
+    "description": string | null;
     "disabled": boolean;
     "downloads_url": string;
     "events_url": string;
@@ -156,11 +230,11 @@ export type DeleteRepositoryReturns = Array<{
     "full_name": string;
     "has_discussions": boolean;
     "has_downloads": boolean | null;
-    "has_issues": boolean;
+    "has_issues": boolean | null;
     "has_pages": boolean;
-    "has_projects": boolean;
-    "has_wiki": boolean;
-    "homepage": string;
+    "has_projects": boolean | null;
+    "has_wiki": boolean | null;
+    "homepage": string | null;
     "hooks_url": string;
     "html_url": string;
     "is_template": boolean | null;
@@ -177,7 +251,7 @@ export type DeleteRepositoryReturns = Array<{
     "notifications_url": string;
     "open_issues": number;
     "open_issues_count": number;
-    "private": boolean;
+    "private": boolean | null;
     "pushed_at": string;
     "size": number;
     "ssh_url": string;
@@ -185,7 +259,7 @@ export type DeleteRepositoryReturns = Array<{
     "topics": Array<string>;
     "updated_at": string;
     "url": string;
-    "visibility": string | null;
+    "visibility": ("public" | "private") | null;
     "watchers_count": number;
     "assignees_url": string | null;
     "blobs_url": string | null;
@@ -214,6 +288,17 @@ export type DeleteRepositoryReturns = Array<{
     "last_updated": Date | null;
     "id": string;
     "repository_id": number;
+    "anonymous_access_enabled": boolean | null;
+    "auto_init": boolean | null;
+    "custom_properties": unknown | null;
+    "merge_commit_message": string | null;
+    "merge_commit_title": string | null;
+    "network_count": number | null;
+    "squash_merge_commit_message": string | null;
+    "squash_merge_commit_title": string | null;
+    "subscribers_count": number | null;
+    "team_id": number | null;
+    "temp_clone_token": string | null;
   } | null;
   "owner": {
     "avatar_url": string;

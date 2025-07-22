@@ -384,6 +384,254 @@ select assert_single(
 }
 
 
+
+export type GetRepositoriesReturns = Array<{
+  "clone_url": string | null;
+  "allow_auto_merge": boolean | null;
+  "allow_forking": boolean | null;
+  "allow_merge_commit": boolean | null;
+  "allow_rebase_merge": boolean | null;
+  "allow_squash_merge": boolean | null;
+  "archived": boolean;
+  "archive_url": string | null;
+  "contents_url": string;
+  "contributors_url": string;
+  "created_at": string;
+  "default_branch": string;
+  "delete_branch_on_merge": boolean | null;
+  "deployments_url": string;
+  "description": string;
+  "disabled": boolean;
+  "downloads_url": string;
+  "events_url": string;
+  "fork": boolean;
+  "forks": number;
+  "forks_count": number;
+  "forks_url": string | null;
+  "full_name": string;
+  "has_discussions": boolean;
+  "has_downloads": boolean | null;
+  "has_issues": boolean;
+  "has_pages": boolean;
+  "has_projects": boolean;
+  "has_wiki": boolean;
+  "homepage": string;
+  "hooks_url": string;
+  "html_url": string;
+  "is_template": boolean | null;
+  "issue_comment_url": string;
+  "issue_events_url": string;
+  "issues_url": string;
+  "keys_url": string;
+  "labels_url": string;
+  "language": string;
+  "languages_url": string;
+  "master_branch": string | null;
+  "name": string;
+  "node_id": string;
+  "notifications_url": string;
+  "open_issues": number;
+  "open_issues_count": number;
+  "private": boolean;
+  "pushed_at": string;
+  "size": number;
+  "ssh_url": string;
+  "stargazers_count": number;
+  "topics": Array<string>;
+  "updated_at": string;
+  "url": string;
+  "visibility": string | null;
+  "watchers_count": number;
+  "assignees_url": string | null;
+  "blobs_url": string | null;
+  "branches_url": string | null;
+  "collaborators_url": string | null;
+  "comments_url": string | null;
+  "commits_url": string | null;
+  "compare_url": string | null;
+  "git_commits_url": string | null;
+  "git_refs_url": string | null;
+  "git_tags_url": string | null;
+  "git_url": string | null;
+  "merges_url": string | null;
+  "milestones_url": string | null;
+  "mirror_url": string | null;
+  "pulls_url": string | null;
+  "releases_url": string | null;
+  "stargazers_url": string | null;
+  "statuses_url": string | null;
+  "subscribers_url": string | null;
+  "subscription_url": string | null;
+  "svn_url": string | null;
+  "tags_url": string | null;
+  "teams_url": string | null;
+  "trees_url": string | null;
+  "last_updated": Date | null;
+  "id": string;
+  "repository_id": number;
+  "license": {
+    "html_url": string | null;
+    "key": string;
+    "name": string;
+    "node_id": string;
+    "spdx_id": string;
+    "url": string;
+    "id": string;
+    "last_updated": Date | null;
+  } | null;
+  "owner": {
+    "avatar_url": string;
+    "login": string;
+    "role_type": string;
+    "site_admin": boolean;
+    "starred_at": string | null;
+    "user_id": number;
+    "user_view_type": string | null;
+    "id": string;
+    "last_updated": Date | null;
+    "email": string;
+    "events_url": string | null;
+    "followers_url": string | null;
+    "following_url": string | null;
+    "gists_url": string | null;
+    "gravatar_id": string | null;
+    "html_url": string | null;
+    "name": string;
+    "node_id": string | null;
+    "organizations_url": string | null;
+    "received_events_url": string | null;
+    "repos_url": string | null;
+    "starred_url": string | null;
+    "subscriptions_url": string | null;
+    "url": string | null;
+  };
+  "template_repository": {
+    "clone_url": string | null;
+    "allow_auto_merge": boolean | null;
+    "allow_forking": boolean | null;
+    "allow_merge_commit": boolean | null;
+    "allow_rebase_merge": boolean | null;
+    "allow_squash_merge": boolean | null;
+    "archived": boolean;
+    "archive_url": string | null;
+    "contents_url": string;
+    "contributors_url": string;
+    "created_at": string;
+    "default_branch": string;
+    "delete_branch_on_merge": boolean | null;
+    "deployments_url": string;
+    "description": string;
+    "disabled": boolean;
+    "downloads_url": string;
+    "events_url": string;
+    "fork": boolean;
+    "forks": number;
+    "forks_count": number;
+    "forks_url": string | null;
+    "full_name": string;
+    "has_discussions": boolean;
+    "has_downloads": boolean | null;
+    "has_issues": boolean;
+    "has_pages": boolean;
+    "has_projects": boolean;
+    "has_wiki": boolean;
+    "homepage": string;
+    "hooks_url": string;
+    "html_url": string;
+    "is_template": boolean | null;
+    "issue_comment_url": string;
+    "issue_events_url": string;
+    "issues_url": string;
+    "keys_url": string;
+    "labels_url": string;
+    "language": string;
+    "languages_url": string;
+    "master_branch": string | null;
+    "name": string;
+    "node_id": string;
+    "notifications_url": string;
+    "open_issues": number;
+    "open_issues_count": number;
+    "private": boolean;
+    "pushed_at": string;
+    "size": number;
+    "ssh_url": string;
+    "stargazers_count": number;
+    "topics": Array<string>;
+    "updated_at": string;
+    "url": string;
+    "visibility": string | null;
+    "watchers_count": number;
+    "assignees_url": string | null;
+    "blobs_url": string | null;
+    "branches_url": string | null;
+    "collaborators_url": string | null;
+    "comments_url": string | null;
+    "commits_url": string | null;
+    "compare_url": string | null;
+    "git_commits_url": string | null;
+    "git_refs_url": string | null;
+    "git_tags_url": string | null;
+    "git_url": string | null;
+    "merges_url": string | null;
+    "milestones_url": string | null;
+    "mirror_url": string | null;
+    "pulls_url": string | null;
+    "releases_url": string | null;
+    "stargazers_url": string | null;
+    "statuses_url": string | null;
+    "subscribers_url": string | null;
+    "subscription_url": string | null;
+    "svn_url": string | null;
+    "tags_url": string | null;
+    "teams_url": string | null;
+    "trees_url": string | null;
+    "last_updated": Date | null;
+    "id": string;
+    "repository_id": number;
+  } | null;
+  "permissions": {
+    "admin": boolean;
+    "maintain": boolean | null;
+    "pull": boolean;
+    "push": boolean;
+    "triage": boolean | null;
+    "id": string;
+    "last_updated": Date | null;
+  } | null;
+  "all_dependencies": Array<{
+    "dependency_version": string;
+    "name": string;
+    "dependency_type": ("Dev" | "Prod") | null;
+    "last_updated": Date | null;
+    "id": string;
+  }>;
+  "all_file_paths": Array<{
+    "file_name": string;
+    "file_type": ("PNG" | "JPG" | "JPEG" | "GIF" | "SVG" | "PSD" | "JSON" | "MD" | "TXT" | "LOG" | "ZIP" | "GEL" | "TOML" | "YML" | "YAML" | "JSONC" | "WOFF2" | "CSS" | "TS" | "TSX" | "JS" | "EDGEQL" | "XML" | "PDF" | "CSV" | "SQL" | "HTML");
+    "path": string;
+    "last_updated": Date | null;
+    "id": string;
+  }>;
+  "package_json": Array<{
+    "name": string;
+    "package_version": string;
+    "last_updated": Date | null;
+    "id": string;
+  }>;
+}>;
+
+export function getRepositories(client: Executor): Promise<GetRepositoriesReturns> {
+  return client.query(`\
+select Repository { **
+};
+
+# This is all one query, but it's split up for readability. All filters are optional. 
+# If no filters are provided, all Repositories will be returned.`);
+
+}
+
+
 export type GetRepositoryArgs = {
   readonly "repository_id"?: number | null;
   readonly "name"?: string | null;
@@ -637,250 +885,48 @@ select Repository { **
 }
 
 
-
-export type GetRepositoriesReturns = Array<{
-  "clone_url": string | null;
-  "allow_auto_merge": boolean | null;
-  "allow_forking": boolean | null;
-  "allow_merge_commit": boolean | null;
-  "allow_rebase_merge": boolean | null;
-  "allow_squash_merge": boolean | null;
-  "archived": boolean;
-  "archive_url": string | null;
-  "contents_url": string;
-  "contributors_url": string;
-  "created_at": string;
-  "default_branch": string;
-  "delete_branch_on_merge": boolean | null;
-  "deployments_url": string;
-  "description": string;
-  "disabled": boolean;
-  "downloads_url": string;
-  "events_url": string;
-  "fork": boolean;
-  "forks": number;
-  "forks_count": number;
-  "forks_url": string | null;
-  "full_name": string;
-  "has_discussions": boolean;
-  "has_downloads": boolean | null;
-  "has_issues": boolean;
-  "has_pages": boolean;
-  "has_projects": boolean;
-  "has_wiki": boolean;
-  "homepage": string;
-  "hooks_url": string;
-  "html_url": string;
-  "is_template": boolean | null;
-  "issue_comment_url": string;
-  "issue_events_url": string;
-  "issues_url": string;
-  "keys_url": string;
-  "labels_url": string;
-  "language": string;
-  "languages_url": string;
-  "master_branch": string | null;
-  "name": string;
-  "node_id": string;
-  "notifications_url": string;
-  "open_issues": number;
-  "open_issues_count": number;
-  "private": boolean;
-  "pushed_at": string;
-  "size": number;
-  "ssh_url": string;
-  "stargazers_count": number;
-  "topics": Array<string>;
-  "updated_at": string;
-  "url": string;
-  "visibility": string | null;
-  "watchers_count": number;
-  "assignees_url": string | null;
-  "blobs_url": string | null;
-  "branches_url": string | null;
-  "collaborators_url": string | null;
-  "comments_url": string | null;
-  "commits_url": string | null;
-  "compare_url": string | null;
-  "git_commits_url": string | null;
-  "git_refs_url": string | null;
-  "git_tags_url": string | null;
-  "git_url": string | null;
-  "merges_url": string | null;
-  "milestones_url": string | null;
-  "mirror_url": string | null;
-  "pulls_url": string | null;
-  "releases_url": string | null;
-  "stargazers_url": string | null;
-  "statuses_url": string | null;
-  "subscribers_url": string | null;
-  "subscription_url": string | null;
-  "svn_url": string | null;
-  "tags_url": string | null;
-  "teams_url": string | null;
-  "trees_url": string | null;
-  "last_updated": Date | null;
-  "id": string;
-  "repository_id": number;
-  "license": {
-    "html_url": string | null;
-    "key": string;
-    "name": string;
-    "node_id": string;
-    "spdx_id": string;
-    "url": string;
-    "id": string;
-    "last_updated": Date | null;
-  } | null;
-  "owner": {
-    "avatar_url": string;
-    "login": string;
-    "role_type": string;
-    "site_admin": boolean;
-    "starred_at": string | null;
-    "user_id": number;
-    "user_view_type": string | null;
-    "id": string;
-    "last_updated": Date | null;
-    "email": string;
-    "events_url": string | null;
-    "followers_url": string | null;
-    "following_url": string | null;
-    "gists_url": string | null;
-    "gravatar_id": string | null;
-    "html_url": string | null;
-    "name": string;
-    "node_id": string | null;
-    "organizations_url": string | null;
-    "received_events_url": string | null;
-    "repos_url": string | null;
-    "starred_url": string | null;
-    "subscriptions_url": string | null;
-    "url": string | null;
-  };
-  "template_repository": {
-    "clone_url": string | null;
-    "allow_auto_merge": boolean | null;
-    "allow_forking": boolean | null;
-    "allow_merge_commit": boolean | null;
-    "allow_rebase_merge": boolean | null;
-    "allow_squash_merge": boolean | null;
-    "archived": boolean;
-    "archive_url": string | null;
-    "contents_url": string;
-    "contributors_url": string;
-    "created_at": string;
-    "default_branch": string;
-    "delete_branch_on_merge": boolean | null;
-    "deployments_url": string;
-    "description": string;
-    "disabled": boolean;
-    "downloads_url": string;
-    "events_url": string;
-    "fork": boolean;
-    "forks": number;
-    "forks_count": number;
-    "forks_url": string | null;
-    "full_name": string;
-    "has_discussions": boolean;
-    "has_downloads": boolean | null;
-    "has_issues": boolean;
-    "has_pages": boolean;
-    "has_projects": boolean;
-    "has_wiki": boolean;
-    "homepage": string;
-    "hooks_url": string;
-    "html_url": string;
-    "is_template": boolean | null;
-    "issue_comment_url": string;
-    "issue_events_url": string;
-    "issues_url": string;
-    "keys_url": string;
-    "labels_url": string;
-    "language": string;
-    "languages_url": string;
-    "master_branch": string | null;
-    "name": string;
-    "node_id": string;
-    "notifications_url": string;
-    "open_issues": number;
-    "open_issues_count": number;
-    "private": boolean;
-    "pushed_at": string;
-    "size": number;
-    "ssh_url": string;
-    "stargazers_count": number;
-    "topics": Array<string>;
-    "updated_at": string;
-    "url": string;
-    "visibility": string | null;
-    "watchers_count": number;
-    "assignees_url": string | null;
-    "blobs_url": string | null;
-    "branches_url": string | null;
-    "collaborators_url": string | null;
-    "comments_url": string | null;
-    "commits_url": string | null;
-    "compare_url": string | null;
-    "git_commits_url": string | null;
-    "git_refs_url": string | null;
-    "git_tags_url": string | null;
-    "git_url": string | null;
-    "merges_url": string | null;
-    "milestones_url": string | null;
-    "mirror_url": string | null;
-    "pulls_url": string | null;
-    "releases_url": string | null;
-    "stargazers_url": string | null;
-    "statuses_url": string | null;
-    "subscribers_url": string | null;
-    "subscription_url": string | null;
-    "svn_url": string | null;
-    "tags_url": string | null;
-    "teams_url": string | null;
-    "trees_url": string | null;
-    "last_updated": Date | null;
-    "id": string;
-    "repository_id": number;
-  } | null;
-  "permissions": {
-    "admin": boolean;
-    "maintain": boolean | null;
-    "pull": boolean;
-    "push": boolean;
-    "triage": boolean | null;
-    "id": string;
-    "last_updated": Date | null;
-  } | null;
-  "all_dependencies": Array<{
-    "dependency_version": string;
-    "name": string;
-    "dependency_type": ("Dev" | "Prod") | null;
-    "last_updated": Date | null;
-    "id": string;
-  }>;
-  "all_file_paths": Array<{
-    "file_name": string;
-    "file_type": ("PNG" | "JPG" | "JPEG" | "GIF" | "SVG" | "PSD" | "JSON" | "MD" | "TXT" | "LOG" | "ZIP" | "GEL" | "TOML" | "YML" | "YAML" | "JSONC" | "WOFF2" | "CSS" | "TS" | "TSX" | "JS" | "EDGEQL" | "XML" | "PDF" | "CSV" | "SQL" | "HTML");
-    "path": string;
-    "last_updated": Date | null;
-    "id": string;
-  }>;
-  "package_json": Array<{
-    "name": string;
-    "package_version": string;
-    "last_updated": Date | null;
-    "id": string;
-  }>;
-}>;
-
-export function getRepositories(client: Executor): Promise<GetRepositoriesReturns> {
-  return client.query(`\
-select Repository { **
+export type GetUserArgs = {
+  readonly "user_id"?: number | null;
+  readonly "login"?: string | null;
 };
 
+export type GetUserReturns = Array<{
+  "avatar_url": string;
+  "login": string;
+  "role_type": string;
+  "site_admin": boolean;
+  "starred_at": string | null;
+  "user_id": number;
+  "user_view_type": string | null;
+  "id": string;
+  "last_updated": Date | null;
+  "email": string;
+  "events_url": string | null;
+  "followers_url": string | null;
+  "following_url": string | null;
+  "gists_url": string | null;
+  "gravatar_id": string | null;
+  "html_url": string | null;
+  "name": string;
+  "node_id": string | null;
+  "organizations_url": string | null;
+  "received_events_url": string | null;
+  "repos_url": string | null;
+  "starred_url": string | null;
+  "subscriptions_url": string | null;
+  "url": string | null;
+}>;
+
+export function getUser(client: Executor, args: GetUserArgs): Promise<GetUserReturns> {
+  return client.query(`\
+select User { **
+} filter assert_exists(User.user_id) ?= <optional int64>$user_id;
+
+select User { **
+} filter assert_exists(User.login) ?= <optional str>$login;
+
 # This is all one query, but it's split up for readability. All filters are optional. 
-# If no filters are provided, all Repositories will be returned.`);
+# If no filters are provided, all Users will be returned.`, args);
 
 }
 
@@ -1554,52 +1600,6 @@ with NewRepository := (insert Repository {
   )
 )
 select NewRepository {**};`, args);
-
-}
-
-
-export type GetUserArgs = {
-  readonly "user_id"?: number | null;
-  readonly "login"?: string | null;
-};
-
-export type GetUserReturns = Array<{
-  "avatar_url": string;
-  "login": string;
-  "role_type": string;
-  "site_admin": boolean;
-  "starred_at": string | null;
-  "user_id": number;
-  "user_view_type": string | null;
-  "id": string;
-  "last_updated": Date | null;
-  "email": string;
-  "events_url": string | null;
-  "followers_url": string | null;
-  "following_url": string | null;
-  "gists_url": string | null;
-  "gravatar_id": string | null;
-  "html_url": string | null;
-  "name": string;
-  "node_id": string | null;
-  "organizations_url": string | null;
-  "received_events_url": string | null;
-  "repos_url": string | null;
-  "starred_url": string | null;
-  "subscriptions_url": string | null;
-  "url": string | null;
-}>;
-
-export function getUser(client: Executor, args: GetUserArgs): Promise<GetUserReturns> {
-  return client.query(`\
-select User { **
-} filter assert_exists(User.user_id) ?= <optional int64>$user_id;
-
-select User { **
-} filter assert_exists(User.login) ?= <optional str>$login;
-
-# This is all one query, but it's split up for readability. All filters are optional. 
-# If no filters are provided, all Users will be returned.`, args);
 
 }
 

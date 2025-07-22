@@ -199,6 +199,14 @@ export namespace $default {
   export interface Timestamped extends std.$Object {
     "last_updated"?: Date | null;
   }
+  export interface CodeOfConduct extends Timestamped {
+    "url"?: string | null;
+    "node_id"?: string | null;
+    "key"?: string | null;
+    "name"?: string | null;
+    "spdx_id"?: string | null;
+    "repository": Repository;
+  }
   export interface Dependency extends Timestamped {
     "dependency_version": string;
     "name": string;
@@ -222,8 +230,32 @@ export namespace $default {
     "key": string;
     "name": string;
     "node_id": string;
-    "spdx_id": string;
+    "spdx_id"?: string | null;
+    "url"?: string | null;
+  }
+  export interface Organization extends Timestamped {
+    "organizations_url": string;
+    "received_events_url": string;
+    "repos_url": string;
+    "role_type": string;
+    "site_admin": boolean;
+    "starred_at"?: string | null;
+    "starred_url": string;
+    "subscriptions_url": string;
     "url": string;
+    "user_view_type"?: string | null;
+    "login": string;
+    "organization_id"?: number | null;
+    "avatar_url": string;
+    "email"?: string | null;
+    "events_url": string;
+    "followers_url": string;
+    "following_url": string;
+    "gists_url": string;
+    "gravatar_id": string;
+    "html_url": string;
+    "name"?: string | null;
+    "node_id": string;
   }
   export interface PackageJson extends Timestamped {
     "name": string;
@@ -239,6 +271,7 @@ export namespace $default {
     "push": boolean;
     "triage"?: boolean | null;
     "user"?: User | null;
+    "repository"?: Repository | null;
   }
   export interface ProdDependency extends Dependency {
     "dependency_type"?: DependencyType | null;
@@ -258,7 +291,6 @@ export namespace $default {
     "default_branch": string;
     "delete_branch_on_merge"?: boolean | null;
     "deployments_url": string;
-    "description": string;
     "disabled": boolean;
     "downloads_url": string;
     "events_url": string;
@@ -268,15 +300,9 @@ export namespace $default {
     "forks_url"?: string | null;
     "full_name": string;
     "has_discussions": boolean;
-    "has_downloads"?: boolean | null;
-    "has_issues": boolean;
     "has_pages": boolean;
-    "has_projects": boolean;
-    "has_wiki": boolean;
-    "homepage": string;
     "hooks_url": string;
     "html_url": string;
-    "is_template"?: boolean | null;
     "issue_comment_url": string;
     "issue_events_url": string;
     "issues_url": string;
@@ -290,16 +316,21 @@ export namespace $default {
     "notifications_url": string;
     "open_issues": number;
     "open_issues_count": number;
-    "private": boolean;
     "pushed_at": string;
     "size": number;
     "ssh_url": string;
     "stargazers_count": number;
+    "description"?: string | null;
+    "has_downloads"?: boolean | null;
+    "has_issues"?: boolean | null;
+    "has_projects"?: boolean | null;
+    "has_wiki"?: boolean | null;
+    "homepage"?: string | null;
     "topics": string[];
     "updated_at": string;
     "url": string;
-    "visibility"?: string | null;
     "watchers_count": number;
+    "visibility"?: Visibility | null;
     "assignees_url"?: string | null;
     "blobs_url"?: string | null;
     "branches_url"?: string | null;
@@ -325,13 +356,39 @@ export namespace $default {
     "teams_url"?: string | null;
     "trees_url"?: string | null;
     "repository_id": number;
+    "anonymous_access_enabled"?: boolean | null;
+    "auto_init"?: boolean | null;
+    "custom_properties"?: unknown | null;
+    "is_template"?: boolean | null;
+    "merge_commit_message"?: string | null;
+    "merge_commit_title"?: string | null;
+    "network_count"?: number | null;
+    "private"?: boolean | null;
+    "squash_merge_commit_message"?: string | null;
+    "squash_merge_commit_title"?: string | null;
+    "subscribers_count"?: number | null;
+    "team_id"?: number | null;
+    "temp_clone_token"?: string | null;
     "owner": User;
     "template_repository"?: Repository | null;
     "license"?: License | null;
-    "permissions"?: Permissions | null;
     "all_dependencies": Dependency[];
     "all_file_paths": FilePath[];
     "package_json": PackageJson[];
+    "code_of_conduct"?: CodeOfConduct | null;
+    "organization"?: Organization | null;
+    "security_and_analysis"?: SecurityAndAnalysis | null;
+    "user"?: User | null;
+  }
+  export interface SecurityAndAnalysis extends Timestamped {
+    "advanced_security_status"?: string | null;
+    "code_security_status"?: string | null;
+    "dependabot_security_updates_status"?: string | null;
+    "secret_scanning_ai_detection_status"?: string | null;
+    "secret_scanning_non_provider_patterns_status"?: string | null;
+    "secret_scanning_push_protection_status"?: string | null;
+    "secret_scanning_status"?: string | null;
+    "repository": Repository;
   }
   export interface User extends Timestamped {
     "avatar_url": string;
@@ -357,19 +414,24 @@ export namespace $default {
     "subscriptions_url"?: string | null;
     "url"?: string | null;
   }
+  export type Visibility = "public" | "private";
 }
 export type Timestamped = $default.Timestamped;
+export type CodeOfConduct = $default.CodeOfConduct;
 export type Dependency = $default.Dependency;
 export type DependencyType = $default.DependencyType;
 export type DevDependency = $default.DevDependency;
 export type FilePath = $default.FilePath;
 export type FileType = $default.FileType;
 export type License = $default.License;
+export type Organization = $default.Organization;
 export type PackageJson = $default.PackageJson;
 export type Permissions = $default.Permissions;
 export type ProdDependency = $default.ProdDependency;
 export type Repository = $default.Repository;
+export type SecurityAndAnalysis = $default.SecurityAndAnalysis;
 export type User = $default.User;
+export type Visibility = $default.Visibility;
 export namespace schema {
   export type AccessKind = "Select" | "UpdateRead" | "UpdateWrite" | "Delete" | "Insert";
   export interface $Object extends std.BaseObject {
@@ -646,17 +708,21 @@ export interface types {
   };
   "default": {
     "Timestamped": $default.Timestamped;
+    "CodeOfConduct": $default.CodeOfConduct;
     "Dependency": $default.Dependency;
     "DependencyType": $default.DependencyType;
     "DevDependency": $default.DevDependency;
     "FilePath": $default.FilePath;
     "FileType": $default.FileType;
     "License": $default.License;
+    "Organization": $default.Organization;
     "PackageJson": $default.PackageJson;
     "Permissions": $default.Permissions;
     "ProdDependency": $default.ProdDependency;
     "Repository": $default.Repository;
+    "SecurityAndAnalysis": $default.SecurityAndAnalysis;
     "User": $default.User;
+    "Visibility": $default.Visibility;
   };
   "schema": {
     "AccessKind": schema.AccessKind;

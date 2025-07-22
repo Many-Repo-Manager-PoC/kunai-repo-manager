@@ -34,7 +34,7 @@ export type GetDependenciesForRepoReturns = Array<{
     "default_branch": string;
     "delete_branch_on_merge": boolean | null;
     "deployments_url": string;
-    "description": string;
+    "description": string | null;
     "disabled": boolean;
     "downloads_url": string;
     "events_url": string;
@@ -45,11 +45,11 @@ export type GetDependenciesForRepoReturns = Array<{
     "full_name": string;
     "has_discussions": boolean;
     "has_downloads": boolean | null;
-    "has_issues": boolean;
+    "has_issues": boolean | null;
     "has_pages": boolean;
-    "has_projects": boolean;
-    "has_wiki": boolean;
-    "homepage": string;
+    "has_projects": boolean | null;
+    "has_wiki": boolean | null;
+    "homepage": string | null;
     "hooks_url": string;
     "html_url": string;
     "is_template": boolean | null;
@@ -66,7 +66,7 @@ export type GetDependenciesForRepoReturns = Array<{
     "notifications_url": string;
     "open_issues": number;
     "open_issues_count": number;
-    "private": boolean;
+    "private": boolean | null;
     "pushed_at": string;
     "size": number;
     "ssh_url": string;
@@ -74,7 +74,7 @@ export type GetDependenciesForRepoReturns = Array<{
     "topics": Array<string>;
     "updated_at": string;
     "url": string;
-    "visibility": string | null;
+    "visibility": ("public" | "private") | null;
     "watchers_count": number;
     "assignees_url": string | null;
     "blobs_url": string | null;
@@ -103,6 +103,17 @@ export type GetDependenciesForRepoReturns = Array<{
     "last_updated": Date | null;
     "id": string;
     "repository_id": number;
+    "anonymous_access_enabled": boolean | null;
+    "auto_init": boolean | null;
+    "custom_properties": unknown | null;
+    "merge_commit_message": string | null;
+    "merge_commit_title": string | null;
+    "network_count": number | null;
+    "squash_merge_commit_message": string | null;
+    "squash_merge_commit_title": string | null;
+    "subscribers_count": number | null;
+    "team_id": number | null;
+    "temp_clone_token": string | null;
   };
 }>;
 
