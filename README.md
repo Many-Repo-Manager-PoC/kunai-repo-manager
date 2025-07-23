@@ -1,5 +1,48 @@
 # Kunai Repository manager
 
+## Setting up your app with Gel
+
+This project utilizes [Gel Data](https://www.geldata.com/) as its Database layer. Follow these simple instructions to get your team setup with Gel!
+
+Step 1: Create A Gel Account
+
+- Easiest way to do this is to create one through "sign in with github"
+
+* Make sure to Authorize geldata to have Organization access
+  Step 2: Add your Organization to gel Cloud
+
+- On the top of the webpage, you will see that it initially instantiates a personal cloud, but you want to create one for the Organization
+- Click on that and then click "Add Organization"
+
+  Step 3: Make sure you have gel on your machine
+
+  `pnpm gel --version`
+
+  Step 4: ...
+
+  \*\*Random notes: when in gel GUI, to get out `\q + enter`
+
+  ### Submitting new query requests!
+
+  - create a new query in the relevant queries/[].edgeql file.
+  - in a terminal type `pnpm generate queries`
+  - then type `pnpm generate queries --file` <-- this creates the query file inside the db schema.
+  - submit PR [check]
+
+  ### Creating migrations
+
+  - update `default.gel`
+  - in a terminal, run `pnpm gel migration create` and answer the prompts
+  - then, `pnpm gel migrate`
+  - `pnpm gel ui` to see the changes!
+
+### Updating types/queries/interfaces
+
+- you need to do this when you make changes to schema and types so that you don't get incorrect typescript errors in your code
+- in a terminal type `pnpm generate queries`
+- then type `pnpm generate queries --file` <-- this creates the query file inside the db schema. -`pnpm generate interfaces`
+- `pnpm generate edgeql-js`
+
 ## A Qwik City App ⚡️
 
 - [Qwik Docs](https://qwik.dev/)

@@ -1,0 +1,329 @@
+module default {
+
+ scalar type DependencyType extending enum <Dev, Prod>;
+ scalar type Visibility extending enum <public, private>;
+
+ abstract type Timestamped {
+    last_updated: datetime {
+      rewrite insert, update using (datetime_of_statement());
+    };
+  }
+
+  type Repository extending Timestamped {
+    required name: str;
+    description: str;
+    user: User;
+    organization: Organization;
+    team_id: int64;
+    homepage: str;
+   private:bool{
+      default := false;
+   };
+   visibility: Visibility;
+   has_issues: bool{
+      default := true;
+   };
+   has_projects: bool{
+      default := true;
+   };
+   has_wiki: bool{
+      default := true;
+   };
+   has_downloads: bool{
+      default := true;
+   };
+   is_template: bool{
+      default := false;
+   };
+   auto_init: bool{
+      default := false;
+   };
+   
+    required repository_id: int64;
+    required archived: bool;
+    required contents_url: str;
+    required contributors_url: str;
+    required created_at: str;
+    required default_branch: str;
+    required deployments_url: str;
+
+    required disabled: bool;
+    required downloads_url: str;
+    required events_url: str;
+    required fork: bool;
+    required forks: int64;
+    required forks_count: int64;
+    required full_name: str;
+    required has_discussions: bool;
+    required has_pages: bool;
+
+
+    required hooks_url: str;
+    required html_url: str;
+    required issue_comment_url: str;
+    required issue_events_url: str;
+    required issues_url: str;
+    required keys_url: str;
+    required labels_url: str;
+    required language: str;
+    required languages_url: str;
+    license: License;
+    required node_id: str;
+    required notifications_url: str;
+    required open_issues: int64;
+    required open_issues_count: int64;
+    required owner: User;
+    required pushed_at: str;
+    required url: str;
+    required ssh_url: str;
+    required size: int64;
+    required stargazers_count: int64;
+    required updated_at: str;
+    required watchers_count: int64;
+    archive_url: str;
+    assignees_url: str;
+    blobs_url: str;
+    branches_url: str;
+    clone_url: str;
+    collaborators_url: str;
+    comments_url: str;
+    commits_url: str;
+    compare_url: str;
+    merges_url: str;
+    milestones_url: str;
+    mirror_url: str;
+    git_commits_url: str;
+    git_refs_url: str;
+    git_tags_url: str;
+    git_url: str;
+    stargazers_url: str;
+    statuses_url: str;
+    subscribers_url: str;
+    subscription_url: str;
+    pulls_url: str;
+    releases_url: str;
+    svn_url: str;
+    tags_url: str;
+    teams_url: str;
+    trees_url: str;
+    allow_auto_merge: bool;
+    allow_forking: bool;
+    allow_merge_commit: bool;
+    allow_rebase_merge: bool;
+    allow_squash_merge: bool;
+    delete_branch_on_merge: bool;
+    forks_url: str;
+
+    master_branch: str;
+   temp_clone_token: str;
+   squash_merge_commit_title: str;
+   squash_merge_commit_message: str;
+   merge_commit_title: str;
+   merge_commit_message: str;
+   subscribers_count: int64;
+   network_count: int64;
+   anonymous_access_enabled: bool;
+   code_of_conduct: CodeOfConduct;
+   security_and_analysis: SecurityAndAnalysis;
+   custom_properties: json;
+   template_repository: Repository;
+    # put the list of topics in as unordered set of strings
+    # will make much easier to query and modify
+    multi topics: str;
+
+    package_json := (.<repository[is PackageJson]);
+    all_dependencies := (.<repository[is Dependency]);
+    all_file_paths := (.<repository[is FilePath]);
+
+
+    constraint exclusive on (.name);
+    constraint exclusive on (.repository_id);
+
+    index on (.full_name);
+    index on (.name);
+    index on (.license);
+    index on (.owner);
+
+ }
+
+ type CodeOfConduct extending Timestamped {
+     required repository: Repository;
+     key: str;
+     name: str;
+     url: str;
+     spdx_id: str;
+     node_id: str;
+
+     constraint exclusive on (.node_id);
+ }
+
+
+type Organization extending Timestamped {
+      organization_id: int64;
+      required login: str;
+      required avatar_url: str;
+      name: str;
+      email: str;
+      required node_id: str;
+      required gravatar_id: str;
+      required url: str;
+      required html_url: str;
+      required followers_url: str;
+      required following_url: str;
+      required gists_url: str;
+      required starred_url: str;
+      required subscriptions_url: str;
+      required organizations_url: str;
+      required repos_url: str;
+      required events_url: str;
+      required received_events_url: str;
+      required role_type: str;
+      required site_admin: bool;
+      starred_at: str;
+      user_view_type: str;
+
+    constraint exclusive on (.organization_id);
+    constraint exclusive on (.login);
+
+    index on (.login);
+    index on (.organization_id);
+}
+
+ type SecurityAndAnalysis extending Timestamped {
+      required repository: Repository;
+      advanced_security_status: str;
+      code_security_status: str;
+      dependabot_security_updates_status: str;
+      secret_scanning_status: str;
+      secret_scanning_push_protection_status: str;
+      secret_scanning_non_provider_patterns_status: str;
+      secret_scanning_ai_detection_status: str;
+
+      constraint exclusive on (.repository);
+ }
+
+ type License extending Timestamped {
+    required key: str;
+    required name: str;
+    url: str;
+    spdx_id: str;
+    required node_id: str;
+    html_url: str;
+
+    constraint exclusive on (.name);
+ }
+
+ type Permissions extending Timestamped {
+    required admin: bool;
+    maintain: bool;
+    required push: bool;
+    triage: bool;
+    required pull: bool;
+    user: User {
+      on source delete delete target;
+    };
+    repository: Repository {
+      on source delete delete target;
+    };
+
+    constraint exclusive on (.user);
+    constraint exclusive on (.repository);
+ }
+
+ type User extending Timestamped {
+    required avatar_url: str;
+    required name: str;
+    required email: str;
+    required login: str;
+    # this is id in github schema but want to separate it from built in gel id 
+    required user_id: int64;
+    # this is type in github schema but 'type' is a reserved word in gel
+    required role_type: str;
+    required site_admin: bool;
+    events_url: str;
+    followers_url: str;
+    following_url: str;
+    gists_url: str;
+    gravatar_id: str;
+    html_url: str;
+    node_id: str;
+    organizations_url: str;
+    received_events_url: str;
+    repos_url: str;
+    starred_url: str;
+    starred_at: str;
+    subscriptions_url: str;
+    url: str;
+    user_view_type: str;
+
+    index on (.login);
+    index on (.user_id);
+
+    constraint exclusive on (.user_id);
+ }
+
+
+abstract type Dependency extending Timestamped {
+    annotation description := 'Dependencies are the packages that a package depends on. We get these from a repository\'s package.json file.';
+    required name: str;
+    required dependency_version: str;
+    required package_json: PackageJson {
+        on target delete delete source;
+    };
+    dependency_type : DependencyType;
+    required single repository: Repository;
+        
+    index on (.package_json);
+    index on (.dependency_type);
+ }
+
+
+type ProdDependency extending Dependency {
+    overloaded dependency_type : DependencyType {
+           default := DependencyType.Prod;
+    };
+}
+
+type DevDependency extending Dependency {
+    overloaded dependency_type : DependencyType {
+           default := DependencyType.Dev;
+    };
+}
+
+
+type PackageJson extending Timestamped {
+    required name: str;
+    required package_version: str;
+    multi dependencies := (.<package_json[is ProdDependency]);
+    multi dev_dependencies := (.<package_json[is DevDependency]);
+    required single repository: Repository;
+
+    index on (.name);
+    
+    constraint exclusive on (.repository){
+      annotation description := 'User can only have one PackageJson per repository';
+    };
+
+}
+
+
+  type FilePath extending Timestamped {
+    annotation description := 'A file path is a path to a file in a repository.';
+    required path: str;
+    required file_type: FileType;
+    required file_name: str;
+    required single repository: Repository;
+
+ }
+
+ scalar type FileType extending enum <
+   PNG, JPG, JPEG, GIF, SVG, PSD, JSON, MD, TXT, LOG, ZIP, GEL, TOML, YML, YAML, 
+   JSONC, WOFF2, CSS, TS, TSX, JS, EDGEQL, XML, PDF, CSV, SQL, HTML
+ >;
+  
+ }
+
+
+
+
+    

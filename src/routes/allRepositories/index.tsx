@@ -1,52 +1,50 @@
-import { component$, useSignal, $, useComputed$ } from "@builder.io/qwik";
+import { component$, useSignal, $, useTask$ } from "@builder.io/qwik";
 import { useNavigate, type DocumentHead } from "@builder.io/qwik-city";
 import { RepositoryCard } from "~/components/cards/repositoryCard";
-import type { Repo } from "~/db/types";
 import { Button, Chip } from "@kunai-consulting/kunai-design-system";
-import { useGetRepos } from "~/routes/layout";
 import { BulkTopicsModal } from "~/components/modals/bulkTopicsModal";
 import { PageTitle } from "~/components/page/pageTitle";
 import { LuRotateCcw } from "@qwikest/icons/lucide";
 import { Routes } from "~/config/routes";
 export { usePutBulkTopics } from "~/db/putTopics";
+import type { GetRepositoryReturns } from "../../../dbschema/queries";
+import { useGetRepositoriesForAllTopics, useGetRepositories } from "~/hooks";
+import { useRefreshRepositories } from "~/actions/repository.server";
 
 export default component$(() => {
-  const serverData = useGetRepos();
   const searchQuery = useSignal("");
   const selectedTopic = useSignal("");
   const selectedRepos = useSignal<string[]>([]);
   const isShow = useSignal(false);
   const navigate = useNavigate();
 
-  const repositories = useComputed$(() => {
-    return serverData.value.data?.repositories;
+  const refreshResult = useRefreshRepositories();
+  // Handle potential errors from the refresh operation
+  useTask$(async () => {
+    const result = await refreshResult;
+    if (!result.success) {
+      console.error("Failed to refresh repositories:", result.message);
+    }
   });
+  const queriedRepositories = useGetRepositories().value;
 
-  // Do something with errors
-  // const errors = useComputed$(() => {
-  //   if ("failed" in result.value && result.value.failed) {
-  //     return [];
-  //   }
-  //   return result.value.data?.errors ?? [];
-  // });
+  const allTopics = useGetRepositoriesForAllTopics();
+  console.log("allTopics", queriedRepositories);
 
-  const allTopics = [
-    ...new Set(
-      repositories.value?.flatMap((repo: Repo) => repo.topics || []) ?? [],
-    ),
-  ];
-
-  const repoTopicsMap = repositories.value?.reduce(
-    (acc: Record<string, string[]>, repo: Repo) => {
-      acc[repo.name || ""] = repo.topics || [];
+  const repoTopicsMap = queriedRepositories?.reduce(
+    (acc: Record<string, string[]>, repo) => {
+      if (repo?.name) {
+        acc[repo.name] = repo.topics || [];
+      }
       return acc;
     },
     {},
   );
 
   const handleSelectAll = $(() => {
-    const filteredRepos = repositories.value
-      ?.filter((repo) => {
+    const filteredRepos = queriedRepositories
+      ?.filter((repo): repo is NonNullable<typeof repo> => {
+        if (!repo) return false;
         const matchesSearch =
           !searchQuery.value ||
           repo.name?.toLowerCase().includes(searchQuery.value.toLowerCase());
@@ -55,8 +53,7 @@ export default component$(() => {
         return matchesSearch && matchesTopic;
       })
       .map((repo) => repo.name);
-    selectedRepos.value =
-      filteredRepos?.filter((name): name is string => name !== null) ?? [];
+    selectedRepos.value = filteredRepos ?? [];
   });
 
   const handleDeselectAll = $(() => {
@@ -82,9 +79,9 @@ export default component$(() => {
       : selectedRepos.value.filter((r) => r !== repoName);
   });
 
-  const handleCardClick = $((repo: Repo) => {
+  const handleCardClick = $((repo: GetRepositoryReturns) => {
     if (!isShow.value) {
-      navigate(Routes.repoDetails(repo.repoOwner, repo.name));
+      navigate(Routes.repoDetails(repo?.owner.name, repo?.name));
     }
   });
 
@@ -126,9 +123,11 @@ export default component$(() => {
             <span class="text-sm font-medium">Tags:</span>
             <div onClick$={handleTopicClick}>
               <div class="flex flex-wrap gap-2">
-                {allTopics
-                  .filter((topic): topic is string => topic !== null)
-                  .map((topic) => (
+                {allTopics.value
+                  .filter(
+                    (topic: string | null): topic is string => topic !== null,
+                  )
+                  .map((topic: string) => (
                     <Chip.Root
                       key={topic}
                       class="bg-kunai-blue-100 dark:bg-kunai-blue-300 text-xs"
@@ -165,19 +164,19 @@ export default component$(() => {
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {repositories.value &&
-            repositories.value
-              .filter((repo: Repo) => {
-                const matchesSearch = repo.name
+          {queriedRepositories &&
+            queriedRepositories
+              .filter((repo) => {
+                const matchesSearch = repo?.name
                   ?.toLowerCase()
                   .includes(searchQuery.value.toLowerCase());
                 const matchesTopic =
                   !selectedTopic.value ||
-                  repo.topics?.includes(selectedTopic.value);
+                  repo?.topics?.includes(selectedTopic.value);
                 return matchesSearch && matchesTopic;
               })
-              .map((repo: Repo) => (
-                <div key={repo.id} class="relative">
+              .map((repo) => (
+                <div key={repo?.id} class="relative">
                   <div onClick$={() => handleCardClick(repo)}>
                     <RepositoryCard repo={repo} />
                   </div>
@@ -185,12 +184,12 @@ export default component$(() => {
                     <input
                       type="checkbox"
                       class="absolute top-2 right-2"
-                      checked={selectedRepos.value.includes(repo.name || "")}
+                      checked={selectedRepos.value.includes(repo?.name || "")}
                       onChange$={(e) =>
-                        handleCheckboxChange(e, repo.name || "")
+                        handleCheckboxChange(e, repo?.name || "")
                       }
-                      id={`repo-checkbox-${repo.id}`}
-                      name={`repo-checkbox-${repo.id}`}
+                      id={`repo-checkbox-${repo?.id}`}
+                      name={`repo-checkbox-${repo?.id}`}
                     />
                   )}
                 </div>
