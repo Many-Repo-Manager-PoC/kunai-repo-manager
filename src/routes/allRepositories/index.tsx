@@ -1,4 +1,4 @@
-import { component$, useSignal, $ } from "@builder.io/qwik";
+import { component$, useSignal, $, useTask$ } from "@builder.io/qwik";
 import { useNavigate, type DocumentHead } from "@builder.io/qwik-city";
 import { RepositoryCard } from "~/components/cards/repositoryCard";
 import { Button, Chip } from "@kunai-consulting/kunai-design-system";
@@ -18,7 +18,14 @@ export default component$(() => {
   const isShow = useSignal(false);
   const navigate = useNavigate();
 
-  useRefreshRepositories();
+  const refreshResult = useRefreshRepositories();
+  // Handle potential errors from the refresh operation
+  useTask$(async () => {
+    const result = await refreshResult;
+    if (!result.success) {
+      console.error("Failed to refresh repositories:", result.message);
+    }
+  });
   const queriedRepositories = useGetRepositories().value;
 
   const allTopics = useGetRepositoriesForAllTopics();

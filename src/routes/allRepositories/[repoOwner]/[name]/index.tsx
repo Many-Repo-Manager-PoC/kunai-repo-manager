@@ -19,9 +19,7 @@ export default component$(() => {
 
   const repo = useGetRepoByName(repoName);
   const packageJson = useGetPackageJson(repoName);
-  const repoTopics = repo.value?.topics?.flatMap((topic: string) =>
-    topic.split(",").map((t) => t.trim()),
-  );
+  const repoTopics = repo.value?.topics?.map((topic: string) => topic.trim());
   const isDesignSystem = repoTopics?.includes("design-system");
   if (!isDesignSystem) {
     tabList.pop();
@@ -41,7 +39,7 @@ export default component$(() => {
           />
         </div>
         <div q:slot="Dependencies">
-          <RepoDependencyCard repos={repos.value} repo={repo.value} />
+          <RepoDependencyCard repo={repo.value} />
         </div>
 
         <div q:slot="Dependents">

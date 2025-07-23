@@ -267,28 +267,27 @@ abstract type Dependency extending Timestamped {
     annotation description := 'Dependencies are the packages that a package depends on. We get these from a repository\'s package.json file.';
     required name: str;
     required dependency_version: str;
-    required package_json: PackageJson;
+    required package_json: PackageJson {
+        on target delete delete source;
+    };
     dependency_type : DependencyType;
     required single repository: Repository;
         
-
     index on (.package_json);
     index on (.dependency_type);
-
  }
 
 
- type ProdDependency extending Dependency {
+type ProdDependency extending Dependency {
     overloaded dependency_type : DependencyType {
-           default := DependencyType.Prod
+           default := DependencyType.Prod;
     };
 }
 
- type DevDependency extending Dependency {
+type DevDependency extending Dependency {
     overloaded dependency_type : DependencyType {
-           default := DependencyType.Dev
+           default := DependencyType.Dev;
     };
-
 }
 
 

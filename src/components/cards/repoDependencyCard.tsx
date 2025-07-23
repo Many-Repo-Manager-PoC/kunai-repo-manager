@@ -6,7 +6,6 @@ import { useGetDependenciesForRepo } from "~/hooks";
 import { useRefreshPackageJson } from "~/actions/packageJson.server";
 
 interface RepoDependencyCardProps {
-  repos: GetRepositoryReturns[];
   repo: GetRepositoryReturns;
 }
 
@@ -18,9 +17,7 @@ export const RepoDependencyCard = component$<RepoDependencyCardProps>(
 
     const handleRefreshDependencies = $(async () => {
       if (repo?.name) {
-        console.log("refreshing package.json for", repo.name);
         await refreshPackageJson(repo.name);
-        console.log("refreshed package.json for", repo.name);
         window.location.reload();
       }
     });
