@@ -1,36 +1,40 @@
 import { component$ } from "@qwik.dev/core";
 import { BaseCard } from "./baseCard";
 import { Chip } from "@kunai-consulting/kunai-design-system";
-import type { Repo, PackageJson } from "~/db/types";
+import { useGetDependenciesForRepo } from "~/hooks";
+import { useRefreshPackageJson } from "~/actions/packageJson.server";
 
 interface RepoDependencyCardProps {
-  repos: Repo[];
-  repo: Repo;
-  packageJson: PackageJson[];
+  repository_id: number;
+  repository_name: string;
 }
 
 export const RepoDependencyCard = component$<RepoDependencyCardProps>(
-  ({ repo, packageJson }) => {
-    const repoPackageJson = packageJson.find((pkg) => pkg.repo === repo.name);
-    const dependencies = repoPackageJson?.packageJson?.dependencies || {};
-    const devDependencies = repoPackageJson?.packageJson?.devDependencies || {};
-    const allDependencies = [
-      ...Object.entries(dependencies).map(([name, version]) => ({
-        name,
-        version,
-        type: "production",
-      })),
-      ...Object.entries(devDependencies).map(([name, version]) => ({
-        name,
-        version,
-        type: "development",
-      })),
-    ];
+  ({ repository_id, repository_name }) => {
+    const allDependencies = useGetDependenciesForRepo(repository_id || 0);
+
+    const refreshPackageJson = useRefreshPackageJson;
+
+    const handleRefreshDependencies = $(async () => {
+      if (repository_name) {
+        await refreshPackageJson(repository_name);
+        window.location.reload();
+      }
+    });
 
     return (
       <BaseCard rootClassNames="bg-white/50 dark:bg-kunai-blue-600/50 w-full">
-        <div q:slot="header" class="flex items-center gap-2 w-full p-2">
-          <span class="text-lg font-large">{repo.name}</span>
+        <div
+          q:slot="header"
+          class="flex items-center justify-between gap-2 w-full p-2"
+        >
+          <span class="text-lg font-large">{repository_name}</span>
+          <button
+            onClick$={handleRefreshDependencies}
+            class="px-3 py-1 text-sm bg-kunai-blue-500 hover:bg-kunai-blue-600 text-white rounded-md transition-colors"
+          >
+            Refresh Dependencies
+          </button>
         </div>
         <div q:slot="body" class="flex flex-col gap-2 p-2 h-[calc(100%-4rem)]">
           <div class="flex-grow dark:text-white">
@@ -47,26 +51,36 @@ export const RepoDependencyCard = component$<RepoDependencyCardProps>(
                 Type
               </div>
             </div>
-            {allDependencies.map(({ name, version, type }) => (
-              <div
-                key={`${name}-${version}`}
-                class="flex justify-between items-center py-2"
-              >
-                <span class="dark:text-white w-1/3 truncate">{name}</span>
-                <span class="dark:text-white w-1/3 text-center">{version}</span>
-                <div class="w-1/3 flex justify-end">
-                  <Chip.Root
-                    class={`text-xs shrink-0  ${
-                      type === "production"
-                        ? "bg-kunai-blue-400 dark:bg-kunai-blue-400 text-kunai-blue-100"
-                        : "bg-kunai-blue-300 dark:bg-kunai-blue-300 text-kunai-blue-900"
-                    }`}
-                  >
-                    {type}
-                  </Chip.Root>
+            {allDependencies.value?.map((dependency) => {
+              const dependency_type =
+                "dependency_type" in dependency
+                  ? dependency.dependency_type
+                  : undefined;
+              return (
+                <div
+                  key={`${dependency.name}-${dependency.dependency_version}`}
+                  class="flex justify-between items-center py-2"
+                >
+                  <span class="dark:text-white w-1/3 truncate">
+                    {dependency.name}
+                  </span>
+                  <span class="dark:text-white w-1/3 text-center">
+                    {dependency.dependency_version}
+                  </span>
+                  <div class="w-1/3 flex justify-end">
+                    <Chip.Root
+                      class={`text-xs shrink-0  ${
+                        dependency_type === "Prod"
+                          ? "bg-kunai-blue-400 dark:bg-kunai-blue-400 text-kunai-blue-100"
+                          : "bg-kunai-blue-300 dark:bg-kunai-blue-300 text-kunai-blue-900"
+                      }`}
+                    >
+                      {dependency_type || "Unknown"}
+                    </Chip.Root>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </BaseCard>

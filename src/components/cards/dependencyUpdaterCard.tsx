@@ -1,55 +1,35 @@
 import { component$ } from "@qwik.dev/core";
 import { BaseCard } from "./baseCard";
 import { Chip } from "@kunai-consulting/kunai-design-system";
-import type { Repo, PackageJson } from "~/db/types";
 import semver from "semver";
 import { DependencyUpdaterModal } from "../modals/dependencyUpdaterModal";
 import { postWorkflowDispatchEvent } from "~/routes/layout";
+import {
+  type GetRepositoryReturns,
+  type GetPackageJsonReturns,
+} from "../../../dbschema/queries";
+import { useGetAllPackageJsons } from "~/hooks";
 
 interface DependencyUpdaterCardProps {
-  repos: Repo[];
-  repo: Repo;
-  packageJson: PackageJson[];
+  repos: GetRepositoryReturns[];
+  repo: GetRepositoryReturns;
+  packageJson: GetPackageJsonReturns;
 }
 
 export const DependencyUpdaterCard = component$<DependencyUpdaterCardProps>(
   ({ repo, packageJson }) => {
-    const currentVersion =
-      packageJson.find((pkg) => pkg.repo === repo.name)?.packageJson?.version ||
-      "No version";
-    const currentPackageJson = packageJson.find(
-      (pkg) => pkg.repo === repo.name,
-    )?.packageJson;
-    const currentRepoName = currentPackageJson?.name ?? "";
-    const dependentRepos = new Set<[string, string]>();
+    const allPackageJsons = useGetAllPackageJsons();
+    const currentRepoVersion = packageJson?.package_version ?? "No version";
+    const currentRepoName = repo?.name ?? "";
     const action = postWorkflowDispatchEvent();
 
-    // Find all repos that depend on the current repo
-    packageJson.forEach((pkg) => {
-      const { dependencies, devDependencies } = pkg.packageJson ?? {};
-      const repoName = pkg.packageJson?.name ?? "";
-
-      const checkDependencies = (deps: Record<string, string> | undefined) => {
-        if (!deps) return;
-        Object.entries(deps).forEach(([dep, version]) => {
-          if (dep.includes(currentRepoName)) {
-            dependentRepos.add([repoName, version]);
-          }
-        });
-      };
-
-      checkDependencies(dependencies ?? undefined);
-      checkDependencies(devDependencies ?? undefined);
-    });
-
+    // Helper to determine chip color based on version comparison
     const getChipColor = (version: string) => {
-      if (version === "No version" || currentVersion === "No version") {
+      if (version === "No version" || currentRepoVersion === "No version") {
         return "dark:bg-kunai-blue-300";
       }
-
       const cleanVersion = version.replace(/[\^~>=<]/g, "");
-      const cleanCurrentVersion = currentVersion.replace(/[\^~>=<]/g, "");
-
+      const cleanCurrentVersion = currentRepoVersion.replace(/[\^~>=<]/g, "");
       if (semver.eq(cleanVersion, cleanCurrentVersion)) {
         return "bg-green-300";
       } else if (semver.lt(cleanVersion, cleanCurrentVersion)) {
@@ -58,14 +38,35 @@ export const DependencyUpdaterCard = component$<DependencyUpdaterCardProps>(
       return "dark:bg-kunai-blue-300";
     };
 
+    // Helper to determine if an update is needed
     const needsUpdate = (version: string) => {
-      if (version === "No version" || currentVersion === "No version") {
+      if (version === "No version" || currentRepoVersion === "No version") {
         return false;
       }
       const cleanVersion = version.replace(/[\^~>=<]/g, "");
-      const cleanCurrentVersion = currentVersion.replace(/[\^~>=<]/g, "");
+      const cleanCurrentVersion = currentRepoVersion.replace(/[\^~>=<]/g, "");
       return semver.lt(cleanVersion, cleanCurrentVersion);
     };
+
+    // Find all repos that depend on the current repo
+    // The dependencies and dev_dependencies are arrays of objects with .name and .dependency_version
+    const dependentRepos: Array<[string, string]> = [];
+    allPackageJsons.value.forEach((pkg) => {
+      if (!pkg) return;
+      const repoName = pkg.name ?? "";
+      // Check dependencies
+      (pkg.dependencies ?? []).forEach((dep) => {
+        if (dep.name === currentRepoName) {
+          dependentRepos.push([repoName, dep.dependency_version]);
+        }
+      });
+      // Check devDependencies
+      (pkg.dev_dependencies ?? []).forEach((dep) => {
+        if (dep.name === currentRepoName) {
+          dependentRepos.push([repoName, dep.dependency_version]);
+        }
+      });
+    });
 
     return (
       <BaseCard rootClassNames="bg-white/50 dark:bg-kunai-blue-600/50 w-full">
@@ -73,9 +74,9 @@ export const DependencyUpdaterCard = component$<DependencyUpdaterCardProps>(
           q:slot="header"
           class="flex items-center justify-between w-full p-2"
         >
-          <span class="text-lg font-large">{repo.name}</span>
+          <span class="text-lg font-large">{repo?.name}</span>
           <span class="text-sm text-kunai-blue-100">
-            Current version: {currentVersion}
+            Current version: {currentRepoVersion}
           </span>
         </div>
         <div q:slot="body" class="flex flex-col gap-2 p-2 h-[calc(100%-4rem)]">
@@ -97,37 +98,43 @@ export const DependencyUpdaterCard = component$<DependencyUpdaterCardProps>(
                 Action
               </div>
             </div>
-            {Array.from(dependentRepos).map(([repoName, version]) => (
-              <div
-                key={`${repoName}-${version}`}
-                class="flex justify-between items-center py-2"
-              >
-                <div class="dark:text-white w-1/2 flex justify-start break-words">
-                  {repoName || "No repo name"}
-                </div>
-                <div class="w-1/4 flex justify-center">
-                  <Chip.Root
-                    variant="outline"
-                    class={`${getChipColor(version)} text-xs shrink-0`}
-                  >
-                    {version || "No version"}
-                  </Chip.Root>
-                </div>
-                <div class="w-1/4 flex justify-end">
-                  {needsUpdate(version) && (
-                    <div class="flex justify-end">
-                      <DependencyUpdaterModal
-                        packageToUpdate={currentRepoName}
-                        packageVersion={currentVersion}
-                        repoToUpdate={repoName}
-                        oldVersion={version}
-                        dispatchEvent={action}
-                      />
-                    </div>
-                  )}
-                </div>
+            {dependentRepos.length === 0 ? (
+              <div class="text-center text-gray-500 dark:text-gray-300 py-4">
+                No repositories found using this dependency.
               </div>
-            ))}
+            ) : (
+              dependentRepos.map(([repoName, version]) => (
+                <div
+                  key={`${repoName}-${version}`}
+                  class="flex justify-between items-center py-2"
+                >
+                  <div class="dark:text-white w-1/2 flex justify-start break-words">
+                    {repoName || "No repo name"}
+                  </div>
+                  <div class="w-1/4 flex justify-center">
+                    <Chip.Root
+                      variant="outline"
+                      class={`${getChipColor(version)} text-xs shrink-0`}
+                    >
+                      {version || "No version"}
+                    </Chip.Root>
+                  </div>
+                  <div class="w-1/4 flex justify-end">
+                    {needsUpdate(version) && (
+                      <div class="flex justify-end">
+                        <DependencyUpdaterModal
+                          packageToUpdate={currentRepoName}
+                          packageVersion={currentRepoVersion}
+                          repoToUpdate={repoName}
+                          oldVersion={version}
+                          dispatchEvent={action}
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </BaseCard>

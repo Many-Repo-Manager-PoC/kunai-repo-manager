@@ -1,6 +1,5 @@
 import { component$, useSignal } from "@qwik.dev/core";
 import { Button, Chip } from "@kunai-consulting/kunai-design-system";
-import type { Repo } from "~/db/types";
 import {
   StarIcon,
   GitForkIcon,
@@ -10,8 +9,9 @@ import {
 } from "~/components/icons";
 import { TopicsModal } from "~/components/modals/topicsModal";
 import { Routes } from "~/config/routes";
+import type { GetRepositoryReturns } from "../../../dbschema/queries";
 export interface RepoDetailsProps {
-  repoDetails?: Repo;
+  repoDetails?: GetRepositoryReturns;
   isDesignSystem?: boolean;
 }
 
@@ -79,7 +79,7 @@ export const RepoDetails = component$<RepoDetailsProps>(
                 <Button asChild>
                   <a
                     href={Routes.componentCopy(
-                      repoDetails?.repoOwner,
+                      repoDetails?.owner.login,
                       repoDetails?.name,
                     )}
                   >

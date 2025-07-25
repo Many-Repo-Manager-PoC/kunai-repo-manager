@@ -22,5 +22,5 @@
     "types": ["@cloudflare/workers-types/2023-07-01"]
   },
   "files": ["./.eslintrc.cjs"],
-  "include": ["src", "./*.d.ts", "./*.config.ts"]
+  "include": ["src", "./*.d.ts", "./*.config.ts", "dbschema", "gel.tsx"]
 }
