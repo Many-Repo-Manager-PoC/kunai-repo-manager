@@ -1,6 +1,6 @@
 import { executeQuery } from "../client";
 import * as queries from "../../../dbschema/queries";
-import { server$ } from "@builder.io/qwik-city";
+import { server$ } from "@qwik.dev/router";
 
 export const insertOrUpdateRepository = server$(
   async (args: Parameters<typeof queries.insertOrUpdateRepository>[1]) => {

@@ -1,6 +1,6 @@
 import { executeQuery } from "../client";
 import * as queries from "../../../dbschema/queries";
-import { server$ } from "@builder.io/qwik-city";
+import { server$ } from "@qwik.dev/router";
 
 export const getPackageJson = server$(async (repoName: string) => {
   return await executeQuery(queries.getPackageJson, {

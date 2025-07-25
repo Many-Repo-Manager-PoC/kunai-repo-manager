@@ -1,4 +1,4 @@
-import { $, component$, useComputed$ } from "@builder.io/qwik";
+import { $, component$, useComputed$ } from "@qwik.dev/core";
 import {
   useForm,
   zodForm$,

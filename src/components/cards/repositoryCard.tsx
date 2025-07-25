@@ -6,7 +6,7 @@ import {
   LuExternalLink,
   LuGithub,
 } from "@qwikest/icons/lucide";
-import { component$ } from "@builder.io/qwik";
+import { component$ } from "@qwik.dev/core";
 import type { GetRepositoryReturns } from "../../../dbschema/queries";
 import { BaseCard } from "./baseCard";
 
