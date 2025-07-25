@@ -84,7 +84,6 @@ export type DeletePackageJsonReturns = {
       "visibility": ("public" | "private") | null;
       "anonymous_access_enabled": boolean | null;
       "auto_init": boolean | null;
-      "custom_properties": unknown | null;
       "is_template": boolean | null;
       "merge_commit_message": string | null;
       "merge_commit_title": string | null;
@@ -197,7 +196,6 @@ export type GetRepositoriesReturns = Array<{
   "visibility": ("public" | "private") | null;
   "anonymous_access_enabled": boolean | null;
   "auto_init": boolean | null;
-  "custom_properties": unknown | null;
   "is_template": boolean | null;
   "merge_commit_message": string | null;
   "merge_commit_title": string | null;
@@ -318,7 +316,6 @@ export type GetRepositoriesReturns = Array<{
     "visibility": ("public" | "private") | null;
     "anonymous_access_enabled": boolean | null;
     "auto_init": boolean | null;
-    "custom_properties": unknown | null;
     "is_template": boolean | null;
     "merge_commit_message": string | null;
     "merge_commit_title": string | null;
@@ -534,7 +531,6 @@ export type GetRepositoryReturns = {
   "visibility": ("public" | "private") | null;
   "anonymous_access_enabled": boolean | null;
   "auto_init": boolean | null;
-  "custom_properties": unknown | null;
   "is_template": boolean | null;
   "merge_commit_message": string | null;
   "merge_commit_title": string | null;
@@ -655,7 +651,6 @@ export type GetRepositoryReturns = {
     "visibility": ("public" | "private") | null;
     "anonymous_access_enabled": boolean | null;
     "auto_init": boolean | null;
-    "custom_properties": unknown | null;
     "is_template": boolean | null;
     "merge_commit_message": string | null;
     "merge_commit_title": string | null;
@@ -805,6 +800,52 @@ select Repository { **
   assert_exists(Repository.full_name) ?= <optional str>$name or
   assert_exists(Repository.name) ?= <optional str>$name
 ) limit 1;`, args);
+
+}
+
+
+export type GetUserArgs = {
+  readonly "user_id"?: number | null;
+  readonly "login"?: string | null;
+};
+
+export type GetUserReturns = Array<{
+  "avatar_url": string;
+  "login": string;
+  "role_type": string;
+  "site_admin": boolean;
+  "starred_at": string | null;
+  "user_id": number;
+  "user_view_type": string | null;
+  "last_updated": Date | null;
+  "id": string;
+  "email": string;
+  "events_url": string | null;
+  "followers_url": string | null;
+  "following_url": string | null;
+  "gists_url": string | null;
+  "gravatar_id": string | null;
+  "html_url": string | null;
+  "name": string;
+  "node_id": string | null;
+  "organizations_url": string | null;
+  "received_events_url": string | null;
+  "repos_url": string | null;
+  "starred_url": string | null;
+  "subscriptions_url": string | null;
+  "url": string | null;
+}>;
+
+export function getUser(client: Executor, args: GetUserArgs): Promise<GetUserReturns> {
+  return client.query(`\
+select User { **
+} filter assert_exists(User.user_id) ?= <optional int64>$user_id;
+
+select User { **
+} filter assert_exists(User.login) ?= <optional str>$login;
+
+# This is all one query, but it's split up for readability. All filters are optional. 
+# If no filters are provided, all Users will be returned.`, args);
 
 }
 
@@ -959,7 +1000,6 @@ export type InsertOrUpdateRepositoryReturns = {
   "merge_commit_title": string | null;
   "merge_commit_message": string | null;
   "is_template": boolean | null;
-  "custom_properties": unknown | null;
   "auto_init": boolean | null;
   "anonymous_access_enabled": boolean | null;
   "visibility": ("public" | "private") | null;
@@ -1177,7 +1217,6 @@ export type InsertOrUpdateRepositoryReturns = {
     "visibility": ("public" | "private") | null;
     "anonymous_access_enabled": boolean | null;
     "auto_init": boolean | null;
-    "custom_properties": unknown | null;
     "is_template": boolean | null;
     "merge_commit_message": string | null;
     "merge_commit_title": string | null;
@@ -1594,7 +1633,6 @@ export type GetPackageJsonReturns = {
     "visibility": ("public" | "private") | null;
     "anonymous_access_enabled": boolean | null;
     "auto_init": boolean | null;
-    "custom_properties": unknown | null;
     "is_template": boolean | null;
     "merge_commit_message": string | null;
     "merge_commit_title": string | null;
@@ -1667,6 +1705,133 @@ select assert_single(
 }
 
 
+export type GetDependenciesForRepoArgs = {
+  readonly "repository_id"?: number | null;
+  readonly "package_json_name"?: string | null;
+};
+
+export type GetDependenciesForRepoReturns = Array<{
+  "dependency_version": string;
+  "name": string;
+  "id": string;
+  "last_updated": Date | null;
+  "dependency_type": ("Dev" | "Prod") | null;
+  "package_json": {
+    "name": string;
+    "package_version": string;
+    "last_updated": Date | null;
+    "id": string;
+  };
+  "repository": {
+    "clone_url": string | null;
+    "allow_auto_merge": boolean | null;
+    "allow_forking": boolean | null;
+    "allow_merge_commit": boolean | null;
+    "allow_rebase_merge": boolean | null;
+    "allow_squash_merge": boolean | null;
+    "archived": boolean;
+    "archive_url": string | null;
+    "repository_id": number;
+    "contents_url": string;
+    "contributors_url": string;
+    "created_at": string;
+    "default_branch": string;
+    "delete_branch_on_merge": boolean | null;
+    "deployments_url": string;
+    "disabled": boolean;
+    "downloads_url": string;
+    "events_url": string;
+    "fork": boolean;
+    "forks": number;
+    "forks_count": number;
+    "forks_url": string | null;
+    "full_name": string;
+    "has_discussions": boolean;
+    "has_pages": boolean;
+    "hooks_url": string;
+    "html_url": string;
+    "issue_comment_url": string;
+    "issue_events_url": string;
+    "issues_url": string;
+    "keys_url": string;
+    "labels_url": string;
+    "language": string;
+    "languages_url": string;
+    "master_branch": string | null;
+    "name": string;
+    "node_id": string;
+    "notifications_url": string;
+    "open_issues": number;
+    "open_issues_count": number;
+    "pushed_at": string;
+    "size": number;
+    "ssh_url": string;
+    "stargazers_count": number;
+    "description": string | null;
+    "has_downloads": boolean | null;
+    "has_issues": boolean | null;
+    "has_projects": boolean | null;
+    "has_wiki": boolean | null;
+    "homepage": string | null;
+    "topics": Array<string>;
+    "updated_at": string;
+    "url": string;
+    "watchers_count": number;
+    "visibility": ("public" | "private") | null;
+    "anonymous_access_enabled": boolean | null;
+    "auto_init": boolean | null;
+    "is_template": boolean | null;
+    "merge_commit_message": string | null;
+    "merge_commit_title": string | null;
+    "network_count": number | null;
+    "private": boolean | null;
+    "squash_merge_commit_message": string | null;
+    "squash_merge_commit_title": string | null;
+    "subscribers_count": number | null;
+    "team_id": number | null;
+    "temp_clone_token": string | null;
+    "assignees_url": string | null;
+    "blobs_url": string | null;
+    "branches_url": string | null;
+    "collaborators_url": string | null;
+    "comments_url": string | null;
+    "commits_url": string | null;
+    "compare_url": string | null;
+    "git_commits_url": string | null;
+    "git_refs_url": string | null;
+    "git_tags_url": string | null;
+    "git_url": string | null;
+    "merges_url": string | null;
+    "milestones_url": string | null;
+    "mirror_url": string | null;
+    "pulls_url": string | null;
+    "releases_url": string | null;
+    "stargazers_url": string | null;
+    "statuses_url": string | null;
+    "subscribers_url": string | null;
+    "subscription_url": string | null;
+    "svn_url": string | null;
+    "tags_url": string | null;
+    "teams_url": string | null;
+    "trees_url": string | null;
+    "last_updated": Date | null;
+    "id": string;
+  };
+}>;
+
+export function getDependenciesForRepo(client: Executor, args: GetDependenciesForRepoArgs): Promise<GetDependenciesForRepoReturns> {
+  return client.query(`\
+# Get all dependencies by repository_id or package_json name
+select Dependency {
+  **
+} filter (
+  assert_exists(Repository.repository_id) ?= <optional int64>$repository_id 
+  or assert_exists(Dependency.package_json.name) ?= <optional str>$package_json_name
+);`, args);
+
+}
+
+
 export type GetFilePathArgs = {
   readonly "repository_id"?: number | null;
 };
@@ -1735,7 +1900,6 @@ export type GetFilePathReturns = {
     "visibility": ("public" | "private") | null;
     "anonymous_access_enabled": boolean | null;
     "auto_init": boolean | null;
-    "custom_properties": unknown | null;
     "is_template": boolean | null;
     "merge_commit_message": string | null;
     "merge_commit_title": string | null;
@@ -1787,6 +1951,131 @@ select assert_single(
 }
 
 
+
+export type GetAllPackageJsonsReturns = Array<{
+  "name": string;
+  "package_version": string;
+  "last_updated": Date | null;
+  "id": string;
+  "repository": {
+    "clone_url": string | null;
+    "allow_auto_merge": boolean | null;
+    "allow_forking": boolean | null;
+    "allow_merge_commit": boolean | null;
+    "allow_rebase_merge": boolean | null;
+    "allow_squash_merge": boolean | null;
+    "archived": boolean;
+    "archive_url": string | null;
+    "repository_id": number;
+    "contents_url": string;
+    "contributors_url": string;
+    "created_at": string;
+    "default_branch": string;
+    "delete_branch_on_merge": boolean | null;
+    "deployments_url": string;
+    "disabled": boolean;
+    "downloads_url": string;
+    "events_url": string;
+    "fork": boolean;
+    "forks": number;
+    "forks_count": number;
+    "forks_url": string | null;
+    "full_name": string;
+    "has_discussions": boolean;
+    "has_pages": boolean;
+    "hooks_url": string;
+    "html_url": string;
+    "issue_comment_url": string;
+    "issue_events_url": string;
+    "issues_url": string;
+    "keys_url": string;
+    "labels_url": string;
+    "language": string;
+    "languages_url": string;
+    "master_branch": string | null;
+    "name": string;
+    "node_id": string;
+    "notifications_url": string;
+    "open_issues": number;
+    "open_issues_count": number;
+    "pushed_at": string;
+    "size": number;
+    "ssh_url": string;
+    "stargazers_count": number;
+    "description": string | null;
+    "has_downloads": boolean | null;
+    "has_issues": boolean | null;
+    "has_projects": boolean | null;
+    "has_wiki": boolean | null;
+    "homepage": string | null;
+    "topics": Array<string>;
+    "updated_at": string;
+    "url": string;
+    "watchers_count": number;
+    "visibility": ("public" | "private") | null;
+    "anonymous_access_enabled": boolean | null;
+    "auto_init": boolean | null;
+    "is_template": boolean | null;
+    "merge_commit_message": string | null;
+    "merge_commit_title": string | null;
+    "network_count": number | null;
+    "private": boolean | null;
+    "squash_merge_commit_message": string | null;
+    "squash_merge_commit_title": string | null;
+    "subscribers_count": number | null;
+    "team_id": number | null;
+    "temp_clone_token": string | null;
+    "assignees_url": string | null;
+    "blobs_url": string | null;
+    "branches_url": string | null;
+    "collaborators_url": string | null;
+    "comments_url": string | null;
+    "commits_url": string | null;
+    "compare_url": string | null;
+    "git_commits_url": string | null;
+    "git_refs_url": string | null;
+    "git_tags_url": string | null;
+    "git_url": string | null;
+    "merges_url": string | null;
+    "milestones_url": string | null;
+    "mirror_url": string | null;
+    "pulls_url": string | null;
+    "releases_url": string | null;
+    "stargazers_url": string | null;
+    "statuses_url": string | null;
+    "subscribers_url": string | null;
+    "subscription_url": string | null;
+    "svn_url": string | null;
+    "tags_url": string | null;
+    "teams_url": string | null;
+    "trees_url": string | null;
+    "last_updated": Date | null;
+    "id": string;
+  };
+  "dev_dependencies": Array<{
+    "name": string;
+    "last_updated": Date | null;
+    "dependency_version": string;
+    "dependency_type": ("Dev" | "Prod") | null;
+    "id": string;
+  }>;
+  "dependencies": Array<{
+    "last_updated": Date | null;
+    "name": string;
+    "dependency_version": string;
+    "id": string;
+    "dependency_type": ("Dev" | "Prod") | null;
+  }>;
+}>;
+
+export function getAllPackageJsons(client: Executor): Promise<GetAllPackageJsonsReturns> {
+  return client.query(`\
+# return all packageJsons
+select PackageJson { ** };`);
+
+}
+
+
 export type DeleteRepositoryArgs = {
   readonly "repository_id": number;
   readonly "name": string;
@@ -1829,7 +2118,6 @@ export type DeleteRepositoryReturns = Array<{
   "merge_commit_title": string | null;
   "merge_commit_message": string | null;
   "is_template": boolean | null;
-  "custom_properties": unknown | null;
   "auto_init": boolean | null;
   "anonymous_access_enabled": boolean | null;
   "visibility": ("public" | "private") | null;
@@ -2047,7 +2335,6 @@ export type DeleteRepositoryReturns = Array<{
     "visibility": ("public" | "private") | null;
     "anonymous_access_enabled": boolean | null;
     "auto_init": boolean | null;
-    "custom_properties": unknown | null;
     "is_template": boolean | null;
     "merge_commit_message": string | null;
     "merge_commit_title": string | null;
@@ -2120,305 +2407,5 @@ with DeletedRepository := (
     filter .repository_id = <int64>$repository_id or .name = <str>$name
 )
 select DeletedRepository {**};`, args);
-
-}
-
-
-
-export type GetAllPackageJsonsReturns = Array<{
-  "name": string;
-  "package_version": string;
-  "last_updated": Date | null;
-  "id": string;
-  "repository": {
-    "clone_url": string | null;
-    "allow_auto_merge": boolean | null;
-    "allow_forking": boolean | null;
-    "allow_merge_commit": boolean | null;
-    "allow_rebase_merge": boolean | null;
-    "allow_squash_merge": boolean | null;
-    "archived": boolean;
-    "archive_url": string | null;
-    "repository_id": number;
-    "contents_url": string;
-    "contributors_url": string;
-    "created_at": string;
-    "default_branch": string;
-    "delete_branch_on_merge": boolean | null;
-    "deployments_url": string;
-    "disabled": boolean;
-    "downloads_url": string;
-    "events_url": string;
-    "fork": boolean;
-    "forks": number;
-    "forks_count": number;
-    "forks_url": string | null;
-    "full_name": string;
-    "has_discussions": boolean;
-    "has_pages": boolean;
-    "hooks_url": string;
-    "html_url": string;
-    "issue_comment_url": string;
-    "issue_events_url": string;
-    "issues_url": string;
-    "keys_url": string;
-    "labels_url": string;
-    "language": string;
-    "languages_url": string;
-    "master_branch": string | null;
-    "name": string;
-    "node_id": string;
-    "notifications_url": string;
-    "open_issues": number;
-    "open_issues_count": number;
-    "pushed_at": string;
-    "size": number;
-    "ssh_url": string;
-    "stargazers_count": number;
-    "description": string | null;
-    "has_downloads": boolean | null;
-    "has_issues": boolean | null;
-    "has_projects": boolean | null;
-    "has_wiki": boolean | null;
-    "homepage": string | null;
-    "topics": Array<string>;
-    "updated_at": string;
-    "url": string;
-    "watchers_count": number;
-    "visibility": ("public" | "private") | null;
-    "anonymous_access_enabled": boolean | null;
-    "auto_init": boolean | null;
-    "custom_properties": unknown | null;
-    "is_template": boolean | null;
-    "merge_commit_message": string | null;
-    "merge_commit_title": string | null;
-    "network_count": number | null;
-    "private": boolean | null;
-    "squash_merge_commit_message": string | null;
-    "squash_merge_commit_title": string | null;
-    "subscribers_count": number | null;
-    "team_id": number | null;
-    "temp_clone_token": string | null;
-    "assignees_url": string | null;
-    "blobs_url": string | null;
-    "branches_url": string | null;
-    "collaborators_url": string | null;
-    "comments_url": string | null;
-    "commits_url": string | null;
-    "compare_url": string | null;
-    "git_commits_url": string | null;
-    "git_refs_url": string | null;
-    "git_tags_url": string | null;
-    "git_url": string | null;
-    "merges_url": string | null;
-    "milestones_url": string | null;
-    "mirror_url": string | null;
-    "pulls_url": string | null;
-    "releases_url": string | null;
-    "stargazers_url": string | null;
-    "statuses_url": string | null;
-    "subscribers_url": string | null;
-    "subscription_url": string | null;
-    "svn_url": string | null;
-    "tags_url": string | null;
-    "teams_url": string | null;
-    "trees_url": string | null;
-    "last_updated": Date | null;
-    "id": string;
-  };
-  "dev_dependencies": Array<{
-    "name": string;
-    "last_updated": Date | null;
-    "dependency_version": string;
-    "dependency_type": ("Dev" | "Prod") | null;
-    "id": string;
-  }>;
-  "dependencies": Array<{
-    "last_updated": Date | null;
-    "name": string;
-    "dependency_version": string;
-    "id": string;
-    "dependency_type": ("Dev" | "Prod") | null;
-  }>;
-}>;
-
-export function getAllPackageJsons(client: Executor): Promise<GetAllPackageJsonsReturns> {
-  return client.query(`\
-# return all packageJsons
-select PackageJson { ** };`);
-
-}
-
-
-export type GetUserArgs = {
-  readonly "user_id"?: number | null;
-  readonly "login"?: string | null;
-};
-
-export type GetUserReturns = Array<{
-  "avatar_url": string;
-  "login": string;
-  "role_type": string;
-  "site_admin": boolean;
-  "starred_at": string | null;
-  "user_id": number;
-  "user_view_type": string | null;
-  "last_updated": Date | null;
-  "id": string;
-  "email": string;
-  "events_url": string | null;
-  "followers_url": string | null;
-  "following_url": string | null;
-  "gists_url": string | null;
-  "gravatar_id": string | null;
-  "html_url": string | null;
-  "name": string;
-  "node_id": string | null;
-  "organizations_url": string | null;
-  "received_events_url": string | null;
-  "repos_url": string | null;
-  "starred_url": string | null;
-  "subscriptions_url": string | null;
-  "url": string | null;
-}>;
-
-export function getUser(client: Executor, args: GetUserArgs): Promise<GetUserReturns> {
-  return client.query(`\
-select User { **
-} filter assert_exists(User.user_id) ?= <optional int64>$user_id;
-
-select User { **
-} filter assert_exists(User.login) ?= <optional str>$login;
-
-# This is all one query, but it's split up for readability. All filters are optional. 
-# If no filters are provided, all Users will be returned.`, args);
-
-}
-
-
-export type GetDependenciesForRepoArgs = {
-  readonly "repository_id"?: number | null;
-  readonly "package_json_name"?: string | null;
-};
-
-export type GetDependenciesForRepoReturns = Array<{
-  "dependency_version": string;
-  "name": string;
-  "id": string;
-  "last_updated": Date | null;
-  "dependency_type": ("Dev" | "Prod") | null;
-  "package_json": {
-    "name": string;
-    "package_version": string;
-    "last_updated": Date | null;
-    "id": string;
-  };
-  "repository": {
-    "clone_url": string | null;
-    "allow_auto_merge": boolean | null;
-    "allow_forking": boolean | null;
-    "allow_merge_commit": boolean | null;
-    "allow_rebase_merge": boolean | null;
-    "allow_squash_merge": boolean | null;
-    "archived": boolean;
-    "archive_url": string | null;
-    "repository_id": number;
-    "contents_url": string;
-    "contributors_url": string;
-    "created_at": string;
-    "default_branch": string;
-    "delete_branch_on_merge": boolean | null;
-    "deployments_url": string;
-    "disabled": boolean;
-    "downloads_url": string;
-    "events_url": string;
-    "fork": boolean;
-    "forks": number;
-    "forks_count": number;
-    "forks_url": string | null;
-    "full_name": string;
-    "has_discussions": boolean;
-    "has_pages": boolean;
-    "hooks_url": string;
-    "html_url": string;
-    "issue_comment_url": string;
-    "issue_events_url": string;
-    "issues_url": string;
-    "keys_url": string;
-    "labels_url": string;
-    "language": string;
-    "languages_url": string;
-    "master_branch": string | null;
-    "name": string;
-    "node_id": string;
-    "notifications_url": string;
-    "open_issues": number;
-    "open_issues_count": number;
-    "pushed_at": string;
-    "size": number;
-    "ssh_url": string;
-    "stargazers_count": number;
-    "description": string | null;
-    "has_downloads": boolean | null;
-    "has_issues": boolean | null;
-    "has_projects": boolean | null;
-    "has_wiki": boolean | null;
-    "homepage": string | null;
-    "topics": Array<string>;
-    "updated_at": string;
-    "url": string;
-    "watchers_count": number;
-    "visibility": ("public" | "private") | null;
-    "anonymous_access_enabled": boolean | null;
-    "auto_init": boolean | null;
-    "custom_properties": unknown | null;
-    "is_template": boolean | null;
-    "merge_commit_message": string | null;
-    "merge_commit_title": string | null;
-    "network_count": number | null;
-    "private": boolean | null;
-    "squash_merge_commit_message": string | null;
-    "squash_merge_commit_title": string | null;
-    "subscribers_count": number | null;
-    "team_id": number | null;
-    "temp_clone_token": string | null;
-    "assignees_url": string | null;
-    "blobs_url": string | null;
-    "branches_url": string | null;
-    "collaborators_url": string | null;
-    "comments_url": string | null;
-    "commits_url": string | null;
-    "compare_url": string | null;
-    "git_commits_url": string | null;
-    "git_refs_url": string | null;
-    "git_tags_url": string | null;
-    "git_url": string | null;
-    "merges_url": string | null;
-    "milestones_url": string | null;
-    "mirror_url": string | null;
-    "pulls_url": string | null;
-    "releases_url": string | null;
-    "stargazers_url": string | null;
-    "statuses_url": string | null;
-    "subscribers_url": string | null;
-    "subscription_url": string | null;
-    "svn_url": string | null;
-    "tags_url": string | null;
-    "teams_url": string | null;
-    "trees_url": string | null;
-    "last_updated": Date | null;
-    "id": string;
-  };
-}>;
-
-export function getDependenciesForRepo(client: Executor, args: GetDependenciesForRepoArgs): Promise<GetDependenciesForRepoReturns> {
-  return client.query(`\
-# Get all dependencies by repository_id or package_json name
-select Dependency {
-  **
-} filter (
-  assert_exists(Repository.repository_id) ?= <optional int64>$repository_id 
-  or assert_exists(Dependency.package_json.name) ?= <optional str>$package_json_name
-);`, args);
 
 }

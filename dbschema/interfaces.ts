@@ -334,7 +334,6 @@ export namespace $default {
     "visibility"?: Visibility | null;
     "anonymous_access_enabled"?: boolean | null;
     "auto_init"?: boolean | null;
-    "custom_properties"?: unknown | null;
     "is_template"?: boolean | null;
     "merge_commit_message"?: string | null;
     "merge_commit_title"?: string | null;

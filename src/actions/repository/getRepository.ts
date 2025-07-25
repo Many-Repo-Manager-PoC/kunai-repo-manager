@@ -19,7 +19,7 @@ export const getRepositoriesForAllTopics = server$(async () => {
     ...new Set(
       result.flatMap((repo) => {
         // Split any comma-separated topics into individual topics
-        const repoTopics = repo.topics || [];
+        const repoTopics = repo.topics;
         return repoTopics.flatMap((topic) =>
           typeof topic === "string"
             ? topic.split(",").map((t) => t.trim())

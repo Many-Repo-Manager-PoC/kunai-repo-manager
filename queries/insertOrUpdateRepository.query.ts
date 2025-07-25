@@ -152,7 +152,6 @@ export type InsertOrUpdateRepositoryReturns = {
   "merge_commit_title": string | null;
   "merge_commit_message": string | null;
   "is_template": boolean | null;
-  "custom_properties": unknown | null;
   "auto_init": boolean | null;
   "anonymous_access_enabled": boolean | null;
   "visibility": ("public" | "private") | null;
@@ -370,7 +369,6 @@ export type InsertOrUpdateRepositoryReturns = {
     "visibility": ("public" | "private") | null;
     "anonymous_access_enabled": boolean | null;
     "auto_init": boolean | null;
-    "custom_properties": unknown | null;
     "is_template": boolean | null;
     "merge_commit_message": string | null;
     "merge_commit_title": string | null;

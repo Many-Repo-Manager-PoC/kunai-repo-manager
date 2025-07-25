@@ -58,11 +58,6 @@ export const useRefreshRepositories = server$(async function () {
         const repoArgs: queries.InsertOrUpdateRepositoryArgs = {
           repository_id: repository.id,
           archived: repository.archived ?? false,
-          admin: repository.permissions?.admin ?? false,
-          maintain: repository.permissions?.maintain ?? false,
-          push: repository.permissions?.push ?? false,
-          triage: repository.permissions?.triage ?? false,
-          pull: repository.permissions?.pull ?? false,
           template_repository_id: repository.template_repository?.id ?? 0,
           topics, // Now always a string
           visibility: repository.visibility ?? "",

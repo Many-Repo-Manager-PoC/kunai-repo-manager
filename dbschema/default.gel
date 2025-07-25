@@ -125,7 +125,7 @@ module default {
    anonymous_access_enabled: bool;
    code_of_conduct: CodeOfConduct;
    security_and_analysis: SecurityAndAnalysis;
-   custom_properties: json;
+   # custom_properties: json;
    template_repository: Repository;
     # put the list of topics in as unordered set of strings
     # will make much easier to query and modify
