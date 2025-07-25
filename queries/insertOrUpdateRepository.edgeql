@@ -125,28 +125,10 @@ with NewRepository := (insert Repository {
     has_downloads:= <optional bool>$has_downloads,
     is_template:= <optional bool>$is_template,
     master_branch:= <optional str>$master_branch,
-    permissions:= (
-        select Permissions 
-        filter .user.user_id = <int64>$owner_user_id
-        limit 1
-    ) ?? (
-        insert Permissions {
-            user := (
-                select User 
-                filter .user_id = <int64>$owner_user_id
-                limit 1
-            ),
-            admin := <bool>$admin,
-            maintain := <optional bool>$maintain,
-            push := <bool>$push,
-            triage := <optional bool>$triage,
-            pull := <bool>$pull,
-        }
-    ),
     template_repository:= 
         assert_single(
             (select detached Repository 
-            filter detached Repository.repository_id = <int64>$template_repository_id)
+            filter detached Repository.repository_id = <int64>$template_repository_id limit 1)
         ),
     multi topics:= <optional str>$topics,
     visibility:= <optional str>$visibility,
@@ -282,28 +264,10 @@ with NewRepository := (insert Repository {
     has_downloads:= <optional bool>$has_downloads,
     is_template:= <optional bool>$is_template,
     master_branch:= <optional str>$master_branch,
-    permissions:= (
-        select Permissions 
-        filter .user.user_id = <int64>$owner_user_id
-        limit 1
-    ) ?? (
-        insert Permissions {
-            user := (
-                select User 
-                filter .user_id = <int64>$owner_user_id
-                limit 1
-            ),
-            admin := <bool>$admin,
-            maintain := <optional bool>$maintain,
-            push := <bool>$push,
-            triage := <optional bool>$triage,
-            pull := <bool>$pull,
-        }
-    ),
     template_repository:= 
         assert_single(
             (select detached Repository 
-            filter detached Repository.repository_id = <int64>$template_repository_id)
+            filter detached Repository.repository_id = <int64>$template_repository_id limit 1)
         ),
     multi topics:= <optional str>$topics,
     visibility:= <optional str>$visibility,

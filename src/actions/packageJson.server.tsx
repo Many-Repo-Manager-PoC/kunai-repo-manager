@@ -1,5 +1,4 @@
 import { server$ } from "@builder.io/qwik-city";
-import { createClient } from "gel";
 import e from "../../dbschema/edgeql-js";
 import type { Octokit } from "octokit";
 import { OCTOKIT_CLIENT } from "../routes/plugin@octokit";
@@ -10,13 +9,14 @@ import {
   updatePackageJson,
   deletePackageJson,
 } from "../../dbschema/actions";
+import { getClient } from "~/actions/client";
 
 export const useRefreshPackageJson = server$(async function (
   repositoryName: string,
 ) {
   try {
     const octokit: Octokit = this.sharedMap.get(OCTOKIT_CLIENT);
-    const client = createClient();
+    const client = getClient();
 
     // Find the dependency path for the specified repository
     const dependencyPath = metadata.dependencyPaths.find(

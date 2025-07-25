@@ -1,9 +1,9 @@
 import { server$ } from "@builder.io/qwik-city";
 import type { Octokit } from "octokit";
-import { OCTOKIT_CLIENT } from "../routes/plugin@octokit";
-import metadata from "../db/metadata.json";
-import { createClient } from "gel";
-import * as queries from "../../dbschema/queries";
+import { OCTOKIT_CLIENT } from "../../routes/plugin@octokit";
+import metadata from "../../db/metadata.json";
+import * as queries from "../../../dbschema/queries";
+import { getClient } from "~/actions/client";
 
 /**
  * Helper to ensure topics is a comma-separated string.
@@ -143,7 +143,7 @@ export const useRefreshRepositories = server$(async function () {
 
         console.log(repoArgs);
 
-        await queries.insertOrUpdateRepository(createClient(), repoArgs);
+        await queries.insertOrUpdateRepository(getClient(), repoArgs);
       } catch (error) {
         console.error(`Error processing repositories:`, error);
       }

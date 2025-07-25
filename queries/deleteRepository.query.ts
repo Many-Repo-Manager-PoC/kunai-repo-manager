@@ -8,20 +8,6 @@ export type DeleteRepositoryArgs = {
 };
 
 export type DeleteRepositoryReturns = Array<{
-  "temp_clone_token": string | null;
-  "team_id": number | null;
-  "subscribers_count": number | null;
-  "squash_merge_commit_title": string | null;
-  "squash_merge_commit_message": string | null;
-  "private": boolean | null;
-  "network_count": number | null;
-  "merge_commit_title": string | null;
-  "merge_commit_message": string | null;
-  "is_template": boolean | null;
-  "custom_properties": unknown | null;
-  "auto_init": boolean | null;
-  "anonymous_access_enabled": boolean | null;
-  "repository_id": number;
   "id": string;
   "last_updated": Date | null;
   "trees_url": string | null;
@@ -48,6 +34,19 @@ export type DeleteRepositoryReturns = Array<{
   "branches_url": string | null;
   "blobs_url": string | null;
   "assignees_url": string | null;
+  "temp_clone_token": string | null;
+  "team_id": number | null;
+  "subscribers_count": number | null;
+  "squash_merge_commit_title": string | null;
+  "squash_merge_commit_message": string | null;
+  "private": boolean | null;
+  "network_count": number | null;
+  "merge_commit_title": string | null;
+  "merge_commit_message": string | null;
+  "is_template": boolean | null;
+  "custom_properties": unknown | null;
+  "auto_init": boolean | null;
+  "anonymous_access_enabled": boolean | null;
   "visibility": ("public" | "private") | null;
   "watchers_count": number;
   "url": string;
@@ -94,6 +93,7 @@ export type DeleteRepositoryReturns = Array<{
   "created_at": string;
   "contributors_url": string;
   "contents_url": string;
+  "repository_id": number;
   "archive_url": string | null;
   "archived": boolean;
   "allow_squash_merge": boolean | null;
@@ -110,8 +110,8 @@ export type DeleteRepositoryReturns = Array<{
     "starred_at": string | null;
     "user_id": number;
     "user_view_type": string | null;
-    "id": string;
     "last_updated": Date | null;
+    "id": string;
     "email": string;
     "events_url": string | null;
     "followers_url": string | null;
@@ -139,7 +139,17 @@ export type DeleteRepositoryReturns = Array<{
     "secret_scanning_push_protection_status": string | null;
     "secret_scanning_status": string | null;
   } | null;
+  "all_dependencies": Array<{
+    "dependency_version": string;
+    "name": string;
+    "id": string;
+    "last_updated": Date | null;
+    "dependency_type": ("Dev" | "Prod") | null;
+  }>;
   "organization": {
+    "html_url": string;
+    "name": string | null;
+    "node_id": string;
     "organizations_url": string;
     "received_events_url": string;
     "repos_url": string;
@@ -161,18 +171,15 @@ export type DeleteRepositoryReturns = Array<{
     "following_url": string;
     "gists_url": string;
     "gravatar_id": string;
-    "html_url": string;
-    "name": string | null;
-    "node_id": string;
   } | null;
   "code_of_conduct": {
+    "key": string | null;
+    "name": string | null;
+    "spdx_id": string | null;
     "url": string | null;
     "last_updated": Date | null;
     "id": string;
     "node_id": string | null;
-    "key": string | null;
-    "name": string | null;
-    "spdx_id": string | null;
   } | null;
   "package_json": Array<{
     "name": string;
@@ -184,13 +191,6 @@ export type DeleteRepositoryReturns = Array<{
     "file_name": string;
     "file_type": ("PNG" | "JPG" | "JPEG" | "GIF" | "SVG" | "PSD" | "JSON" | "MD" | "TXT" | "LOG" | "ZIP" | "GEL" | "TOML" | "YML" | "YAML" | "JSONC" | "WOFF2" | "CSS" | "TS" | "TSX" | "JS" | "EDGEQL" | "XML" | "PDF" | "CSV" | "SQL" | "HTML");
     "path": string;
-    "last_updated": Date | null;
-    "id": string;
-  }>;
-  "all_dependencies": Array<{
-    "dependency_version": string;
-    "name": string;
-    "dependency_type": ("Dev" | "Prod") | null;
     "last_updated": Date | null;
     "id": string;
   }>;
@@ -213,6 +213,7 @@ export type DeleteRepositoryReturns = Array<{
     "allow_squash_merge": boolean | null;
     "archived": boolean;
     "archive_url": string | null;
+    "repository_id": number;
     "contents_url": string;
     "contributors_url": string;
     "created_at": string;
@@ -259,6 +260,19 @@ export type DeleteRepositoryReturns = Array<{
     "url": string;
     "watchers_count": number;
     "visibility": ("public" | "private") | null;
+    "anonymous_access_enabled": boolean | null;
+    "auto_init": boolean | null;
+    "custom_properties": unknown | null;
+    "is_template": boolean | null;
+    "merge_commit_message": string | null;
+    "merge_commit_title": string | null;
+    "network_count": number | null;
+    "private": boolean | null;
+    "squash_merge_commit_message": string | null;
+    "squash_merge_commit_title": string | null;
+    "subscribers_count": number | null;
+    "team_id": number | null;
+    "temp_clone_token": string | null;
     "assignees_url": string | null;
     "blobs_url": string | null;
     "branches_url": string | null;
@@ -285,20 +299,6 @@ export type DeleteRepositoryReturns = Array<{
     "trees_url": string | null;
     "last_updated": Date | null;
     "id": string;
-    "repository_id": number;
-    "anonymous_access_enabled": boolean | null;
-    "auto_init": boolean | null;
-    "custom_properties": unknown | null;
-    "is_template": boolean | null;
-    "merge_commit_message": string | null;
-    "merge_commit_title": string | null;
-    "network_count": number | null;
-    "private": boolean | null;
-    "squash_merge_commit_message": string | null;
-    "squash_merge_commit_title": string | null;
-    "subscribers_count": number | null;
-    "team_id": number | null;
-    "temp_clone_token": string | null;
   } | null;
   "owner": {
     "avatar_url": string;
@@ -308,8 +308,8 @@ export type DeleteRepositoryReturns = Array<{
     "starred_at": string | null;
     "user_id": number;
     "user_view_type": string | null;
-    "id": string;
     "last_updated": Date | null;
+    "id": string;
     "email": string;
     "events_url": string | null;
     "followers_url": string | null;
