@@ -1,104 +1,64 @@
 // src/hooks/useRepositories.ts
 import { useSignal, useTask$ } from "@builder.io/qwik";
-import { createClient } from "gel";
-import * as queries from "../../dbschema/queries";
-import type {
-  GetRepositoryReturns,
-  GetPackageJsonReturns,
-  GetDependenciesForRepoReturns,
-  GetAllPackageJsonsReturns,
-  InsertOrUpdateRepositoryReturns,
-  InsertOrUpdateRepositoryArgs,
-} from "../../dbschema/queries";
 
-export function useGetRepositories() {
-  const repositories = useSignal<GetRepositoryReturns[]>([]);
+import type * as queries from "../../dbschema/queries";
+import {
+  getAllPackageJsons,
+  getDependenciesForRepo,
+  getPackageJson,
+} from "~/actions/package-json";
+import { insertOrUpdateRepository } from "~/actions/repository";
 
-  useTask$(async () => {
-    const result = await queries.getRepositories(createClient());
-    repositories.value = result;
-  });
-
-  return repositories;
-}
-
-export function useGetRepoByName(repoName: string) {
-  const repository = useSignal<GetRepositoryReturns | null>(null);
-
-  useTask$(async () => {
-    const result = await queries.getRepository(createClient(), {
-      name: repoName,
-    });
-    repository.value = result;
-  });
-
-  return repository;
-}
-export function useGetRepositoriesForAllTopics() {
-  const allTopics = useSignal<string[]>([]);
-
-  useTask$(async () => {
-    const result = await queries.getRepositories(createClient());
-    const topics = result.flatMap((repo) => {
-      // Split any comma-separated topics into individual topics
-      const repoTopics = repo.topics || [];
-      return repoTopics.flatMap((topic) =>
-        typeof topic === "string" ? topic.split(",").map((t) => t.trim()) : [],
-      );
-    });
-    allTopics.value = [...new Set(topics)]; // Remove duplicates
-  });
-
-  return allTopics;
-}
+export * from "./repository.hooks";
 
 export function useGetPackageJson(repoName: string) {
-  const packageJson = useSignal<GetPackageJsonReturns | null>(null);
+  const packageJson =
+    useSignal<Awaited<ReturnType<typeof getPackageJson>>>(null);
 
   useTask$(async () => {
-    const result = await queries.getPackageJson(createClient(), {
-      name: repoName,
-    });
+    const result = await getPackageJson(repoName);
     packageJson.value = result;
   });
   return packageJson;
 }
 
 export function useGetDependenciesForRepo(repoId: number) {
-  const dependencies = useSignal<GetDependenciesForRepoReturns>([]);
+  const dependencies = useSignal<
+    Awaited<ReturnType<typeof getDependenciesForRepo>>
+  >([]);
 
   useTask$(async () => {
     if (!repoId) {
       dependencies.value = [];
       return;
     }
-    const result = await queries.getDependenciesForRepo(createClient(), {
-      repository_id: repoId,
-    });
+    const result = await getDependenciesForRepo(repoId);
     dependencies.value = result;
   });
   return dependencies;
 }
 
 export function useGetAllPackageJsons() {
-  const packageJsons = useSignal<GetAllPackageJsonsReturns>([]);
+  const packageJsons = useSignal<
+    Awaited<ReturnType<typeof getAllPackageJsons>>
+  >([]);
 
   useTask$(async () => {
-    const result = await queries.getAllPackageJsons(createClient());
+    const result = await getAllPackageJsons();
     packageJsons.value = result;
   });
   return packageJsons;
 }
 
 export function useInsertOrUpdateRepository(
-  args: InsertOrUpdateRepositoryArgs,
+  args: queries.InsertOrUpdateRepositoryArgs,
 ) {
-  const insertOrUpdateRepository =
-    useSignal<InsertOrUpdateRepositoryReturns | null>(null);
+  const signal =
+    useSignal<Awaited<ReturnType<typeof insertOrUpdateRepository>>>(null);
 
   useTask$(async () => {
-    const result = await queries.insertOrUpdateRepository(createClient(), args);
-    insertOrUpdateRepository.value = result;
+    const result = await insertOrUpdateRepository(args);
+    signal.value = result;
   });
-  return insertOrUpdateRepository;
+  return signal;
 }

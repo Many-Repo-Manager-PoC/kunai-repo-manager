@@ -39,7 +39,10 @@ export default component$(() => {
           />
         </div>
         <div q:slot="Dependencies">
-          <RepoDependencyCard repo={repo.value} />
+          <RepoDependencyCard
+            repository_id={repo.value?.repository_id || 0}
+            repository_name={repo.value?.name || ""}
+          />
         </div>
 
         <div q:slot="Dependents">

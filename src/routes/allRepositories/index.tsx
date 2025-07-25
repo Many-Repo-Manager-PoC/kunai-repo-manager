@@ -8,8 +8,11 @@ import { LuRotateCcw } from "@qwikest/icons/lucide";
 import { Routes } from "~/config/routes";
 export { usePutBulkTopics } from "~/db/putTopics";
 import type { GetRepositoryReturns } from "../../../dbschema/queries";
-import { useGetRepositoriesForAllTopics, useGetRepositories } from "~/hooks";
-import { useRefreshRepositories } from "~/actions/repository.server";
+import { useRefreshRepositories } from "~/actions/repository/repository.server";
+import {
+  useGetRepositories,
+  useGetRepositoriesForAllTopics,
+} from "~/hooks/repository.hooks";
 
 export default component$(() => {
   const searchQuery = useSignal("");
@@ -28,10 +31,10 @@ export default component$(() => {
   });
   const queriedRepositories = useGetRepositories().value;
 
-  const allTopics = useGetRepositoriesForAllTopics();
+  const allTopics = useGetRepositoriesForAllTopics().value;
   console.log("allTopics", queriedRepositories);
 
-  const repoTopicsMap = queriedRepositories?.reduce(
+  const repoTopicsMap = queriedRepositories.reduce(
     (acc: Record<string, string[]>, repo) => {
       if (repo?.name) {
         acc[repo.name] = repo.topics || [];
@@ -81,7 +84,7 @@ export default component$(() => {
 
   const handleCardClick = $((repo: GetRepositoryReturns) => {
     if (!isShow.value) {
-      navigate(Routes.repoDetails(repo?.owner.name, repo?.name));
+      navigate(Routes.repoDetails(repo?.owner.login, repo?.name));
     }
   });
 
@@ -123,7 +126,7 @@ export default component$(() => {
             <span class="text-sm font-medium">Tags:</span>
             <div onClick$={handleTopicClick}>
               <div class="flex flex-wrap gap-2">
-                {allTopics.value
+                {allTopics
                   .filter(
                     (topic: string | null): topic is string => topic !== null,
                   )

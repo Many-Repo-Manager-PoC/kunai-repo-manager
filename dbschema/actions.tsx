@@ -1,8 +1,8 @@
-import { createClient } from "gel";
 import e from "./edgeql-js";
+import { getClient } from "~/actions/client";
 
 export async function insertPackageJson(formData: FormData) {
-  const client = createClient();
+  const client = getClient();
 
   const name = formData.get("name") as string;
   const packageVersion = formData.get("version") as string;
@@ -82,7 +82,7 @@ export async function insertPackageJson(formData: FormData) {
 }
 
 export async function updatePackageJson(formData: FormData) {
-  const client = createClient();
+  const client = getClient();
 
   const name = formData.get("name") as string;
   const packageVersion = formData.get("version") as string;
@@ -198,7 +198,7 @@ export async function updatePackageJson(formData: FormData) {
 }
 
 export async function deletePackageJson(formData: FormData) {
-  const client = createClient();
+  const client = getClient();
 
   const repositoryName = formData.get("repository_name") as string;
 

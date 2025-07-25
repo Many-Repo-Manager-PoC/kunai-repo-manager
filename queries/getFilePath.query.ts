@@ -21,6 +21,7 @@ export type GetFilePathReturns = {
     "allow_squash_merge": boolean | null;
     "archived": boolean;
     "archive_url": string | null;
+    "repository_id": number;
     "contents_url": string;
     "contributors_url": string;
     "created_at": string;
@@ -67,6 +68,18 @@ export type GetFilePathReturns = {
     "url": string;
     "watchers_count": number;
     "visibility": ("public" | "private") | null;
+    "anonymous_access_enabled": boolean | null;
+    "auto_init": boolean | null;
+    "is_template": boolean | null;
+    "merge_commit_message": string | null;
+    "merge_commit_title": string | null;
+    "network_count": number | null;
+    "private": boolean | null;
+    "squash_merge_commit_message": string | null;
+    "squash_merge_commit_title": string | null;
+    "subscribers_count": number | null;
+    "team_id": number | null;
+    "temp_clone_token": string | null;
     "assignees_url": string | null;
     "blobs_url": string | null;
     "branches_url": string | null;
@@ -93,20 +106,6 @@ export type GetFilePathReturns = {
     "trees_url": string | null;
     "last_updated": Date | null;
     "id": string;
-    "repository_id": number;
-    "anonymous_access_enabled": boolean | null;
-    "auto_init": boolean | null;
-    "custom_properties": unknown | null;
-    "is_template": boolean | null;
-    "merge_commit_message": string | null;
-    "merge_commit_title": string | null;
-    "network_count": number | null;
-    "private": boolean | null;
-    "squash_merge_commit_message": string | null;
-    "squash_merge_commit_title": string | null;
-    "subscribers_count": number | null;
-    "team_id": number | null;
-    "temp_clone_token": string | null;
   };
 } | null;
 

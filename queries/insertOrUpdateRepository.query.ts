@@ -110,18 +110,12 @@ export type InsertOrUpdateRepositoryArgs = {
   readonly "has_downloads"?: boolean | null;
   readonly "is_template"?: boolean | null;
   readonly "master_branch"?: string | null;
-  readonly "admin": boolean;
-  readonly "maintain"?: boolean | null;
-  readonly "push": boolean;
-  readonly "triage"?: boolean | null;
-  readonly "pull": boolean;
   readonly "template_repository_id": number;
   readonly "topics"?: string | null;
   readonly "visibility"?: string | null;
 };
 
 export type InsertOrUpdateRepositoryReturns = {
-  "repository_id": number;
   "id": string;
   "last_updated": Date | null;
   "trees_url": string | null;
@@ -148,16 +142,33 @@ export type InsertOrUpdateRepositoryReturns = {
   "branches_url": string | null;
   "blobs_url": string | null;
   "assignees_url": string | null;
+  "temp_clone_token": string | null;
+  "team_id": number | null;
+  "subscribers_count": number | null;
+  "squash_merge_commit_title": string | null;
+  "squash_merge_commit_message": string | null;
+  "private": boolean | null;
+  "network_count": number | null;
+  "merge_commit_title": string | null;
+  "merge_commit_message": string | null;
+  "is_template": boolean | null;
+  "auto_init": boolean | null;
+  "anonymous_access_enabled": boolean | null;
+  "visibility": ("public" | "private") | null;
   "watchers_count": number;
-  "visibility": string | null;
   "url": string;
   "updated_at": string;
   "topics": Array<string>;
+  "homepage": string | null;
+  "has_wiki": boolean | null;
+  "has_projects": boolean | null;
+  "has_issues": boolean | null;
+  "has_downloads": boolean | null;
+  "description": string | null;
   "stargazers_count": number;
   "ssh_url": string;
   "size": number;
   "pushed_at": string;
-  "private": boolean;
   "open_issues_count": number;
   "open_issues": number;
   "notifications_url": string;
@@ -171,15 +182,9 @@ export type InsertOrUpdateRepositoryReturns = {
   "issues_url": string;
   "issue_events_url": string;
   "issue_comment_url": string;
-  "is_template": boolean | null;
   "html_url": string;
   "hooks_url": string;
-  "homepage": string;
-  "has_wiki": boolean;
-  "has_projects": boolean;
   "has_pages": boolean;
-  "has_issues": boolean;
-  "has_downloads": boolean | null;
   "has_discussions": boolean;
   "full_name": string;
   "forks_url": string | null;
@@ -189,13 +194,13 @@ export type InsertOrUpdateRepositoryReturns = {
   "events_url": string;
   "downloads_url": string;
   "disabled": boolean;
-  "description": string;
   "deployments_url": string;
   "delete_branch_on_merge": boolean | null;
   "default_branch": string;
   "created_at": string;
   "contributors_url": string;
   "contents_url": string;
+  "repository_id": number;
   "archive_url": string | null;
   "archived": boolean;
   "allow_squash_merge": boolean | null;
@@ -204,6 +209,85 @@ export type InsertOrUpdateRepositoryReturns = {
   "allow_forking": boolean | null;
   "allow_auto_merge": boolean | null;
   "clone_url": string | null;
+  "user": {
+    "avatar_url": string;
+    "login": string;
+    "role_type": string;
+    "site_admin": boolean;
+    "starred_at": string | null;
+    "user_id": number;
+    "user_view_type": string | null;
+    "last_updated": Date | null;
+    "id": string;
+    "email": string;
+    "events_url": string | null;
+    "followers_url": string | null;
+    "following_url": string | null;
+    "gists_url": string | null;
+    "gravatar_id": string | null;
+    "html_url": string | null;
+    "name": string;
+    "node_id": string | null;
+    "organizations_url": string | null;
+    "received_events_url": string | null;
+    "repos_url": string | null;
+    "starred_url": string | null;
+    "subscriptions_url": string | null;
+    "url": string | null;
+  } | null;
+  "security_and_analysis": {
+    "last_updated": Date | null;
+    "id": string;
+    "advanced_security_status": string | null;
+    "code_security_status": string | null;
+    "dependabot_security_updates_status": string | null;
+    "secret_scanning_ai_detection_status": string | null;
+    "secret_scanning_non_provider_patterns_status": string | null;
+    "secret_scanning_push_protection_status": string | null;
+    "secret_scanning_status": string | null;
+  } | null;
+  "all_dependencies": Array<{
+    "dependency_version": string;
+    "name": string;
+    "id": string;
+    "last_updated": Date | null;
+    "dependency_type": ("Dev" | "Prod") | null;
+  }>;
+  "organization": {
+    "html_url": string;
+    "name": string | null;
+    "node_id": string;
+    "organizations_url": string;
+    "received_events_url": string;
+    "repos_url": string;
+    "role_type": string;
+    "site_admin": boolean;
+    "starred_at": string | null;
+    "starred_url": string;
+    "subscriptions_url": string;
+    "url": string;
+    "user_view_type": string | null;
+    "last_updated": Date | null;
+    "id": string;
+    "login": string;
+    "organization_id": number | null;
+    "avatar_url": string;
+    "email": string | null;
+    "events_url": string;
+    "followers_url": string;
+    "following_url": string;
+    "gists_url": string;
+    "gravatar_id": string;
+  } | null;
+  "code_of_conduct": {
+    "key": string | null;
+    "name": string | null;
+    "spdx_id": string | null;
+    "url": string | null;
+    "last_updated": Date | null;
+    "id": string;
+    "node_id": string | null;
+  } | null;
   "package_json": Array<{
     "name": string;
     "package_version": string;
@@ -217,29 +301,13 @@ export type InsertOrUpdateRepositoryReturns = {
     "last_updated": Date | null;
     "id": string;
   }>;
-  "all_dependencies": Array<{
-    "dependency_version": string;
-    "name": string;
-    "dependency_type": ("Dev" | "Prod") | null;
-    "last_updated": Date | null;
-    "id": string;
-  }>;
-  "permissions": {
-    "admin": boolean;
-    "maintain": boolean | null;
-    "pull": boolean;
-    "push": boolean;
-    "triage": boolean | null;
-    "id": string;
-    "last_updated": Date | null;
-  } | null;
   "license": {
     "html_url": string | null;
     "key": string;
     "name": string;
     "node_id": string;
-    "spdx_id": string;
-    "url": string;
+    "spdx_id": string | null;
+    "url": string | null;
     "id": string;
     "last_updated": Date | null;
   } | null;
@@ -252,13 +320,13 @@ export type InsertOrUpdateRepositoryReturns = {
     "allow_squash_merge": boolean | null;
     "archived": boolean;
     "archive_url": string | null;
+    "repository_id": number;
     "contents_url": string;
     "contributors_url": string;
     "created_at": string;
     "default_branch": string;
     "delete_branch_on_merge": boolean | null;
     "deployments_url": string;
-    "description": string;
     "disabled": boolean;
     "downloads_url": string;
     "events_url": string;
@@ -268,15 +336,9 @@ export type InsertOrUpdateRepositoryReturns = {
     "forks_url": string | null;
     "full_name": string;
     "has_discussions": boolean;
-    "has_downloads": boolean | null;
-    "has_issues": boolean;
     "has_pages": boolean;
-    "has_projects": boolean;
-    "has_wiki": boolean;
-    "homepage": string;
     "hooks_url": string;
     "html_url": string;
-    "is_template": boolean | null;
     "issue_comment_url": string;
     "issue_events_url": string;
     "issues_url": string;
@@ -290,16 +352,33 @@ export type InsertOrUpdateRepositoryReturns = {
     "notifications_url": string;
     "open_issues": number;
     "open_issues_count": number;
-    "private": boolean;
     "pushed_at": string;
     "size": number;
     "ssh_url": string;
     "stargazers_count": number;
+    "description": string | null;
+    "has_downloads": boolean | null;
+    "has_issues": boolean | null;
+    "has_projects": boolean | null;
+    "has_wiki": boolean | null;
+    "homepage": string | null;
     "topics": Array<string>;
     "updated_at": string;
     "url": string;
-    "visibility": string | null;
     "watchers_count": number;
+    "visibility": ("public" | "private") | null;
+    "anonymous_access_enabled": boolean | null;
+    "auto_init": boolean | null;
+    "is_template": boolean | null;
+    "merge_commit_message": string | null;
+    "merge_commit_title": string | null;
+    "network_count": number | null;
+    "private": boolean | null;
+    "squash_merge_commit_message": string | null;
+    "squash_merge_commit_title": string | null;
+    "subscribers_count": number | null;
+    "team_id": number | null;
+    "temp_clone_token": string | null;
     "assignees_url": string | null;
     "blobs_url": string | null;
     "branches_url": string | null;
@@ -326,7 +405,6 @@ export type InsertOrUpdateRepositoryReturns = {
     "trees_url": string | null;
     "last_updated": Date | null;
     "id": string;
-    "repository_id": number;
   } | null;
   "owner": {
     "avatar_url": string;
@@ -336,8 +414,8 @@ export type InsertOrUpdateRepositoryReturns = {
     "starred_at": string | null;
     "user_id": number;
     "user_view_type": string | null;
-    "id": string;
     "last_updated": Date | null;
+    "id": string;
     "email": string;
     "events_url": string | null;
     "followers_url": string | null;
@@ -485,28 +563,10 @@ with NewRepository := (insert Repository {
     has_downloads:= <optional bool>$has_downloads,
     is_template:= <optional bool>$is_template,
     master_branch:= <optional str>$master_branch,
-    permissions:= (
-        select Permissions 
-        filter .user.user_id = <int64>$owner_user_id
-        limit 1
-    ) ?? (
-        insert Permissions {
-            user := (
-                select User 
-                filter .user_id = <int64>$owner_user_id
-                limit 1
-            ),
-            admin := <bool>$admin,
-            maintain := <optional bool>$maintain,
-            push := <bool>$push,
-            triage := <optional bool>$triage,
-            pull := <bool>$pull,
-        }
-    ),
     template_repository:= 
         assert_single(
             (select detached Repository 
-            filter detached Repository.repository_id = <int64>$template_repository_id)
+            filter detached Repository.repository_id = <int64>$template_repository_id limit 1)
         ),
     multi topics:= <optional str>$topics,
     visibility:= <optional str>$visibility,
@@ -642,28 +702,10 @@ with NewRepository := (insert Repository {
     has_downloads:= <optional bool>$has_downloads,
     is_template:= <optional bool>$is_template,
     master_branch:= <optional str>$master_branch,
-    permissions:= (
-        select Permissions 
-        filter .user.user_id = <int64>$owner_user_id
-        limit 1
-    ) ?? (
-        insert Permissions {
-            user := (
-                select User 
-                filter .user_id = <int64>$owner_user_id
-                limit 1
-            ),
-            admin := <bool>$admin,
-            maintain := <optional bool>$maintain,
-            push := <bool>$push,
-            triage := <optional bool>$triage,
-            pull := <bool>$pull,
-        }
-    ),
     template_repository:= 
         assert_single(
             (select detached Repository 
-            filter detached Repository.repository_id = <int64>$template_repository_id)
+            filter detached Repository.repository_id = <int64>$template_repository_id limit 1)
         ),
     multi topics:= <optional str>$topics,
     visibility:= <optional str>$visibility,

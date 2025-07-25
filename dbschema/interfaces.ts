@@ -200,11 +200,11 @@ export namespace $default {
     "last_updated"?: Date | null;
   }
   export interface CodeOfConduct extends Timestamped {
-    "url"?: string | null;
-    "node_id"?: string | null;
     "key"?: string | null;
     "name"?: string | null;
     "spdx_id"?: string | null;
+    "url"?: string | null;
+    "node_id"?: string | null;
     "repository": Repository;
   }
   export interface Dependency extends Timestamped {
@@ -234,6 +234,9 @@ export namespace $default {
     "url"?: string | null;
   }
   export interface Organization extends Timestamped {
+    "html_url": string;
+    "name"?: string | null;
+    "node_id": string;
     "organizations_url": string;
     "received_events_url": string;
     "repos_url": string;
@@ -253,16 +256,13 @@ export namespace $default {
     "following_url": string;
     "gists_url": string;
     "gravatar_id": string;
-    "html_url": string;
-    "name"?: string | null;
-    "node_id": string;
   }
   export interface PackageJson extends Timestamped {
     "name": string;
     "package_version": string;
+    "repository": Repository;
     "dev_dependencies": DevDependency[];
     "dependencies": ProdDependency[];
-    "repository": Repository;
   }
   export interface Permissions extends Timestamped {
     "admin": boolean;
@@ -285,6 +285,7 @@ export namespace $default {
     "allow_squash_merge"?: boolean | null;
     "archived": boolean;
     "archive_url"?: string | null;
+    "repository_id": number;
     "contents_url": string;
     "contributors_url": string;
     "created_at": string;
@@ -331,6 +332,18 @@ export namespace $default {
     "url": string;
     "watchers_count": number;
     "visibility"?: Visibility | null;
+    "anonymous_access_enabled"?: boolean | null;
+    "auto_init"?: boolean | null;
+    "is_template"?: boolean | null;
+    "merge_commit_message"?: string | null;
+    "merge_commit_title"?: string | null;
+    "network_count"?: number | null;
+    "private"?: boolean | null;
+    "squash_merge_commit_message"?: string | null;
+    "squash_merge_commit_title"?: string | null;
+    "subscribers_count"?: number | null;
+    "team_id"?: number | null;
+    "temp_clone_token"?: string | null;
     "assignees_url"?: string | null;
     "blobs_url"?: string | null;
     "branches_url"?: string | null;
@@ -355,28 +368,14 @@ export namespace $default {
     "tags_url"?: string | null;
     "teams_url"?: string | null;
     "trees_url"?: string | null;
-    "repository_id": number;
-    "anonymous_access_enabled"?: boolean | null;
-    "auto_init"?: boolean | null;
-    "custom_properties"?: unknown | null;
-    "is_template"?: boolean | null;
-    "merge_commit_message"?: string | null;
-    "merge_commit_title"?: string | null;
-    "network_count"?: number | null;
-    "private"?: boolean | null;
-    "squash_merge_commit_message"?: string | null;
-    "squash_merge_commit_title"?: string | null;
-    "subscribers_count"?: number | null;
-    "team_id"?: number | null;
-    "temp_clone_token"?: string | null;
     "owner": User;
     "template_repository"?: Repository | null;
     "license"?: License | null;
-    "all_dependencies": Dependency[];
     "all_file_paths": FilePath[];
     "package_json": PackageJson[];
     "code_of_conduct"?: CodeOfConduct | null;
     "organization"?: Organization | null;
+    "all_dependencies": Dependency[];
     "security_and_analysis"?: SecurityAndAnalysis | null;
     "user"?: User | null;
   }

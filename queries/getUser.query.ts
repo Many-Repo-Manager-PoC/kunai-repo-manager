@@ -15,8 +15,8 @@ export type GetUserReturns = Array<{
   "starred_at": string | null;
   "user_id": number;
   "user_view_type": string | null;
-  "id": string;
   "last_updated": Date | null;
+  "id": string;
   "email": string;
   "events_url": string | null;
   "followers_url": string | null;

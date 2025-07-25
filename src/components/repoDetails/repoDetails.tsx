@@ -79,7 +79,7 @@ export const RepoDetails = component$<RepoDetailsProps>(
                 <Button asChild>
                   <a
                     href={Routes.componentCopy(
-                      repoDetails?.owner.name,
+                      repoDetails?.owner.login,
                       repoDetails?.name,
                     )}
                   >
