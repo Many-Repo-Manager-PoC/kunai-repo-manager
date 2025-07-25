@@ -1,4 +1,3 @@
-import { server$ } from "@builder.io/qwik-city";
 import { createClient, type Executor } from "gel";
 
 // Private state via closure
@@ -37,7 +36,7 @@ export const getClient = (): Executor => {
 };
 
 // Regular async function preserves generic types with optional args
-export const executeQueryServer = async <T, TArgs = void>(
+export const executeQuery = async <T, TArgs = void>(
   queryFn: TArgs extends void
     ? (client: Executor) => Promise<T>
     : (client: Executor, args: TArgs) => Promise<T>,
@@ -73,14 +72,4 @@ export const executeQueryServer = async <T, TArgs = void>(
 
     throw error;
   }
-};
-
-export const executeQuery = async <T, TArgs = void>(
-  queryFn: TArgs extends void
-    ? (client: Executor) => Promise<T>
-    : (client: Executor, args: TArgs) => Promise<T>,
-  args?: TArgs,
-): Promise<T> => {
-  const result = await executeQueryServer(queryFn, args);
-  return result;
 };
