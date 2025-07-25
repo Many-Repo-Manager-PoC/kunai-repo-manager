@@ -1,4 +1,4 @@
-import { server$ } from "@builder.io/qwik-city";
+import { server$ } from "@qwik.dev/router";
 import { executeQuery } from "../client";
 import * as queries from "../../../dbschema/queries";
 

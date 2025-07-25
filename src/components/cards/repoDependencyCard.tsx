@@ -1,4 +1,4 @@
-import { component$ } from "@qwik.dev/core";
+import { $, component$ } from "@qwik.dev/core";
 import { BaseCard } from "./baseCard";
 import { Chip } from "@kunai-consulting/kunai-design-system";
 import { useGetDependenciesForRepo } from "~/hooks";

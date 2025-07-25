@@ -1,5 +1,5 @@
 // src/hooks/useRepositories.ts
-import { useSignal, useTask$ } from "@builder.io/qwik";
+import { useSignal, useTask$ } from "@qwik.dev/core";
 
 import type * as queries from "../../dbschema/queries";
 import {

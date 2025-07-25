@@ -1,4 +1,4 @@
-import { server$ } from "@builder.io/qwik-city";
+import { server$ } from "@qwik.dev/router";
 import type { Octokit } from "octokit";
 import { OCTOKIT_CLIENT } from "../../routes/plugin@octokit";
 import metadata from "../../db/metadata.json";
