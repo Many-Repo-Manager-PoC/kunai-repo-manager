@@ -137,6 +137,7 @@ export const DependencyUpdaterCard = component$<DependencyUpdaterCardProps>(
             )}
           </div>
         </div>
+        <div q:slot="footer"></div>
       </BaseCard>
     );
   },
