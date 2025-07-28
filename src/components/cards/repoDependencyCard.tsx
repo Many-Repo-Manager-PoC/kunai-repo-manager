@@ -1,23 +1,23 @@
-import { component$, $ } from "@builder.io/qwik";
+import { $, component$ } from "@qwik.dev/core";
 import { BaseCard } from "./baseCard";
 import { Chip } from "@kunai-consulting/kunai-design-system";
-import type { GetRepositoryReturns } from "../../../dbschema/queries";
 import { useGetDependenciesForRepo } from "~/hooks";
 import { useRefreshPackageJson } from "~/actions/packageJson.server";
 
 interface RepoDependencyCardProps {
-  repo: GetRepositoryReturns;
+  repository_id: number;
+  repository_name: string;
 }
 
 export const RepoDependencyCard = component$<RepoDependencyCardProps>(
-  ({ repo }) => {
-    const allDependencies = useGetDependenciesForRepo(repo?.repository_id || 0);
+  ({ repository_id, repository_name }) => {
+    const allDependencies = useGetDependenciesForRepo(repository_id || 0);
 
     const refreshPackageJson = useRefreshPackageJson;
 
     const handleRefreshDependencies = $(async () => {
-      if (repo?.name) {
-        await refreshPackageJson(repo.name);
+      if (repository_name) {
+        await refreshPackageJson(repository_name);
         window.location.reload();
       }
     });
@@ -28,7 +28,7 @@ export const RepoDependencyCard = component$<RepoDependencyCardProps>(
           q:slot="header"
           class="flex items-center justify-between gap-2 w-full p-2"
         >
-          <span class="text-lg font-large">{repo?.name}</span>
+          <span class="text-lg font-large">{repository_name}</span>
           <button
             onClick$={handleRefreshDependencies}
             class="px-3 py-1 text-sm bg-kunai-blue-500 hover:bg-kunai-blue-600 text-white rounded-md transition-colors"

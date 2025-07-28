@@ -4,14 +4,13 @@ import type {Executor} from "gel";
 
 
 export type GetRepositoriesReturns = Array<{
-  "clone_url": string | null;
+  "id": string;
   "allow_auto_merge": boolean | null;
   "allow_forking": boolean | null;
   "allow_merge_commit": boolean | null;
   "allow_rebase_merge": boolean | null;
   "allow_squash_merge": boolean | null;
   "archived": boolean;
-  "archive_url": string | null;
   "contents_url": string;
   "contributors_url": string;
   "created_at": string;
@@ -47,20 +46,16 @@ export type GetRepositoriesReturns = Array<{
   "size": number;
   "ssh_url": string;
   "stargazers_count": number;
-  "description": string | null;
-  "has_downloads": boolean | null;
-  "has_issues": boolean | null;
-  "has_projects": boolean | null;
-  "has_wiki": boolean | null;
-  "homepage": string | null;
   "topics": Array<string>;
   "updated_at": string;
   "url": string;
   "watchers_count": number;
-  "visibility": ("public" | "private") | null;
+  "last_updated": Date | null;
+  "archive_url": string | null;
   "assignees_url": string | null;
   "blobs_url": string | null;
   "branches_url": string | null;
+  "clone_url": string | null;
   "collaborators_url": string | null;
   "comments_url": string | null;
   "commits_url": string | null;
@@ -82,12 +77,15 @@ export type GetRepositoriesReturns = Array<{
   "tags_url": string | null;
   "teams_url": string | null;
   "trees_url": string | null;
-  "last_updated": Date | null;
-  "id": string;
   "repository_id": number;
   "anonymous_access_enabled": boolean | null;
   "auto_init": boolean | null;
-  "custom_properties": unknown | null;
+  "description": string | null;
+  "has_downloads": boolean | null;
+  "has_issues": boolean | null;
+  "has_projects": boolean | null;
+  "has_wiki": boolean | null;
+  "homepage": string | null;
   "is_template": boolean | null;
   "merge_commit_message": string | null;
   "merge_commit_title": string | null;
@@ -98,7 +96,9 @@ export type GetRepositoriesReturns = Array<{
   "subscribers_count": number | null;
   "team_id": number | null;
   "temp_clone_token": string | null;
+  "visibility": ("public" | "private") | null;
   "owner": {
+    "id": string;
     "avatar_url": string;
     "login": string;
     "role_type": string;
@@ -106,7 +106,6 @@ export type GetRepositoriesReturns = Array<{
     "starred_at": string | null;
     "user_id": number;
     "user_view_type": string | null;
-    "id": string;
     "last_updated": Date | null;
     "email": string;
     "events_url": string | null;
@@ -125,14 +124,13 @@ export type GetRepositoriesReturns = Array<{
     "url": string | null;
   };
   "template_repository": {
-    "clone_url": string | null;
+    "id": string;
     "allow_auto_merge": boolean | null;
     "allow_forking": boolean | null;
     "allow_merge_commit": boolean | null;
     "allow_rebase_merge": boolean | null;
     "allow_squash_merge": boolean | null;
     "archived": boolean;
-    "archive_url": string | null;
     "contents_url": string;
     "contributors_url": string;
     "created_at": string;
@@ -168,20 +166,16 @@ export type GetRepositoriesReturns = Array<{
     "size": number;
     "ssh_url": string;
     "stargazers_count": number;
-    "description": string | null;
-    "has_downloads": boolean | null;
-    "has_issues": boolean | null;
-    "has_projects": boolean | null;
-    "has_wiki": boolean | null;
-    "homepage": string | null;
     "topics": Array<string>;
     "updated_at": string;
     "url": string;
     "watchers_count": number;
-    "visibility": ("public" | "private") | null;
+    "last_updated": Date | null;
+    "archive_url": string | null;
     "assignees_url": string | null;
     "blobs_url": string | null;
     "branches_url": string | null;
+    "clone_url": string | null;
     "collaborators_url": string | null;
     "comments_url": string | null;
     "commits_url": string | null;
@@ -203,12 +197,15 @@ export type GetRepositoriesReturns = Array<{
     "tags_url": string | null;
     "teams_url": string | null;
     "trees_url": string | null;
-    "last_updated": Date | null;
-    "id": string;
     "repository_id": number;
     "anonymous_access_enabled": boolean | null;
     "auto_init": boolean | null;
-    "custom_properties": unknown | null;
+    "description": string | null;
+    "has_downloads": boolean | null;
+    "has_issues": boolean | null;
+    "has_projects": boolean | null;
+    "has_wiki": boolean | null;
+    "homepage": string | null;
     "is_template": boolean | null;
     "merge_commit_message": string | null;
     "merge_commit_title": string | null;
@@ -219,57 +216,48 @@ export type GetRepositoriesReturns = Array<{
     "subscribers_count": number | null;
     "team_id": number | null;
     "temp_clone_token": string | null;
+    "visibility": ("public" | "private") | null;
   } | null;
+  "all_dependencies": Array<{
+    "id": string;
+    "dependency_version": string;
+    "name": string;
+    "last_updated": Date | null;
+    "dependency_type": ("Dev" | "Prod") | null;
+  }>;
+  "all_file_paths": Array<{
+    "last_updated": Date | null;
+    "id": string;
+    "file_name": string;
+    "file_type": ("PNG" | "JPG" | "JPEG" | "GIF" | "SVG" | "PSD" | "JSON" | "MD" | "TXT" | "LOG" | "ZIP" | "GEL" | "TOML" | "YML" | "YAML" | "JSONC" | "WOFF2" | "CSS" | "TS" | "TSX" | "JS" | "EDGEQL" | "XML" | "PDF" | "CSV" | "SQL" | "HTML");
+    "path": string;
+  }>;
+  "package_json": Array<{
+    "id": string;
+    "name": string;
+    "package_version": string;
+    "last_updated": Date | null;
+  }>;
   "license": {
+    "id": string;
     "html_url": string | null;
     "key": string;
     "name": string;
     "node_id": string;
+    "last_updated": Date | null;
     "spdx_id": string | null;
     "url": string | null;
-    "id": string;
-    "last_updated": Date | null;
   } | null;
-  "all_dependencies": Array<{
-    "dependency_version": string;
-    "name": string;
-    "dependency_type": ("Dev" | "Prod") | null;
-    "last_updated": Date | null;
-    "id": string;
-  }>;
-  "all_file_paths": Array<{
-    "file_name": string;
-    "file_type": ("PNG" | "JPG" | "JPEG" | "GIF" | "SVG" | "PSD" | "JSON" | "MD" | "TXT" | "LOG" | "ZIP" | "GEL" | "TOML" | "YML" | "YAML" | "JSONC" | "WOFF2" | "CSS" | "TS" | "TSX" | "JS" | "EDGEQL" | "XML" | "PDF" | "CSV" | "SQL" | "HTML");
-    "path": string;
-    "last_updated": Date | null;
-    "id": string;
-  }>;
-  "package_json": Array<{
-    "name": string;
-    "package_version": string;
-    "last_updated": Date | null;
-    "id": string;
-  }>;
   "code_of_conduct": {
-    "url": string | null;
     "last_updated": Date | null;
     "id": string;
     "node_id": string | null;
     "key": string | null;
     "name": string | null;
     "spdx_id": string | null;
+    "url": string | null;
   } | null;
   "organization": {
-    "organizations_url": string;
-    "received_events_url": string;
-    "repos_url": string;
-    "role_type": string;
-    "site_admin": boolean;
-    "starred_at": string | null;
-    "starred_url": string;
-    "subscriptions_url": string;
-    "url": string;
-    "user_view_type": string | null;
     "last_updated": Date | null;
     "id": string;
     "login": string;
@@ -284,6 +272,16 @@ export type GetRepositoriesReturns = Array<{
     "html_url": string;
     "name": string | null;
     "node_id": string;
+    "organizations_url": string;
+    "received_events_url": string;
+    "repos_url": string;
+    "role_type": string;
+    "site_admin": boolean;
+    "starred_at": string | null;
+    "starred_url": string;
+    "subscriptions_url": string;
+    "url": string;
+    "user_view_type": string | null;
   } | null;
   "security_and_analysis": {
     "last_updated": Date | null;
@@ -297,6 +295,7 @@ export type GetRepositoriesReturns = Array<{
     "secret_scanning_status": string | null;
   } | null;
   "user": {
+    "id": string;
     "avatar_url": string;
     "login": string;
     "role_type": string;
@@ -304,7 +303,6 @@ export type GetRepositoriesReturns = Array<{
     "starred_at": string | null;
     "user_id": number;
     "user_view_type": string | null;
-    "id": string;
     "last_updated": Date | null;
     "email": string;
     "events_url": string | null;

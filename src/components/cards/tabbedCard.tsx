@@ -1,6 +1,6 @@
-import { component$ } from "@builder.io/qwik";
+import { component$ } from "@qwik.dev/core";
 import { Card } from "@kunai-consulting/kunai-design-system";
-import { Slot } from "@builder.io/qwik";
+import { Slot } from "@qwik.dev/core";
 import { Tabs } from "@kunai-consulting/qwik";
 
 export interface TabbedCardProps {

@@ -1,6 +1,6 @@
-import { type RequestHandler } from "@builder.io/qwik-city";
-import { ServerError } from "@builder.io/qwik-city/middleware/request-handler";
-import { isDev } from "@builder.io/qwik/build";
+import { type RequestHandler } from "@qwik.dev/router";
+import { ServerError } from "@qwik.dev/router/middleware/request-handler";
+import { isDev } from "@qwik.dev/core/build";
 import { ApplicationError } from "~/util/errors";
 
 export const onRequest: RequestHandler = async ({ next, error, redirect }) => {

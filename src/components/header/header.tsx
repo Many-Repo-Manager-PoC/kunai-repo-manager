@@ -1,6 +1,6 @@
-import { component$ } from "@builder.io/qwik";
+import { component$ } from "@qwik.dev/core";
 import { KunaiLogo } from "../icons/kunaiLogo";
-import { Slot } from "@builder.io/qwik";
+import { Slot } from "@qwik.dev/core";
 import { Routes } from "~/config/routes";
 
 export default component$(() => {

@@ -1,5 +1,5 @@
-import { component$ } from "@builder.io/qwik";
-import { type DocumentHead } from "@builder.io/qwik-city";
+import { component$ } from "@qwik.dev/core";
+import { type DocumentHead } from "@qwik.dev/router";
 import { BaseCard } from "~/components/cards/baseCard";
 import { CreateRepositoryForm } from "~/components/forms/createRepoForm";
 import { PageTitle } from "~/components/page/pageTitle";

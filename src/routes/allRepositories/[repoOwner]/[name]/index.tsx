@@ -1,5 +1,5 @@
-import { component$ } from "@builder.io/qwik";
-import { type DocumentHead, useLocation } from "@builder.io/qwik-city";
+import { component$ } from "@qwik.dev/core";
+import { type DocumentHead, useLocation } from "@qwik.dev/router";
 import { TabbedCard } from "~/components/cards/tabbedCard";
 import { PageTitle } from "~/components/page/pageTitle";
 import { DependencyUpdaterCard } from "~/components/cards/dependencyUpdaterCard";
@@ -39,7 +39,10 @@ export default component$(() => {
           />
         </div>
         <div q:slot="Dependencies">
-          <RepoDependencyCard repo={repo.value} />
+          <RepoDependencyCard
+            repository_id={repo.value?.repository_id || 0}
+            repository_name={repo.value?.name || ""}
+          />
         </div>
 
         <div q:slot="Dependents">

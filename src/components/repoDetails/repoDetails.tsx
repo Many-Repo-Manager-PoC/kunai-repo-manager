@@ -1,4 +1,4 @@
-import { component$, useSignal } from "@builder.io/qwik";
+import { component$, useSignal } from "@qwik.dev/core";
 import { Button, Chip } from "@kunai-consulting/kunai-design-system";
 import {
   StarIcon,
@@ -79,7 +79,7 @@ export const RepoDetails = component$<RepoDetailsProps>(
                 <Button asChild>
                   <a
                     href={Routes.componentCopy(
-                      repoDetails?.owner.name,
+                      repoDetails?.owner.login,
                       repoDetails?.name,
                     )}
                   >
