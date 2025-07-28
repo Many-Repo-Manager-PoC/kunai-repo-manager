@@ -1,4 +1,4 @@
-import { $, component$ } from "@builder.io/qwik";
+import { $, component$ } from "@qwik.dev/core";
 import { useForm, zodForm$, reset } from "@modular-forms/qwik";
 import { TextInput } from "~/components/formInputs/textInput";
 import { SelectInput } from "~/components/formInputs/selectInput";

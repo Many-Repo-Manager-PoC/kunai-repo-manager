@@ -8,6 +8,7 @@ export type GetUserArgs = {
 };
 
 export type GetUserReturns = Array<{
+  "id": string;
   "avatar_url": string;
   "login": string;
   "role_type": string;
@@ -16,7 +17,6 @@ export type GetUserReturns = Array<{
   "user_id": number;
   "user_view_type": string | null;
   "last_updated": Date | null;
-  "id": string;
   "email": string;
   "events_url": string | null;
   "followers_url": string | null;

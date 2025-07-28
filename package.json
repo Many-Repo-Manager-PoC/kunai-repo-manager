@@ -28,8 +28,6 @@
   },
   "devDependencies": {
     "@auth/qwik": "^0.7.0",
-    "@builder.io/qwik": "^1.13.0",
-    "@builder.io/qwik-city": "^1.13.0",
     "@cloudflare/workers-types": "^4.20250429.0",
     "@gel/generate": "^0.6.3",
     "@kunai-consulting/kunai-design-system": "^0.0.8",
@@ -44,7 +42,7 @@
     "@typescript-eslint/eslint-plugin": "7.16.1",
     "@typescript-eslint/parser": "7.16.1",
     "eslint": "8.57.0",
-    "eslint-plugin-qwik": "^1.13.0",
+    "eslint-plugin-qwik": "2.0.0-beta.5",
     "prettier": "3.3.3",
     "semver": "^7.7.1",
     "tailwindcss": "^4.1.4",
@@ -52,7 +50,9 @@
     "undici": "*",
     "vite": "5.3.5",
     "vite-tsconfig-paths": "^4.2.1",
-    "wrangler": "^3.91.0"
+    "wrangler": "^3.91.0",
+    "@qwik.dev/router": "2.0.0-beta.5",
+    "@qwik.dev/core": "2.0.0-beta.5"
   },
   "dependencies": {
     "@fontsource-variable/work-sans": "^5.2.5",
