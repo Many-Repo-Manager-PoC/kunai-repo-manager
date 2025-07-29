@@ -51,7 +51,7 @@ export const RepoDependencyCard = component$<RepoDependencyCardProps>(
                 Type
               </div>
             </div>
-            {allDependencies.value?.map((dependency) => {
+            {allDependencies.value.map((dependency) => {
               const dependency_type =
                 "dependency_type" in dependency
                   ? dependency.dependency_type

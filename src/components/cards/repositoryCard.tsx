@@ -67,14 +67,14 @@ export const RepositoryCard = component$<RepositoryCardProps>(({ repo }) => {
           {repo?.language && (
             <div class="flex items-center gap-1.5">
               <LuCode class="h-4 w-4 text-green-500 flex-shrink-0" />
-              <span>{repo?.language}</span>
+              <span>{repo.language}</span>
             </div>
           )}
         </div>
       </div>
       <div q:slot="footer" class="flex w-full flex-wrap items-center gap-1">
-        {repo?.topics && repo?.topics.length > 0 ? (
-          repo?.topics
+        {repo?.topics && repo.topics.length > 0 ? (
+          repo.topics
             .join(",")
             .split(",")
             .map((topic: string) => (

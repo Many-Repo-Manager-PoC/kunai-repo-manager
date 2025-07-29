@@ -36,7 +36,7 @@ export default component$(() => {
 
   const repoTopicsMap = queriedRepositories.reduce(
     (acc: Record<string, string[]>, repo) => {
-      if (repo?.name) {
+      if (repo.name) {
         acc[repo.name] = repo.topics || [];
       }
       return acc;
@@ -46,13 +46,13 @@ export default component$(() => {
 
   const handleSelectAll = $(() => {
     const filteredRepos = queriedRepositories
-      ?.filter((repo): repo is NonNullable<typeof repo> => {
+      .filter((repo): repo is NonNullable<typeof repo> => {
         if (!repo) return false;
         const matchesSearch =
           !searchQuery.value ||
-          repo.name?.toLowerCase().includes(searchQuery.value.toLowerCase());
+          repo.name.toLowerCase().includes(searchQuery.value.toLowerCase());
         const matchesTopic =
-          !selectedTopic.value || repo.topics?.includes(selectedTopic.value);
+          !selectedTopic.value || repo.topics.includes(selectedTopic.value);
         return matchesSearch && matchesTopic;
       })
       .map((repo) => repo.name);
@@ -170,16 +170,16 @@ export default component$(() => {
           {queriedRepositories &&
             queriedRepositories
               .filter((repo) => {
-                const matchesSearch = repo?.name
-                  ?.toLowerCase()
+                const matchesSearch = repo.name
+                  .toLowerCase()
                   .includes(searchQuery.value.toLowerCase());
                 const matchesTopic =
                   !selectedTopic.value ||
-                  repo?.topics?.includes(selectedTopic.value);
+                  repo.topics.includes(selectedTopic.value);
                 return matchesSearch && matchesTopic;
               })
               .map((repo) => (
-                <div key={repo?.id} class="relative">
+                <div key={repo.id} class="relative">
                   <div onClick$={() => handleCardClick(repo)}>
                     <RepositoryCard repo={repo} />
                   </div>
@@ -187,12 +187,12 @@ export default component$(() => {
                     <input
                       type="checkbox"
                       class="absolute top-2 right-2"
-                      checked={selectedRepos.value.includes(repo?.name || "")}
+                      checked={selectedRepos.value.includes(repo.name || "")}
                       onChange$={(e) =>
-                        handleCheckboxChange(e, repo?.name || "")
+                        handleCheckboxChange(e, repo.name || "")
                       }
-                      id={`repo-checkbox-${repo?.id}`}
-                      name={`repo-checkbox-${repo?.id}`}
+                      id={`repo-checkbox-${repo.id}`}
+                      name={`repo-checkbox-${repo.id}`}
                     />
                   )}
                 </div>
