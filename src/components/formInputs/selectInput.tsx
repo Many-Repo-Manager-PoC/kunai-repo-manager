@@ -1,4 +1,4 @@
-import { component$ } from "@qwik.dev/core";
+import { component$, type QRL } from "@qwik.dev/core";
 
 export type SelectOption = {
   value: string;
@@ -8,18 +8,27 @@ export type SelectOption = {
 export interface SelectInputProps {
   name: string;
   label?: string;
-  placeholder?: string;
   value?: string;
   error: string;
   required?: boolean;
-  onInput$: (event: Event, element: HTMLSelectElement) => void;
-  onChange$: (event: Event, element: HTMLSelectElement) => void;
-  onBlur$: (event: Event, element: HTMLSelectElement) => void;
+  onInput$: QRL<(event: Event, element: HTMLSelectElement) => void>;
+  onChange$: QRL<(event: Event, element: HTMLSelectElement) => void>;
+  onBlur$: QRL<(event: Event, element: HTMLSelectElement) => void>;
   options: SelectOption[];
 }
 
 export const SelectInput = component$<SelectInputProps>(
-  ({ label, error, options, ...props }) => {
+  ({
+    label,
+    error,
+    options,
+    value,
+    required,
+    name,
+    onBlur$,
+    onChange$,
+    onInput$,
+  }) => {
     const isInvalid = error && error.length > 0;
     return (
       <div>
@@ -30,7 +39,12 @@ export const SelectInput = component$<SelectInputProps>(
         </label>
 
         <select
-          {...props}
+          value={value}
+          name={name}
+          onBlur$={onBlur$}
+          onChange$={onChange$}
+          onInput$={onInput$}
+          required={required}
           class="w-full cursor-pointer text-sm bg-white rounded-md p-2.5"
         >
           {options.map((option, index) => (

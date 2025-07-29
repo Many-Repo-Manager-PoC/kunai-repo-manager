@@ -17,7 +17,8 @@
     "outDir": "tmp",
     "noEmit": true,
     "paths": {
-      "~/*": ["./src/*"]
+      "~/*": ["./src/*"],
+      "@dbschema/*": ["./dbschema/*"]
     },
     "types": ["@cloudflare/workers-types/2023-07-01"]
   },

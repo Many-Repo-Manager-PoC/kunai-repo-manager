@@ -8,6 +8,13 @@ export const onRequest: RequestHandler = async ({ next, error, redirect }) => {
     return await next();
   } catch (err) {
     if (isDev) {
+      if (err instanceof ApplicationError) {
+        console.log("Application error...", err);
+        if (err.name === "UNAUTHORIZED") {
+          throw redirect(302, "/home/login/");
+        }
+      }
+
       console.error("Development error...", err);
       throw err;
     } else {

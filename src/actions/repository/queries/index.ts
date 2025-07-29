@@ -1,6 +1,6 @@
 import { server$ } from "@qwik.dev/router";
-import { executeQuery } from "../client";
-import * as queries from "../../../dbschema/queries";
+import { executeQuery } from "~/actions/client";
+import * as queries from "@dbschema/queries";
 
 export const getRepositories = server$(async () => {
   const result = await executeQuery(queries.getRepositories);
@@ -29,3 +29,7 @@ export const getRepositoriesForAllTopics = server$(async () => {
     ),
   ];
 });
+
+export const getTemplateRepositories = server$(
+  async () => await executeQuery(queries.getTemplateRepositories),
+);

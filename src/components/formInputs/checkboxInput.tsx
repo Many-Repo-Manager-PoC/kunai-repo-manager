@@ -8,14 +8,23 @@ export interface CheckboxInputProps {
   value?: boolean;
   error: string;
   required?: boolean;
-  ref: QRL<(element: HTMLInputElement) => void>;
-  onInput$: (event: Event, element: HTMLInputElement) => void;
-  onChange$: (event: Event, element: HTMLInputElement) => void;
-  onBlur$: (event: Event, element: HTMLInputElement) => void;
+  onInput$: QRL<(event: Event, element: HTMLInputElement) => void>;
+  onChange$: QRL<(event: Event, element: HTMLInputElement) => void>;
+  onBlur$: QRL<(event: Event, element: HTMLInputElement) => void>;
 }
 
 export const CheckboxInput = component$<CheckboxInputProps>(
-  ({ name, label, error, value, ...props }) => {
+  ({
+    name,
+    label,
+    error,
+    value,
+    onBlur$,
+    onChange$,
+    onInput$,
+    placeholder,
+    required,
+  }) => {
     const isInvalid = !!error && error.length > 0;
     return (
       <Checkbox.Root>
@@ -23,7 +32,11 @@ export const CheckboxInput = component$<CheckboxInputProps>(
           checked={value}
           name={name}
           hasError={isInvalid}
-          {...props}
+          onBlur$={onBlur$}
+          onChange$={onChange$}
+          onInput$={onInput$}
+          required={required}
+          placeholder={placeholder}
         />
         <Checkbox.Label class="ml-3 dark:text-white text-black">
           {label}
