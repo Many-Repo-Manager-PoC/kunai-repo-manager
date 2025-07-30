@@ -1,9 +1,8 @@
 import { server$ } from "@qwik.dev/router";
-import e from "../../dbschema/edgeql-js";
 import type { Octokit } from "octokit";
 import { OCTOKIT_CLIENT } from "../routes/plugin@octokit";
 import metadata from "../db/metadata.json";
-// Import the functions from the existing actions file
+
 import * as queries from "../../dbschema/queries";
 import { getClient } from "~/actions/client";
 
@@ -12,13 +11,11 @@ export const useInsertOrUpdatePackageJson = server$(async function (
 ) {
   try {
     const octokit: Octokit = this.sharedMap.get(OCTOKIT_CLIENT);
-    const client = getClient();
 
     // Find the dependency path for the specified repository
     const dependencyPath = metadata.dependencyPaths.find(
       (path) => path[0] === repositoryName,
     );
-    // console.log("dependencyPath", dependencyPath);
 
     if (!dependencyPath) {
       throw new Error(
@@ -36,22 +33,8 @@ export const useInsertOrUpdatePackageJson = server$(async function (
       },
     });
 
-    // console.log("data", data);
-
     const content = atob((data as { content: string }).content || "");
     const packageJson = JSON.parse(content);
-
-    // console.log("packageJson", packageJson);
-
-    // Get repository ID from the database
-    const repository = await e
-      .select(e.Repository, (repo) => ({
-        name: repo.name,
-        filter: e.op(repo.name, "=", repositoryName),
-      }))
-      .run(client);
-
-    console.log("repository found is", repository);
 
     // Prepare dependencies data
     const dependencies = packageJson.dependencies
@@ -61,8 +44,6 @@ export const useInsertOrUpdatePackageJson = server$(async function (
         }))
       : [];
 
-    // console.log("dependencies are", dependencies);
-
     const devDependencies = packageJson.devDependencies
       ? Object.entries(packageJson.devDependencies).map(([name, version]) => ({
           name,
@@ -70,17 +51,14 @@ export const useInsertOrUpdatePackageJson = server$(async function (
         }))
       : [];
 
-    // console.log("devDependencies are", devDependencies);
-
     // Use the existing insertPackageJson function
     const insertArgs: queries.InsertOrUpdatePackageJsonArgs = {
       name: packageJson.name || repositoryName,
       package_version: packageJson.version || "1.0.0",
       dependencies: dependencies,
       dev_dependencies: devDependencies,
-      repository: repository[0].name, // assuming repository is an array from .run()
+      repository: repositoryName,
     };
-    console.log("insertArgs", insertArgs);
     await queries.insertOrUpdatePackageJson(getClient(), insertArgs);
 
     return {
@@ -91,7 +69,7 @@ export const useInsertOrUpdatePackageJson = server$(async function (
         version: packageJson.version,
         dependenciesCount: dependencies.length,
         devDependenciesCount: devDependencies.length,
-        repository: repository,
+        repository: repositoryName,
       },
     };
   } catch (error) {
