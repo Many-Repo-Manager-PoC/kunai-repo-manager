@@ -200,11 +200,11 @@ export namespace $default {
     "last_updated"?: Date | null;
   }
   export interface CodeOfConduct extends Timestamped {
-    "url"?: string | null;
     "node_id"?: string | null;
     "key"?: string | null;
     "name"?: string | null;
     "spdx_id"?: string | null;
+    "url"?: string | null;
     "repository": Repository;
   }
   export interface Dependency extends Timestamped {
@@ -219,9 +219,9 @@ export namespace $default {
     "dependency_type"?: DependencyType | null;
   }
   export interface FilePath extends Timestamped {
-    "file_name": string;
     "file_type": FileType;
     "path": string;
+    "file_name": string;
     "repository": Repository;
   }
   export type FileType = "PNG" | "JPG" | "JPEG" | "GIF" | "SVG" | "PSD" | "JSON" | "MD" | "TXT" | "LOG" | "ZIP" | "GEL" | "TOML" | "YML" | "YAML" | "JSONC" | "WOFF2" | "CSS" | "TS" | "TSX" | "JS" | "EDGEQL" | "XML" | "PDF" | "CSV" | "SQL" | "HTML";
@@ -234,6 +234,18 @@ export namespace $default {
     "url"?: string | null;
   }
   export interface Organization extends Timestamped {
+    "avatar_url": string;
+    "email"?: string | null;
+    "events_url": string;
+    "followers_url": string;
+    "login": string;
+    "organization_id"?: number | null;
+    "following_url": string;
+    "gists_url": string;
+    "gravatar_id": string;
+    "html_url": string;
+    "name"?: string | null;
+    "node_id": string;
     "organizations_url": string;
     "received_events_url": string;
     "repos_url": string;
@@ -244,18 +256,6 @@ export namespace $default {
     "subscriptions_url": string;
     "url": string;
     "user_view_type"?: string | null;
-    "login": string;
-    "organization_id"?: number | null;
-    "avatar_url": string;
-    "email"?: string | null;
-    "events_url": string;
-    "followers_url": string;
-    "following_url": string;
-    "gists_url": string;
-    "gravatar_id": string;
-    "html_url": string;
-    "name"?: string | null;
-    "node_id": string;
   }
   export interface PackageJson extends Timestamped {
     "name": string;
@@ -277,14 +277,12 @@ export namespace $default {
     "dependency_type"?: DependencyType | null;
   }
   export interface Repository extends Timestamped {
-    "clone_url"?: string | null;
     "allow_auto_merge"?: boolean | null;
     "allow_forking"?: boolean | null;
     "allow_merge_commit"?: boolean | null;
     "allow_rebase_merge"?: boolean | null;
     "allow_squash_merge"?: boolean | null;
     "archived": boolean;
-    "archive_url"?: string | null;
     "contents_url": string;
     "contributors_url": string;
     "created_at": string;
@@ -299,6 +297,8 @@ export namespace $default {
     "forks_count": number;
     "forks_url"?: string | null;
     "full_name": string;
+    "description"?: string | null;
+    "blobs_url"?: string | null;
     "has_discussions": boolean;
     "has_pages": boolean;
     "hooks_url": string;
@@ -320,20 +320,22 @@ export namespace $default {
     "size": number;
     "ssh_url": string;
     "stargazers_count": number;
-    "description"?: string | null;
+    "topics": string[];
+    "updated_at": string;
+    "url": string;
+    "watchers_count": number;
+    "is_template"?: boolean | null;
     "has_downloads"?: boolean | null;
     "has_issues"?: boolean | null;
     "has_projects"?: boolean | null;
     "has_wiki"?: boolean | null;
     "homepage"?: string | null;
-    "topics": string[];
-    "updated_at": string;
-    "url": string;
-    "watchers_count": number;
+    "private"?: boolean | null;
     "visibility"?: Visibility | null;
+    "archive_url"?: string | null;
     "assignees_url"?: string | null;
-    "blobs_url"?: string | null;
     "branches_url"?: string | null;
+    "clone_url"?: string | null;
     "collaborators_url"?: string | null;
     "comments_url"?: string | null;
     "commits_url"?: string | null;
@@ -358,12 +360,9 @@ export namespace $default {
     "repository_id": number;
     "anonymous_access_enabled"?: boolean | null;
     "auto_init"?: boolean | null;
-    "custom_properties"?: unknown | null;
-    "is_template"?: boolean | null;
     "merge_commit_message"?: string | null;
     "merge_commit_title"?: string | null;
     "network_count"?: number | null;
-    "private"?: boolean | null;
     "squash_merge_commit_message"?: string | null;
     "squash_merge_commit_title"?: string | null;
     "subscribers_count"?: number | null;
@@ -372,13 +371,13 @@ export namespace $default {
     "owner": User;
     "template_repository"?: Repository | null;
     "license"?: License | null;
-    "all_dependencies": Dependency[];
-    "all_file_paths": FilePath[];
-    "package_json": PackageJson[];
     "code_of_conduct"?: CodeOfConduct | null;
     "organization"?: Organization | null;
     "security_and_analysis"?: SecurityAndAnalysis | null;
     "user"?: User | null;
+    "all_dependencies": Dependency[];
+    "all_file_paths": FilePath[];
+    "package_json": PackageJson[];
   }
   export interface SecurityAndAnalysis extends Timestamped {
     "advanced_security_status"?: string | null;
@@ -394,10 +393,6 @@ export namespace $default {
     "avatar_url": string;
     "login": string;
     "role_type": string;
-    "site_admin": boolean;
-    "starred_at"?: string | null;
-    "user_id": number;
-    "user_view_type"?: string | null;
     "email": string;
     "events_url"?: string | null;
     "followers_url"?: string | null;
@@ -405,6 +400,10 @@ export namespace $default {
     "gists_url"?: string | null;
     "gravatar_id"?: string | null;
     "html_url"?: string | null;
+    "site_admin": boolean;
+    "starred_at"?: string | null;
+    "user_id": number;
+    "user_view_type"?: string | null;
     "name": string;
     "node_id"?: string | null;
     "organizations_url"?: string | null;

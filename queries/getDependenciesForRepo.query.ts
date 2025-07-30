@@ -3,31 +3,28 @@
 import type {Executor} from "gel";
 
 export type GetDependenciesForRepoArgs = {
-  readonly "repository_id"?: number | null;
-  readonly "package_json_name"?: string | null;
+  readonly "repository_id": number;
 };
 
 export type GetDependenciesForRepoReturns = Array<{
   "dependency_version": string;
   "name": string;
-  "dependency_type": ("Dev" | "Prod") | null;
-  "last_updated": Date | null;
   "id": string;
+  "last_updated": Date | null;
+  "dependency_type": ("Dev" | "Prod") | null;
   "package_json": {
     "name": string;
     "package_version": string;
-    "last_updated": Date | null;
     "id": string;
+    "last_updated": Date | null;
   };
   "repository": {
-    "clone_url": string | null;
     "allow_auto_merge": boolean | null;
     "allow_forking": boolean | null;
     "allow_merge_commit": boolean | null;
     "allow_rebase_merge": boolean | null;
     "allow_squash_merge": boolean | null;
     "archived": boolean;
-    "archive_url": string | null;
     "contents_url": string;
     "contributors_url": string;
     "created_at": string;
@@ -42,6 +39,8 @@ export type GetDependenciesForRepoReturns = Array<{
     "forks_count": number;
     "forks_url": string | null;
     "full_name": string;
+    "description": string | null;
+    "blobs_url": string | null;
     "has_discussions": boolean;
     "has_pages": boolean;
     "hooks_url": string;
@@ -63,20 +62,22 @@ export type GetDependenciesForRepoReturns = Array<{
     "size": number;
     "ssh_url": string;
     "stargazers_count": number;
-    "description": string | null;
+    "topics": Array<string>;
+    "updated_at": string;
+    "url": string;
+    "watchers_count": number;
+    "is_template": boolean | null;
     "has_downloads": boolean | null;
     "has_issues": boolean | null;
     "has_projects": boolean | null;
     "has_wiki": boolean | null;
     "homepage": string | null;
-    "topics": Array<string>;
-    "updated_at": string;
-    "url": string;
-    "watchers_count": number;
+    "private": boolean | null;
     "visibility": ("public" | "private") | null;
+    "archive_url": string | null;
     "assignees_url": string | null;
-    "blobs_url": string | null;
     "branches_url": string | null;
+    "clone_url": string | null;
     "collaborators_url": string | null;
     "comments_url": string | null;
     "commits_url": string | null;
@@ -103,12 +104,9 @@ export type GetDependenciesForRepoReturns = Array<{
     "repository_id": number;
     "anonymous_access_enabled": boolean | null;
     "auto_init": boolean | null;
-    "custom_properties": unknown | null;
-    "is_template": boolean | null;
     "merge_commit_message": string | null;
     "merge_commit_title": string | null;
     "network_count": number | null;
-    "private": boolean | null;
     "squash_merge_commit_message": string | null;
     "squash_merge_commit_title": string | null;
     "subscribers_count": number | null;
@@ -119,12 +117,9 @@ export type GetDependenciesForRepoReturns = Array<{
 
 export function getDependenciesForRepo(client: Executor, args: GetDependenciesForRepoArgs): Promise<GetDependenciesForRepoReturns> {
   return client.query(`\
-# Get all dependencies by repository_id or package_json name
+# Get all dependencies for a single repository by repository_id
 select Dependency {
   **
-} filter (
-  assert_exists(Repository.repository_id) ?= <optional int64>$repository_id 
-  or assert_exists(Dependency.package_json.name) ?= <optional str>$package_json_name
-);`, args);
+} filter .repository.repository_id = <int64>$repository_id;`, args);
 
 }
