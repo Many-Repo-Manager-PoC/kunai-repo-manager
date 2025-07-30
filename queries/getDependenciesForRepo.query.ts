@@ -7,18 +7,13 @@ export type GetDependenciesForRepoArgs = {
 };
 
 export type GetDependenciesForRepoReturns = Array<{
+  "id": string;
   "dependency_version": string;
   "name": string;
-  "id": string;
   "last_updated": Date | null;
   "dependency_type": ("Dev" | "Prod") | null;
-  "package_json": {
-    "name": string;
-    "package_version": string;
-    "id": string;
-    "last_updated": Date | null;
-  };
   "repository": {
+    "id": string;
     "allow_auto_merge": boolean | null;
     "allow_forking": boolean | null;
     "allow_merge_commit": boolean | null;
@@ -39,8 +34,6 @@ export type GetDependenciesForRepoReturns = Array<{
     "forks_count": number;
     "forks_url": string | null;
     "full_name": string;
-    "description": string | null;
-    "blobs_url": string | null;
     "has_discussions": boolean;
     "has_pages": boolean;
     "hooks_url": string;
@@ -66,16 +59,10 @@ export type GetDependenciesForRepoReturns = Array<{
     "updated_at": string;
     "url": string;
     "watchers_count": number;
-    "is_template": boolean | null;
-    "has_downloads": boolean | null;
-    "has_issues": boolean | null;
-    "has_projects": boolean | null;
-    "has_wiki": boolean | null;
-    "homepage": string | null;
-    "private": boolean | null;
-    "visibility": ("public" | "private") | null;
+    "last_updated": Date | null;
     "archive_url": string | null;
     "assignees_url": string | null;
+    "blobs_url": string | null;
     "branches_url": string | null;
     "clone_url": string | null;
     "collaborators_url": string | null;
@@ -99,19 +86,32 @@ export type GetDependenciesForRepoReturns = Array<{
     "tags_url": string | null;
     "teams_url": string | null;
     "trees_url": string | null;
-    "last_updated": Date | null;
-    "id": string;
     "repository_id": number;
     "anonymous_access_enabled": boolean | null;
     "auto_init": boolean | null;
+    "description": string | null;
+    "has_downloads": boolean | null;
+    "has_issues": boolean | null;
+    "has_projects": boolean | null;
+    "has_wiki": boolean | null;
+    "homepage": string | null;
+    "is_template": boolean | null;
     "merge_commit_message": string | null;
     "merge_commit_title": string | null;
     "network_count": number | null;
+    "private": boolean | null;
     "squash_merge_commit_message": string | null;
     "squash_merge_commit_title": string | null;
     "subscribers_count": number | null;
     "team_id": number | null;
     "temp_clone_token": string | null;
+    "visibility": ("public" | "private") | null;
+  };
+  "package_json": {
+    "id": string;
+    "name": string;
+    "package_version": string;
+    "last_updated": Date | null;
   };
 }>;
 

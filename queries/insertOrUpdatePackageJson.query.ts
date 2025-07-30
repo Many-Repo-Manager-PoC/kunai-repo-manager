@@ -2,16 +2,25 @@
 
 import type {Executor} from "gel";
 
-export type GetFilePathArgs = {
-  readonly "repository_id"?: number | null;
+export type InsertOrUpdatePackageJsonArgs = {
+  readonly "name": string;
+  readonly "package_version": string;
+  readonly "repository": string;
+  readonly "dependencies": ReadonlyArray<{
+  readonly "name": string;
+  readonly "dependency_version": string;
+}>;
+  readonly "dev_dependencies": ReadonlyArray<{
+  readonly "name": string;
+  readonly "dependency_version": string;
+}>;
 };
 
-export type GetFilePathReturns = {
+export type InsertOrUpdatePackageJsonReturns = {
   "last_updated": Date | null;
+  "package_version": string;
+  "name": string;
   "id": string;
-  "file_name": string;
-  "file_type": ("PNG" | "JPG" | "JPEG" | "GIF" | "SVG" | "PSD" | "JSON" | "MD" | "TXT" | "LOG" | "ZIP" | "GEL" | "TOML" | "YML" | "YAML" | "JSONC" | "WOFF2" | "CSS" | "TS" | "TSX" | "JS" | "EDGEQL" | "XML" | "PDF" | "CSV" | "SQL" | "HTML");
-  "path": string;
   "repository": {
     "id": string;
     "allow_auto_merge": boolean | null;
@@ -107,15 +116,93 @@ export type GetFilePathReturns = {
     "temp_clone_token": string | null;
     "visibility": ("public" | "private") | null;
   };
+  "dependencies": Array<{
+    "last_updated": Date | null;
+    "name": string;
+    "dependency_version": string;
+    "id": string;
+    "dependency_type": ("Dev" | "Prod") | null;
+  }>;
+  "dev_dependencies": Array<{
+    "last_updated": Date | null;
+    "name": string;
+    "dependency_version": string;
+    "id": string;
+    "dependency_type": ("Dev" | "Prod") | null;
+  }>;
 } | null;
 
-export function getFilePath(client: Executor, args: GetFilePathArgs): Promise<GetFilePathReturns> {
+export function insertOrUpdatePackageJson(client: Executor, args: InsertOrUpdatePackageJsonArgs): Promise<InsertOrUpdatePackageJsonReturns> {
   return client.querySingle(`\
-# get FilePath by repoID
-select assert_single(
-  FilePath { ** }
-  filter assert_exists(Repository.repository_id) ?= <optional int64>$repository_id
-  and FilePath.file_type = FileType.JSON
-) limit 1;`, args);
+with 
+  NewPackageJson := (
+    insert PackageJson {
+      name := <str>$name,
+      package_version := <str>$package_version,
+      repository := (
+        select Repository
+        filter .name = <str>$repository
+        limit 1
+      )
+    }
+    unless conflict on .repository 
+    else (
+      update PackageJson
+      filter .repository.name = <str>$repository
+      set {
+        name := <str>$name,
+        package_version := <str>$package_version,
+        repository := (
+          select Repository
+          filter .name = <str>$repository
+          limit 1
+        ),
+      }
+    )
+  ),
+
+  InsertProdDependencies := (
+    for dependency in array_unpack(<array<tuple<name: str, dependency_version: str>>>$dependencies)
+    union (
+      insert ProdDependency {
+        name := <str>dependency.name,
+        dependency_version := <str>dependency.dependency_version,
+        package_json := NewPackageJson,
+        repository := NewPackageJson.repository,
+      }
+      unless conflict on (.dependency_type, .name, .repository)
+      else (
+        update ProdDependency
+        filter .name = <str>dependency.name
+          and .repository = NewPackageJson.repository
+        set {
+          dependency_version := <str>dependency.dependency_version,
+        }
+      )
+    )
+  ),
+
+  InsertDevDependencies := (
+    for dev_dependency in array_unpack(<array<tuple<name: str, dependency_version: str>>>$dev_dependencies)
+    union (
+      insert DevDependency {
+        name := <str>dev_dependency.name,
+        dependency_version := <str>dev_dependency.dependency_version,
+        package_json := NewPackageJson,
+        repository := NewPackageJson.repository,
+      }
+      unless conflict on (.dependency_type, .name, .repository)
+      else (
+        update DevDependency
+        filter .name = <str>dev_dependency.name
+          and .repository = NewPackageJson.repository
+        set {
+          dependency_version := <str>dev_dependency.dependency_version,
+        }
+      )
+    )
+  )
+
+select NewPackageJson { ** };`, args);
 
 }

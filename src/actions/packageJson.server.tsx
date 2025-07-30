@@ -7,7 +7,7 @@ import metadata from "../db/metadata.json";
 import * as queries from "../../dbschema/queries";
 import { getClient } from "~/actions/client";
 
-export const useRefreshPackageJson = server$(async function (
+export const useInsertOrUpdatePackageJson = server$(async function (
   repositoryName: string,
 ) {
   try {
@@ -73,7 +73,7 @@ export const useRefreshPackageJson = server$(async function (
     // console.log("devDependencies are", devDependencies);
 
     // Use the existing insertPackageJson function
-    const insertArgs: queries.InsertPackageJsonArgs = {
+    const insertArgs: queries.InsertOrUpdatePackageJsonArgs = {
       name: packageJson.name || repositoryName,
       package_version: packageJson.version || "1.0.0",
       dependencies: dependencies,
@@ -81,7 +81,7 @@ export const useRefreshPackageJson = server$(async function (
       repository: repository[0].name, // assuming repository is an array from .run()
     };
     console.log("insertArgs", insertArgs);
-    await queries.insertPackageJson(getClient(), insertArgs);
+    await queries.insertOrUpdatePackageJson(getClient(), insertArgs);
 
     return {
       success: true,
@@ -105,53 +105,25 @@ export const useRefreshPackageJson = server$(async function (
   }
 });
 
-// export const useInsertPackageJson = server$(async (formData: FormData) => {
-//   try {
-//     await insertPackageJson(formData);
-//     return {
-//       success: true,
-//       message: "Package.json successfully inserted",
-//     };
-//   } catch (error) {
-//     console.error("Error inserting package.json:", error);
-//     return {
-//       success: false,
-//       message:
-//         error instanceof Error ? error.message : "Unknown error occurred",
-//     };
-//   }
-// });
-
-// export const useUpdatePackageJson = server$(async (formData: FormData) => {
-//   try {
-//     await updatePackageJson(formData);
-//     return {
-//       success: true,
-//       message: "Package.json successfully updated",
-//     };
-//   } catch (error) {
-//     console.error("Error updating package.json:", error);
-//     return {
-//       success: false,
-//       message:
-//         error instanceof Error ? error.message : "Unknown error occurred",
-//     };
-//   }
-// });
-
-// export const useDeletePackageJson = server$(async (formData: FormData) => {
-//   try {
-//     await deletePackageJson(formData);
-//     return {
-//       success: true,
-//       message: "Package.json successfully deleted",
-//     };
-//   } catch (error) {
-//     console.error("Error deleting package.json:", error);
-//     return {
-//       success: false,
-//       message:
-//         error instanceof Error ? error.message : "Unknown error occurred",
-//     };
-//   }
-// });
+export const useDeletePackageJson = server$(async (formData: FormData) => {
+  try {
+    const repository_id = Number(formData.get("repository_id"));
+    if (!repository_id) {
+      throw new Error("Repository ID is required");
+    }
+    await queries.deletePackageJson(getClient(), {
+      repository_id: repository_id,
+    });
+    return {
+      success: true,
+      message: "Package.json successfully deleted",
+    };
+  } catch (error) {
+    console.error("Error deleting package.json:", error);
+    return {
+      success: false,
+      message:
+        error instanceof Error ? error.message : "Unknown error occurred",
+    };
+  }
+});
