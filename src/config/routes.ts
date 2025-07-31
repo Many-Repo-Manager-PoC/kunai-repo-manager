@@ -11,4 +11,5 @@ export class Routes {
     repoName?: string | null,
   ) => `${this.repoDetails(repoOwner, repoName)}componentCopy/`;
   public static readonly dashboard = () => `/dashboard/`;
+  public static readonly designSystemSync = () => `/designSystemSync/`;
 }

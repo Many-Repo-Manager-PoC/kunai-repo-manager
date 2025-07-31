@@ -39,6 +39,12 @@ export default component$(() => {
               description="Browse and manage your repositories"
             />
           </Link>
+          <Link href={Routes.designSystemSync()} class="block" prefetch={false}>
+            <DashboardCard
+              title="Design Systems"
+              description="Sync and manage your design systems"
+            />
+          </Link>
 
           {owner && repoName && (
             <Link href={Routes.repoDetails(owner, repoName)} class="block">
