@@ -3,6 +3,7 @@ import {
   getRepoByName,
   getRepositories,
   getRepositoriesForAllTopics,
+  getTemplateRepositories,
 } from "~/actions/repository";
 
 export const useGetRepositories = () => {
@@ -29,6 +30,16 @@ export const useGetRepoByName = (repoName: string) => {
   const signal = useSignal<Awaited<ReturnType<typeof getRepoByName>>>(null);
   useTask$(async () => {
     const result = await getRepoByName(repoName);
+    signal.value = result;
+  });
+  return signal;
+};
+
+export const useGetTemplateRepositories = () => {
+  const signal =
+    useSignal<Awaited<ReturnType<typeof getTemplateRepositories>>>();
+  useTask$(async () => {
+    const result = await getTemplateRepositories();
     signal.value = result;
   });
   return signal;

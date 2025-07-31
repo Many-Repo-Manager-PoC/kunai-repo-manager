@@ -5,11 +5,11 @@ import { SelectInput } from "~/components/formInputs/selectInput";
 import { CheckboxInput } from "~/components/formInputs/checkboxInput";
 import { GithubLicenses } from "~/db/constants";
 import { Button } from "@kunai-consulting/kunai-design-system";
-import { useCreateRepository } from "~/routes/layout";
+import { useCreateRepository } from "~/routes/createRepositories";
 import {
   type CreateRepositoryFormType,
   createRepositorySchema,
-} from "~/db/createRepository";
+} from "~/routes/createRepositories";
 
 export const CreateRepositoryForm = component$(() => {
   const createRepository = useCreateRepository();
@@ -29,7 +29,6 @@ export const CreateRepositoryForm = component$(() => {
         hasWiki: true,
         hasDownloads: true,
         isTemplate: false,
-        // teamId: undefined,
         autoInit: false,
         gitignoreTemplate: "",
         licenseTemplate: "",
@@ -38,11 +37,6 @@ export const CreateRepositoryForm = component$(() => {
         allowRebaseMerge: true,
         allowAutoMerge: false,
         deleteBranchOnMerge: false,
-        // useSquashPrTitleAsDefault: false,
-        // squashMergeCommitTitle: "",
-        // squashMergeCommitMessage: "",
-        // mergeCommitTitle: "",
-        // mergeCommitMessage: "",
       },
     },
     validate: zodForm$(createRepositorySchema),
