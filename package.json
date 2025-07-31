@@ -8,7 +8,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": " pnpm generate.types && qwik build",
+    "build": "pnpm generate.types && qwik build",
     "generate.types": "pnpm generate queries && pnpm generate queries --file && pnpm generate edgeql-js && pnpm generate interfaces",
     "build.client": "vite build",
     "build.preview": "vite build --ssr src/entry.preview.tsx",
