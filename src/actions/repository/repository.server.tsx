@@ -10,7 +10,7 @@ import { getClient } from "~/actions/client";
  * Accepts: string[] | string | undefined/null
  * Returns: string (comma-separated, or empty string)
  */
-export function normalizeTopics(topics: any): string {
+function normalizeTopics(topics: any): string {
   if (Array.isArray(topics)) {
     // Defensive: filter out non-string, trim, and join
     return topics
