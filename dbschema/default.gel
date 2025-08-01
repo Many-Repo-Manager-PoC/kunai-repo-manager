@@ -275,6 +275,8 @@ abstract type Dependency extending Timestamped {
         
     index on (.package_json);
     index on (.dependency_type);
+
+
  }
 
 
@@ -282,12 +284,19 @@ type ProdDependency extending Dependency {
     overloaded dependency_type : DependencyType {
            default := DependencyType.Prod;
     };
+   constraint exclusive on ((.dependency_type, .name, .repository)){
+      annotation description := 'Dependency must be unique per repository';
+    };
 }
 
 type DevDependency extending Dependency {
     overloaded dependency_type : DependencyType {
            default := DependencyType.Dev;
     };
+   constraint exclusive on ((.dependency_type, .name, .repository)){
+      annotation description := 'Dependency must be unique per repository';
+    };
+
 }
 
 

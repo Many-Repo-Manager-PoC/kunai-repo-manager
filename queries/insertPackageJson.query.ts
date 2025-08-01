@@ -2,18 +2,26 @@
 
 import type {Executor} from "gel";
 
-export type GetDependenciesForRepoArgs = {
-  readonly "repository_id": number;
+export type InsertPackageJsonArgs = {
+  readonly "name": string;
+  readonly "package_version": string;
+  readonly "repository": string;
+  readonly "dependencies": ReadonlyArray<{
+  readonly "name": string;
+  readonly "dependency_version": string;
+}>;
+  readonly "dev_dependencies": ReadonlyArray<{
+  readonly "name": string;
+  readonly "dependency_version": string;
+}>;
 };
 
-export type GetDependenciesForRepoReturns = Array<{
-  "id": string;
-  "dependency_version": string;
-  "name": string;
+export type InsertPackageJsonReturns = {
   "last_updated": Date | null;
-  "dependency_type": ("Dev" | "Prod") | null;
+  "id": string;
+  "package_version": string;
+  "name": string;
   "repository": {
-    "id": string;
     "allow_auto_merge": boolean | null;
     "allow_forking": boolean | null;
     "allow_merge_commit": boolean | null;
@@ -34,6 +42,8 @@ export type GetDependenciesForRepoReturns = Array<{
     "forks_count": number;
     "forks_url": string | null;
     "full_name": string;
+    "description": string | null;
+    "blobs_url": string | null;
     "has_discussions": boolean;
     "has_pages": boolean;
     "hooks_url": string;
@@ -59,10 +69,16 @@ export type GetDependenciesForRepoReturns = Array<{
     "updated_at": string;
     "url": string;
     "watchers_count": number;
-    "last_updated": Date | null;
+    "is_template": boolean | null;
+    "has_downloads": boolean | null;
+    "has_issues": boolean | null;
+    "has_projects": boolean | null;
+    "has_wiki": boolean | null;
+    "homepage": string | null;
+    "private": boolean | null;
+    "visibility": ("public" | "private") | null;
     "archive_url": string | null;
     "assignees_url": string | null;
-    "blobs_url": string | null;
     "branches_url": string | null;
     "clone_url": string | null;
     "collaborators_url": string | null;
@@ -86,40 +102,71 @@ export type GetDependenciesForRepoReturns = Array<{
     "tags_url": string | null;
     "teams_url": string | null;
     "trees_url": string | null;
+    "last_updated": Date | null;
+    "id": string;
     "repository_id": number;
     "anonymous_access_enabled": boolean | null;
     "auto_init": boolean | null;
-    "description": string | null;
-    "has_downloads": boolean | null;
-    "has_issues": boolean | null;
-    "has_projects": boolean | null;
-    "has_wiki": boolean | null;
-    "homepage": string | null;
-    "is_template": boolean | null;
     "merge_commit_message": string | null;
     "merge_commit_title": string | null;
     "network_count": number | null;
-    "private": boolean | null;
     "squash_merge_commit_message": string | null;
     "squash_merge_commit_title": string | null;
     "subscribers_count": number | null;
     "team_id": number | null;
     "temp_clone_token": string | null;
-    "visibility": ("public" | "private") | null;
   };
-  "package_json": {
-    "id": string;
-    "name": string;
-    "package_version": string;
+  "dependencies": Array<{
     "last_updated": Date | null;
-  };
-}>;
+    "name": string;
+    "dependency_type": ("Dev" | "Prod") | null;
+    "dependency_version": string;
+    "id": string;
+  }>;
+  "dev_dependencies": Array<{
+    "name": string;
+    "last_updated": Date | null;
+    "dependency_version": string;
+    "dependency_type": ("Dev" | "Prod") | null;
+    "id": string;
+  }>;
+};
 
-export function getDependenciesForRepo(client: Executor, args: GetDependenciesForRepoArgs): Promise<GetDependenciesForRepoReturns> {
-  return client.query(`\
-# Get all dependencies for a single repository by repository_id
-select Dependency {
-  **
-} filter .repository.repository_id = <int64>$repository_id;`, args);
+export function insertPackageJson(client: Executor, args: InsertPackageJsonArgs): Promise<InsertPackageJsonReturns> {
+  return client.queryRequiredSingle(`\
+with 
+  NewPackageJson := (insert PackageJson {
+    name := <str>$name,
+    package_version := <str>$package_version,
+    repository := <Repository>(
+        select Repository 
+        # this is what the constraint exclusive is on
+        filter .name = <str>$repository
+        limit 1
+    ),
+  }),
+  InsertProdDependencies := (
+    for  dependency in array_unpack(<array<tuple<name: str, dependency_version: str>>>$dependencies)
+    union (
+      insert ProdDependency {
+        name := <str>dependency.name,
+        dependency_version := <str>dependency.dependency_version,
+        package_json := NewPackageJson,
+        repository := <Repository>NewPackageJson.repository,
+      }
+    )
+  ),
+  InsertDevDependencies := (
+    for  dev_dependency in array_unpack(<array<tuple<name: str, dependency_version: str>>>$dev_dependencies)
+    union (
+      insert DevDependency {
+        name := <str>dev_dependency.name,
+        dependency_version := <str>dev_dependency.dependency_version,
+        package_json := NewPackageJson,
+        repository := <Repository>NewPackageJson.repository,
+      }
+    )
+  )
+select NewPackageJson {**};`, args);
 
 }

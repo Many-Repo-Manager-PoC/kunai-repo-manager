@@ -219,9 +219,9 @@ export namespace $default {
     "dependency_type"?: DependencyType | null;
   }
   export interface FilePath extends Timestamped {
-    "file_name": string;
     "file_type": FileType;
     "path": string;
+    "file_name": string;
     "repository": Repository;
   }
   export type FileType = "PNG" | "JPG" | "JPEG" | "GIF" | "SVG" | "PSD" | "JSON" | "MD" | "TXT" | "LOG" | "ZIP" | "GEL" | "TOML" | "YML" | "YAML" | "JSONC" | "WOFF2" | "CSS" | "TS" | "TSX" | "JS" | "EDGEQL" | "XML" | "PDF" | "CSV" | "SQL" | "HTML";
@@ -234,19 +234,14 @@ export namespace $default {
     "url"?: string | null;
   }
   export interface Organization extends Timestamped {
-    "starred_at"?: string | null;
-    "starred_url": string;
-    "subscriptions_url": string;
-    "url": string;
-    "user_view_type"?: string | null;
-    "following_url": string;
-    "gists_url": string;
-    "login": string;
-    "organization_id"?: number | null;
     "avatar_url": string;
     "email"?: string | null;
     "events_url": string;
     "followers_url": string;
+    "login": string;
+    "organization_id"?: number | null;
+    "following_url": string;
+    "gists_url": string;
     "gravatar_id": string;
     "html_url": string;
     "name"?: string | null;
@@ -256,6 +251,11 @@ export namespace $default {
     "repos_url": string;
     "role_type": string;
     "site_admin": boolean;
+    "starred_at"?: string | null;
+    "starred_url": string;
+    "subscriptions_url": string;
+    "url": string;
+    "user_view_type"?: string | null;
   }
   export interface PackageJson extends Timestamped {
     "name": string;
@@ -283,7 +283,6 @@ export namespace $default {
     "allow_rebase_merge"?: boolean | null;
     "allow_squash_merge"?: boolean | null;
     "archived": boolean;
-    "archive_url"?: string | null;
     "contents_url": string;
     "contributors_url": string;
     "created_at": string;
@@ -298,6 +297,8 @@ export namespace $default {
     "forks_count": number;
     "forks_url"?: string | null;
     "full_name": string;
+    "description"?: string | null;
+    "blobs_url"?: string | null;
     "has_discussions": boolean;
     "has_pages": boolean;
     "hooks_url": string;
@@ -319,26 +320,20 @@ export namespace $default {
     "size": number;
     "ssh_url": string;
     "stargazers_count": number;
-    "description"?: string | null;
+    "topics": string[];
+    "updated_at": string;
+    "url": string;
+    "watchers_count": number;
+    "is_template"?: boolean | null;
     "has_downloads"?: boolean | null;
     "has_issues"?: boolean | null;
     "has_projects"?: boolean | null;
     "has_wiki"?: boolean | null;
     "homepage"?: string | null;
-    "topics": string[];
-    "updated_at": string;
-    "url": string;
-    "watchers_count": number;
+    "private"?: boolean | null;
     "visibility"?: Visibility | null;
-    "statuses_url"?: string | null;
-    "anonymous_access_enabled"?: boolean | null;
-    "auto_init"?: boolean | null;
-    "is_template"?: boolean | null;
-    "merge_commit_message"?: string | null;
-    "merge_commit_title"?: string | null;
-    "network_count"?: number | null;
+    "archive_url"?: string | null;
     "assignees_url"?: string | null;
-    "blobs_url"?: string | null;
     "branches_url"?: string | null;
     "clone_url"?: string | null;
     "collaborators_url"?: string | null;
@@ -355,6 +350,7 @@ export namespace $default {
     "pulls_url"?: string | null;
     "releases_url"?: string | null;
     "stargazers_url"?: string | null;
+    "statuses_url"?: string | null;
     "subscribers_url"?: string | null;
     "subscription_url"?: string | null;
     "svn_url"?: string | null;
@@ -362,7 +358,11 @@ export namespace $default {
     "teams_url"?: string | null;
     "trees_url"?: string | null;
     "repository_id": number;
-    "private"?: boolean | null;
+    "anonymous_access_enabled"?: boolean | null;
+    "auto_init"?: boolean | null;
+    "merge_commit_message"?: string | null;
+    "merge_commit_title"?: string | null;
+    "network_count"?: number | null;
     "squash_merge_commit_message"?: string | null;
     "squash_merge_commit_title"?: string | null;
     "subscribers_count"?: number | null;
@@ -393,10 +393,6 @@ export namespace $default {
     "avatar_url": string;
     "login": string;
     "role_type": string;
-    "site_admin": boolean;
-    "starred_at"?: string | null;
-    "user_id": number;
-    "user_view_type"?: string | null;
     "email": string;
     "events_url"?: string | null;
     "followers_url"?: string | null;
@@ -404,6 +400,10 @@ export namespace $default {
     "gists_url"?: string | null;
     "gravatar_id"?: string | null;
     "html_url"?: string | null;
+    "site_admin": boolean;
+    "starred_at"?: string | null;
+    "user_id": number;
+    "user_view_type"?: string | null;
     "name": string;
     "node_id"?: string | null;
     "organizations_url"?: string | null;

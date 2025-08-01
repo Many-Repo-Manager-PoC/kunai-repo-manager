@@ -5,3 +5,4 @@ with DeletedPackageJson := (
 select {
     deleted_package_json := DeletedPackageJson {**},
 };
+
