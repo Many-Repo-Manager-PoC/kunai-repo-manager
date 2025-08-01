@@ -1,5 +1,5 @@
-import { executeQuery } from "../client";
-import * as queries from "../../../dbschema/queries";
+import { executeQuery } from "~/actions/client";
+import * as queries from "@dbschema/queries";
 import { server$ } from "@qwik.dev/router";
 
 export const insertOrUpdateRepository = server$(

@@ -61,6 +61,7 @@ export const useRefreshRepositories = server$(async function () {
           template_repository_id: repository.template_repository?.id ?? 0,
           topics, // Now always a string
           visibility: repository.visibility ?? "",
+          is_template: repository.is_template ?? false,
           license_name: repository.license?.name ?? "",
           license_key: repository.license?.key ?? "",
           license_spdx_id: repository.license?.spdx_id ?? "",
