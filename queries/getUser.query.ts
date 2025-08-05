@@ -3,34 +3,34 @@
 import type {Executor} from "gel";
 
 export type GetUserArgs = {
-  readonly "login"?: string | null;
   readonly "user_id"?: number | null;
+  readonly "login"?: string | null;
 };
 
 export type GetUserReturns = Array<{
-  "avatar_url": string;
-  "email": string;
-  "id": string;
-  "login": string;
-  "name": string;
-  "role_type": string;
-  "site_admin": boolean;
   "user_id": number;
+  "last_updated": Date | null;
+  "email": string;
   "events_url": string | null;
   "followers_url": string | null;
   "following_url": string | null;
   "gists_url": string | null;
   "gravatar_id": string | null;
   "html_url": string | null;
-  "last_updated": Date | null;
+  "name": string;
   "node_id": string | null;
   "organizations_url": string | null;
   "received_events_url": string | null;
   "repos_url": string | null;
-  "starred_at": string | null;
   "starred_url": string | null;
   "subscriptions_url": string | null;
   "url": string | null;
+  "id": string;
+  "avatar_url": string;
+  "login": string;
+  "role_type": string;
+  "site_admin": boolean;
+  "starred_at": string | null;
   "user_view_type": string | null;
 }>;
 

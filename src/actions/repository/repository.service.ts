@@ -3,6 +3,7 @@ import { OCTOKIT_CLIENT } from "~/routes/plugin@octokit";
 import type { Octokit } from "octokit";
 import e from "@dbschema/edgeql-js";
 import { executeQuery } from "../client";
+import type { UpdateShape } from "@dbschema/edgeql-js/update";
 
 const updateRepo = async (
   repository: Awaited<
@@ -166,4 +167,17 @@ export const upsertRepositories = server$(async function (
       console.error(`Error refreshing repository:`, res.reason);
     }
   }
+});
+
+export const updateRepository = server$(async function (
+  name: string,
+  repo: UpdateShape<typeof e.Repository>,
+) {
+  const query = e.update(e.Repository, () => ({
+    filter_single: {
+      name,
+    },
+    set: repo,
+  }));
+  return await executeQuery((client) => query.run(client));
 });

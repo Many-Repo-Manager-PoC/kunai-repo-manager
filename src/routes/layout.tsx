@@ -11,11 +11,18 @@ export { postWorkflowDispatchEvent } from "~/db/postWorkflowDispatchEvent";
 export { useCreateComponentCopy } from "~/db/createComponentCopy";
 export { usePutTopics } from "~/db/putTopics";
 
-export const onGet: RequestHandler = async ({ cacheControl, sharedMap }) => {
+export const onGet: RequestHandler = async ({
+  cacheControl,
+  sharedMap,
+  url,
+}) => {
   cacheControl({
     staleWhileRevalidate: 60 * 60 * 24 * 7,
     maxAge: 5,
   });
+  if (url.pathname.startsWith("/webhooks")) {
+    return;
+  }
   // Get session from shared map
   const session = sharedMap.get("session");
   if (!session || !session?.accessToken) {
