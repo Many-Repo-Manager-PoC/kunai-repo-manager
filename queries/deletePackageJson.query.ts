@@ -8,18 +8,34 @@ export type DeletePackageJsonArgs = {
 
 export type DeletePackageJsonReturns = {
   "deleted_package_json": Array<{
+    "id": string;
     "last_updated": Date | null;
     "package_version": string;
     "name": string;
-    "id": string;
-    "repository": {
+    "dependencies": Array<{
+      "last_updated": Date | null;
+      "name": string;
+      "dependency_version": string;
       "id": string;
+      "dependency_type": ("Dev" | "Prod") | null;
+    }>;
+    "dev_dependencies": Array<{
+      "name": string;
+      "last_updated": Date | null;
+      "dependency_version": string;
+      "dependency_type": ("Dev" | "Prod") | null;
+      "id": string;
+    }>;
+    "repository": {
+      "clone_url": string | null;
       "allow_auto_merge": boolean | null;
       "allow_forking": boolean | null;
       "allow_merge_commit": boolean | null;
       "allow_rebase_merge": boolean | null;
       "allow_squash_merge": boolean | null;
       "archived": boolean;
+      "archive_url": string | null;
+      "repository_id": number;
       "contents_url": string;
       "contributors_url": string;
       "created_at": string;
@@ -55,16 +71,32 @@ export type DeletePackageJsonReturns = {
       "size": number;
       "ssh_url": string;
       "stargazers_count": number;
+      "description": string | null;
+      "has_downloads": boolean | null;
+      "has_issues": boolean | null;
+      "has_projects": boolean | null;
+      "has_wiki": boolean | null;
+      "homepage": string | null;
       "topics": Array<string>;
       "updated_at": string;
       "url": string;
       "watchers_count": number;
-      "last_updated": Date | null;
-      "archive_url": string | null;
+      "visibility": ("public" | "private") | null;
+      "anonymous_access_enabled": boolean | null;
+      "auto_init": boolean | null;
+      "is_template": boolean | null;
+      "merge_commit_message": string | null;
+      "merge_commit_title": string | null;
+      "network_count": number | null;
+      "private": boolean | null;
+      "squash_merge_commit_message": string | null;
+      "squash_merge_commit_title": string | null;
+      "subscribers_count": number | null;
+      "team_id": number | null;
+      "temp_clone_token": string | null;
       "assignees_url": string | null;
       "blobs_url": string | null;
       "branches_url": string | null;
-      "clone_url": string | null;
       "collaborators_url": string | null;
       "comments_url": string | null;
       "commits_url": string | null;
@@ -86,41 +118,9 @@ export type DeletePackageJsonReturns = {
       "tags_url": string | null;
       "teams_url": string | null;
       "trees_url": string | null;
-      "repository_id": number;
-      "anonymous_access_enabled": boolean | null;
-      "auto_init": boolean | null;
-      "description": string | null;
-      "has_downloads": boolean | null;
-      "has_issues": boolean | null;
-      "has_projects": boolean | null;
-      "has_wiki": boolean | null;
-      "homepage": string | null;
-      "is_template": boolean | null;
-      "merge_commit_message": string | null;
-      "merge_commit_title": string | null;
-      "network_count": number | null;
-      "private": boolean | null;
-      "squash_merge_commit_message": string | null;
-      "squash_merge_commit_title": string | null;
-      "subscribers_count": number | null;
-      "team_id": number | null;
-      "temp_clone_token": string | null;
-      "visibility": ("public" | "private") | null;
+      "last_updated": Date | null;
+      "id": string;
     };
-    "dependencies": Array<{
-      "last_updated": Date | null;
-      "name": string;
-      "dependency_version": string;
-      "id": string;
-      "dependency_type": ("Dev" | "Prod") | null;
-    }>;
-    "dev_dependencies": Array<{
-      "last_updated": Date | null;
-      "name": string;
-      "dependency_version": string;
-      "id": string;
-      "dependency_type": ("Dev" | "Prod") | null;
-    }>;
   }>;
 };
 

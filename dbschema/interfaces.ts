@@ -200,11 +200,11 @@ export namespace $default {
     "last_updated"?: Date | null;
   }
   export interface CodeOfConduct extends Timestamped {
-    "node_id"?: string | null;
     "key"?: string | null;
     "name"?: string | null;
     "spdx_id"?: string | null;
     "url"?: string | null;
+    "node_id"?: string | null;
     "repository": Repository;
   }
   export interface Dependency extends Timestamped {
@@ -234,20 +234,6 @@ export namespace $default {
     "url"?: string | null;
   }
   export interface Organization extends Timestamped {
-    "starred_at"?: string | null;
-    "starred_url": string;
-    "subscriptions_url": string;
-    "url": string;
-    "user_view_type"?: string | null;
-    "following_url": string;
-    "gists_url": string;
-    "login": string;
-    "organization_id"?: number | null;
-    "avatar_url": string;
-    "email"?: string | null;
-    "events_url": string;
-    "followers_url": string;
-    "gravatar_id": string;
     "html_url": string;
     "name"?: string | null;
     "node_id": string;
@@ -256,13 +242,27 @@ export namespace $default {
     "repos_url": string;
     "role_type": string;
     "site_admin": boolean;
+    "starred_at"?: string | null;
+    "starred_url": string;
+    "subscriptions_url": string;
+    "url": string;
+    "user_view_type"?: string | null;
+    "login": string;
+    "organization_id"?: number | null;
+    "avatar_url": string;
+    "email"?: string | null;
+    "events_url": string;
+    "followers_url": string;
+    "following_url": string;
+    "gists_url": string;
+    "gravatar_id": string;
   }
   export interface PackageJson extends Timestamped {
     "name": string;
     "package_version": string;
+    "repository": Repository;
     "dev_dependencies": DevDependency[];
     "dependencies": ProdDependency[];
-    "repository": Repository;
   }
   export interface Permissions extends Timestamped {
     "admin": boolean;
@@ -277,6 +277,7 @@ export namespace $default {
     "dependency_type"?: DependencyType | null;
   }
   export interface Repository extends Timestamped {
+    "clone_url"?: string | null;
     "allow_auto_merge"?: boolean | null;
     "allow_forking"?: boolean | null;
     "allow_merge_commit"?: boolean | null;
@@ -284,6 +285,7 @@ export namespace $default {
     "allow_squash_merge"?: boolean | null;
     "archived": boolean;
     "archive_url"?: string | null;
+    "repository_id": number;
     "contents_url": string;
     "contributors_url": string;
     "created_at": string;
@@ -330,17 +332,21 @@ export namespace $default {
     "url": string;
     "watchers_count": number;
     "visibility"?: Visibility | null;
-    "statuses_url"?: string | null;
     "anonymous_access_enabled"?: boolean | null;
     "auto_init"?: boolean | null;
     "is_template"?: boolean | null;
     "merge_commit_message"?: string | null;
     "merge_commit_title"?: string | null;
     "network_count"?: number | null;
+    "private"?: boolean | null;
+    "squash_merge_commit_message"?: string | null;
+    "squash_merge_commit_title"?: string | null;
+    "subscribers_count"?: number | null;
+    "team_id"?: number | null;
+    "temp_clone_token"?: string | null;
     "assignees_url"?: string | null;
     "blobs_url"?: string | null;
     "branches_url"?: string | null;
-    "clone_url"?: string | null;
     "collaborators_url"?: string | null;
     "comments_url"?: string | null;
     "commits_url"?: string | null;
@@ -355,29 +361,23 @@ export namespace $default {
     "pulls_url"?: string | null;
     "releases_url"?: string | null;
     "stargazers_url"?: string | null;
+    "statuses_url"?: string | null;
     "subscribers_url"?: string | null;
     "subscription_url"?: string | null;
     "svn_url"?: string | null;
     "tags_url"?: string | null;
     "teams_url"?: string | null;
     "trees_url"?: string | null;
-    "repository_id": number;
-    "private"?: boolean | null;
-    "squash_merge_commit_message"?: string | null;
-    "squash_merge_commit_title"?: string | null;
-    "subscribers_count"?: number | null;
-    "team_id"?: number | null;
-    "temp_clone_token"?: string | null;
     "owner": User;
     "template_repository"?: Repository | null;
     "license"?: License | null;
-    "code_of_conduct"?: CodeOfConduct | null;
-    "organization"?: Organization | null;
-    "security_and_analysis"?: SecurityAndAnalysis | null;
-    "user"?: User | null;
-    "all_dependencies": Dependency[];
     "all_file_paths": FilePath[];
     "package_json": PackageJson[];
+    "code_of_conduct"?: CodeOfConduct | null;
+    "organization"?: Organization | null;
+    "all_dependencies": Dependency[];
+    "security_and_analysis"?: SecurityAndAnalysis | null;
+    "user"?: User | null;
   }
   export interface SecurityAndAnalysis extends Timestamped {
     "advanced_security_status"?: string | null;
