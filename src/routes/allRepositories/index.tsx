@@ -8,7 +8,7 @@ import { LuRotateCcw } from "@qwikest/icons/lucide";
 import { Routes } from "~/config/routes";
 export { usePutBulkTopics } from "~/db/putTopics";
 import type { GetRepositoryReturns } from "../../../dbschema/queries";
-import { useRefreshRepositories } from "~/actions/repository/repository.server";
+import { useRefreshRepositoriesV2 } from "~/actions/repository/repository.server";
 import {
   useGetRepositories,
   useGetRepositoriesForAllTopics,
@@ -20,8 +20,7 @@ export default component$(() => {
   const selectedRepos = useSignal<string[]>([]);
   const isShow = useSignal(false);
   const navigate = useNavigate();
-
-  const refreshResult = useRefreshRepositories();
+  const refreshResult = useRefreshRepositoriesV2();
   // Handle potential errors from the refresh operation
   useTask$(async () => {
     const result = await refreshResult;
@@ -32,12 +31,11 @@ export default component$(() => {
   const queriedRepositories = useGetRepositories().value;
 
   const allTopics = useGetRepositoriesForAllTopics().value;
-  console.log("allTopics", queriedRepositories);
 
   const repoTopicsMap = queriedRepositories.reduce(
     (acc: Record<string, string[]>, repo) => {
       if (repo.name) {
-        acc[repo.name] = repo.topics || [];
+        acc[repo.name] = repo.topics;
       }
       return acc;
     },
@@ -47,16 +45,17 @@ export default component$(() => {
   const handleSelectAll = $(() => {
     const filteredRepos = queriedRepositories
       .filter((repo): repo is NonNullable<typeof repo> => {
-        if (!repo) return false;
         const matchesSearch =
           !searchQuery.value ||
           repo.name.toLowerCase().includes(searchQuery.value.toLowerCase());
+        repo.name.toLowerCase().includes(searchQuery.value.toLowerCase());
         const matchesTopic =
           !selectedTopic.value || repo.topics.includes(selectedTopic.value);
+        !selectedTopic.value || repo.topics.includes(selectedTopic.value);
         return matchesSearch && matchesTopic;
       })
       .map((repo) => repo.name);
-    selectedRepos.value = filteredRepos ?? [];
+    selectedRepos.value = filteredRepos;
   });
 
   const handleDeselectAll = $(() => {
@@ -115,7 +114,7 @@ export default component$(() => {
                 {selectedRepos.value.length > 0 && (
                   <BulkTopicsModal
                     selectedRepos={selectedRepos}
-                    topicsMap={repoTopicsMap || {}}
+                    topicsMap={repoTopicsMap}
                   />
                 )}
               </>
@@ -167,36 +166,33 @@ export default component$(() => {
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {queriedRepositories &&
-            queriedRepositories
-              .filter((repo) => {
-                const matchesSearch = repo.name
-                  .toLowerCase()
-                  .includes(searchQuery.value.toLowerCase());
-                const matchesTopic =
-                  !selectedTopic.value ||
-                  repo.topics.includes(selectedTopic.value);
-                return matchesSearch && matchesTopic;
-              })
-              .map((repo) => (
-                <div key={repo.id} class="relative">
-                  <div onClick$={() => handleCardClick(repo)}>
-                    <RepositoryCard repo={repo} />
-                  </div>
-                  {isShow.value && (
-                    <input
-                      type="checkbox"
-                      class="absolute top-2 right-2"
-                      checked={selectedRepos.value.includes(repo.name || "")}
-                      onChange$={(e) =>
-                        handleCheckboxChange(e, repo.name || "")
-                      }
-                      id={`repo-checkbox-${repo.id}`}
-                      name={`repo-checkbox-${repo.id}`}
-                    />
-                  )}
+          {queriedRepositories
+            .filter((repo) => {
+              const matchesSearch = repo.name
+                ?.toLowerCase()
+                .includes(searchQuery.value.toLowerCase());
+              const matchesTopic =
+                !selectedTopic.value ||
+                repo.topics.includes(selectedTopic.value);
+              return matchesSearch && matchesTopic;
+            })
+            .map((repo) => (
+              <div key={repo.id} class="relative">
+                <div onClick$={() => handleCardClick(repo)}>
+                  <RepositoryCard repo={repo} />
                 </div>
-              ))}
+                {isShow.value && (
+                  <input
+                    type="checkbox"
+                    class="absolute top-2 right-2"
+                    checked={selectedRepos.value.includes(repo.name || "")}
+                    onChange$={(e) => handleCheckboxChange(e, repo.name || "")}
+                    id={`repo-checkbox-${repo.id}`}
+                    name={`repo-checkbox-${repo.id}`}
+                  />
+                )}
+              </div>
+            ))}
         </div>
       </div>
     </div>

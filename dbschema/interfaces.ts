@@ -219,9 +219,9 @@ export namespace $default {
     "dependency_type"?: DependencyType | null;
   }
   export interface FilePath extends Timestamped {
+    "file_name": string;
     "file_type": FileType;
     "path": string;
-    "file_name": string;
     "repository": Repository;
   }
   export type FileType = "PNG" | "JPG" | "JPEG" | "GIF" | "SVG" | "PSD" | "JSON" | "MD" | "TXT" | "LOG" | "ZIP" | "GEL" | "TOML" | "YML" | "YAML" | "JSONC" | "WOFF2" | "CSS" | "TS" | "TSX" | "JS" | "EDGEQL" | "XML" | "PDF" | "CSV" | "SQL" | "HTML";
@@ -234,12 +234,12 @@ export namespace $default {
     "url"?: string | null;
   }
   export interface Organization extends Timestamped {
+    "login": string;
+    "organization_id"?: number | null;
     "avatar_url": string;
     "email"?: string | null;
     "events_url": string;
     "followers_url": string;
-    "login": string;
-    "organization_id"?: number | null;
     "following_url": string;
     "gists_url": string;
     "gravatar_id": string;
@@ -298,7 +298,6 @@ export namespace $default {
     "forks_url"?: string | null;
     "full_name": string;
     "description"?: string | null;
-    "blobs_url"?: string | null;
     "has_discussions": boolean;
     "has_pages": boolean;
     "hooks_url": string;
@@ -324,16 +323,18 @@ export namespace $default {
     "updated_at": string;
     "url": string;
     "watchers_count": number;
-    "is_template"?: boolean | null;
     "has_downloads"?: boolean | null;
+    "git_url"?: string | null;
     "has_issues"?: boolean | null;
     "has_projects"?: boolean | null;
     "has_wiki"?: boolean | null;
     "homepage"?: string | null;
+    "is_template"?: boolean | null;
     "private"?: boolean | null;
     "visibility"?: Visibility | null;
     "archive_url"?: string | null;
     "assignees_url"?: string | null;
+    "blobs_url"?: string | null;
     "branches_url"?: string | null;
     "clone_url"?: string | null;
     "collaborators_url"?: string | null;
@@ -343,7 +344,6 @@ export namespace $default {
     "git_commits_url"?: string | null;
     "git_refs_url"?: string | null;
     "git_tags_url"?: string | null;
-    "git_url"?: string | null;
     "merges_url"?: string | null;
     "milestones_url"?: string | null;
     "mirror_url"?: string | null;
