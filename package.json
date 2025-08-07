@@ -8,7 +8,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "pnpm generate.types && qwik build",
+    "build": "pnpm gel migrate && pnpm generate.types && qwik build",
     "generate.types": "pnpm generate queries && pnpm generate queries --file && pnpm generate edgeql-js && pnpm generate interfaces",
     "gel.reset": "pnpm gel branch wipe main && pnpm gel migrate",
     "build.client": "vite build",
