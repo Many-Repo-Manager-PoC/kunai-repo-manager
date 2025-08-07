@@ -10,7 +10,9 @@ module default {
   }
 
   type Repository extending Timestamped {
-    required name: str;
+    required name: str {
+      constraint exclusive;
+    };
     description: str;
     user: User;
     organization: Organization;
@@ -39,7 +41,9 @@ module default {
       default := false;
    };
    
-    required repository_id: int64;
+    required repository_id: int64 {
+      constraint exclusive;
+    };
     required archived: bool;
     required contents_url: str;
     required contributors_url: str;
@@ -135,10 +139,6 @@ module default {
     all_dependencies := (.<repository[is Dependency]);
     all_file_paths := (.<repository[is FilePath]);
 
-
-    constraint exclusive on (.name);
-    constraint exclusive on (.repository_id);
-
     index on (.full_name);
     index on (.name);
     index on (.license);
@@ -152,15 +152,17 @@ module default {
      name: str;
      url: str;
      spdx_id: str;
-     node_id: str;
-
-     constraint exclusive on (.node_id);
+     node_id: str {
+      constraint exclusive;
+     };
  }
 
 
 type Organization extending Timestamped {
       organization_id: int64;
-      required login: str;
+      required login: str {
+        constraint exclusive;
+      };
       required avatar_url: str;
       name: str;
       email: str;
@@ -173,7 +175,9 @@ type Organization extending Timestamped {
       required gists_url: str;
       required starred_url: str;
       required subscriptions_url: str;
-      required organizations_url: str;
+      required organizations_url: str {
+        constraint exclusive;
+      };
       required repos_url: str;
       required events_url: str;
       required received_events_url: str;
@@ -181,9 +185,6 @@ type Organization extending Timestamped {
       required site_admin: bool;
       starred_at: str;
       user_view_type: str;
-
-    constraint exclusive on (.organization_id);
-    constraint exclusive on (.login);
 
     index on (.login);
     index on (.organization_id);
@@ -204,13 +205,13 @@ type Organization extending Timestamped {
 
  type License extending Timestamped {
     required key: str;
-    required name: str;
+    required name: str {
+      constraint exclusive;
+    };
     url: str;
     spdx_id: str;
     required node_id: str;
     html_url: str;
-
-    constraint exclusive on (.name);
  }
 
  type Permissions extending Timestamped {
@@ -236,7 +237,9 @@ type Organization extending Timestamped {
     required email: str;
     required login: str;
     # this is id in github schema but want to separate it from built in gel id 
-    required user_id: int64;
+    required user_id: int64 {
+      constraint exclusive;
+    };
     # this is type in github schema but 'type' is a reserved word in gel
     required role_type: str;
     required site_admin: bool;
@@ -258,8 +261,6 @@ type Organization extending Timestamped {
 
     index on (.login);
     index on (.user_id);
-
-    constraint exclusive on (.user_id);
  }
 
 
