@@ -2,6 +2,7 @@ import type { Octokit } from "octokit";
 import metadata from "./metadata.json";
 import { routeAction$, type JSONObject } from "@qwik.dev/router";
 import { OCTOKIT_CLIENT } from "~/routes/plugin@octokit";
+import { getLogger } from "~/utils/getLogger";
 
 /**
  * Creates a new repository in the organization
@@ -37,8 +38,15 @@ import { OCTOKIT_CLIENT } from "~/routes/plugin@octokit";
 // eslint-disable-next-line qwik/loader-location
 export const usePostNewOrgRepository = routeAction$(
   async (form: JSONObject, event) => {
+    const logger = getLogger(event.sharedMap);
+
     try {
       const octokit: Octokit = event.sharedMap.get(OCTOKIT_CLIENT);
+
+      logger.info("Creating new organization repository", {
+        repoName: form.repoName as string,
+        isPrivate: form.isPrivate as boolean,
+      });
 
       await octokit.rest.repos.createInOrg({
         org: metadata.owner,
@@ -87,9 +95,15 @@ export const usePostNewOrgRepository = routeAction$(
           | undefined,
       });
 
+      logger.info("Organization repository created successfully", {
+        repoName: form.repoName as string,
+      });
+
       return { success: true };
     } catch (error) {
-      console.error("Error creating repository:", error);
+      logger.error("Error creating repository", error as Error, {
+        repoName: form.repoName as string,
+      });
       return {
         success: false,
         error:
@@ -132,8 +146,15 @@ export const usePostNewOrgRepository = routeAction$(
 // eslint-disable-next-line qwik/loader-location
 export const usePostNewUserRepository = routeAction$(
   async (form: JSONObject, event) => {
+    const logger = getLogger(event.sharedMap);
+
     try {
       const octokit: Octokit = event.sharedMap.get(OCTOKIT_CLIENT);
+
+      logger.info("Creating new user repository", {
+        repoName: form.repoName as string,
+        isPrivate: form.isPrivate as boolean,
+      });
 
       await octokit.rest.repos.createForAuthenticatedUser({
         name: form.repoName as string,
@@ -178,9 +199,15 @@ export const usePostNewUserRepository = routeAction$(
           | undefined,
       });
 
+      logger.info("User repository created successfully", {
+        repoName: form.repoName as string,
+      });
+
       return { success: true };
     } catch (error) {
-      console.error("Error creating repository:", error);
+      logger.error("Error creating repository", error as Error, {
+        repoName: form.repoName as string,
+      });
       return {
         success: false,
         error:
