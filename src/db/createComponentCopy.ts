@@ -9,6 +9,7 @@ import {
   type GitHubTreeItem,
   type TreeItemInput,
 } from "~/db/types";
+import { getLogger } from "~/util/getLogger";
 
 export const createComponentCopySchema = z.object({
   targetRepo: z.string().min(1, "Target repository is required"),
@@ -26,10 +27,12 @@ export type CreateComponentCopyFormType = z.infer<
 export const useCreateComponentCopy = formAction$<
   CreateComponentCopyFormType,
   { url: string }
->(async (data, { sharedMap, params }) => {
+>(async (data, event) => {
+  const logger = getLogger(event.sharedMap);
+
   try {
-    const octokit: Octokit = sharedMap.get(OCTOKIT_CLIENT);
-    const { repoOwner: sourceRepoOwner, name: sourceRepoName } = params;
+    const octokit: Octokit = event.sharedMap.get(OCTOKIT_CLIENT);
+    const { repoOwner: sourceRepoOwner, name: sourceRepoName } = event.params;
     const {
       targetRepo,
       targetBranch: targetBranchName,
@@ -37,6 +40,13 @@ export const useCreateComponentCopy = formAction$<
       componentPaths,
     } = data;
     const [targetRepoOwner, targetRepoName] = targetRepo.split("/");
+
+    logger.info("Creating component copy", {
+      sourceRepo: `${sourceRepoOwner}/${sourceRepoName}`,
+      targetRepo,
+      targetBranch: targetBranchName,
+      componentCount: componentPaths.length,
+    });
 
     // First get the SHA of the main branch for the target repo
     const mainBranch = await octokit.rest.repos.getBranch({
@@ -72,6 +82,11 @@ export const useCreateComponentCopy = formAction$<
       mainBranch.data.commit.sha,
     );
 
+    logger.info("Component copy created successfully", {
+      targetRepo,
+      prUrl: pr.data.html_url,
+    });
+
     return {
       status: "success",
       message: "Component copy created",
@@ -80,7 +95,9 @@ export const useCreateComponentCopy = formAction$<
       },
     };
   } catch (error) {
-    console.error("Error dispatching workflow:", error);
+    logger.error("Error creating component copy", error as Error, {
+      targetRepo: data.targetRepo,
+    });
     return {
       status: "error",
       error: error instanceof Error ? error.message : "Unknown error occurred",

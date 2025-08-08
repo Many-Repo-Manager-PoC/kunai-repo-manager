@@ -13,6 +13,7 @@ import {
   useGetRepositories,
   useGetRepositoriesForAllTopics,
 } from "~/hooks/repository.hooks";
+import { logger } from "~/util/logger";
 
 export default component$(() => {
   const searchQuery = useSignal("");
@@ -26,13 +27,18 @@ export default component$(() => {
   useTask$(async () => {
     const result = await refreshResult;
     if (!result.success) {
-      console.error("Failed to refresh repositories:", result.message);
+      logger.error("Failed to refresh repositories", null, {
+        message: result.message,
+      });
     }
   });
   const queriedRepositories = useGetRepositories().value;
 
   const allTopics = useGetRepositoriesForAllTopics().value;
-  console.log("allTopics", queriedRepositories);
+  logger.debug("Repositories loaded", {
+    count: queriedRepositories.length,
+    topics: allTopics,
+  });
 
   const repoTopicsMap = queriedRepositories.reduce(
     (acc: Record<string, string[]>, repo) => {

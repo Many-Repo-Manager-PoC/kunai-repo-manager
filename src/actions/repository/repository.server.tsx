@@ -4,6 +4,7 @@ import { OCTOKIT_CLIENT } from "../../routes/plugin@octokit";
 import metadata from "../../db/metadata.json";
 import * as queries from "../../../dbschema/queries";
 import { getClient } from "~/actions/client";
+import { getLogger } from "~/util/getLogger";
 
 /**
  * Helper to ensure topics is a comma-separated string.
@@ -25,8 +26,14 @@ function normalizeTopics(topics: any): string {
 }
 
 export const useRefreshRepositories = server$(async function () {
+  const logger = getLogger(this.sharedMap);
+
   try {
     const octokit: Octokit = this.sharedMap.get(OCTOKIT_CLIENT);
+
+    logger.info("Starting repository refresh", {
+      repositoryCount: metadata.repositories.length,
+    });
 
     // Get all repositories from GitHub
     const repoPromises = await Promise.allSettled(
@@ -47,6 +54,11 @@ export const useRefreshRepositories = server$(async function () {
           promise.status === "fulfilled",
       )
       .map((promise) => promise.value);
+
+    logger.info("Retrieved repositories from GitHub", {
+      total: metadata.repositories.length,
+      successful: datarepositories.length,
+    });
 
     // Loop through each repository and update/insert it in the database
     for (const repository of datarepositories) {
@@ -137,13 +149,22 @@ export const useRefreshRepositories = server$(async function () {
           forks_url: repository.forks_url ?? "",
         };
 
-        console.log(repoArgs);
+        logger.debug("Processing repository", {
+          name: repository.name,
+          id: repository.id,
+        });
 
         await queries.insertOrUpdateRepository(getClient(), repoArgs);
       } catch (error) {
-        console.error(`Error processing repositories:`, error);
+        logger.error("Error processing repository", error as Error, {
+          repositoryName: repository.name,
+        });
       }
     }
+
+    logger.info("Repository refresh completed successfully", {
+      processedCount: datarepositories.length,
+    });
 
     return {
       success: true,
@@ -153,7 +174,7 @@ export const useRefreshRepositories = server$(async function () {
       },
     };
   } catch (error) {
-    console.error("Error getting and processing repositories:", error);
+    logger.error("Error getting and processing repositories", error as Error);
     return {
       success: false,
       message:

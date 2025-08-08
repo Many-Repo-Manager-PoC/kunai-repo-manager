@@ -1,4 +1,5 @@
 import { createClient, type Executor } from "gel";
+import { logger } from "~/util/logger";
 
 // Private state via closure
 let client: Executor | null = null;
@@ -14,14 +15,14 @@ const isConnectionError = (error: unknown): boolean => {
 };
 
 const createNewClient = (): Executor => {
-  console.log("Creating new database client");
+  logger.info("Creating new database client");
   return createClient();
 };
 
 const closeClient = (): void => {
   if (client) {
     client = null;
-    console.log("Database client closed");
+    logger.info("Database client closed");
   }
 };
 
@@ -54,10 +55,10 @@ export const executeQuery = async <T, TArgs = void>(
       );
     }
   } catch (error) {
-    console.error("Database query failed:", error);
+    logger.error("Database query failed", error as Error);
 
     if (isConnectionError(error)) {
-      console.log("Connection error detected, recreating client...");
+      logger.info("Connection error detected, recreating client");
       closeClient();
       const newClient = getClient();
       if (args === undefined) {

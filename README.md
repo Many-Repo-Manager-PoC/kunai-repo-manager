@@ -163,6 +163,16 @@ In the above example, it's saying _all_ pages should be SSR'd. However, the root
 
 In most cases the generated `dist/_routes.json` file is ideal. However, if you need more granular control over each path, you can instead provide you're own `public/_routes.json` file. When the project provides its own `public/_routes.json` file, then the Cloudflare adaptor will not auto-generate the routes config and instead use the committed one within the `public` directory.
 
+## Logging
+
+We use Pino for structured, request-scoped logging. See `LOGGING.md` for full guidance, code examples, best practices, and migration tips from `console.*`.
+
+Quick start:
+
+- Server handlers: `const logger = getLogger(event.sharedMap)`
+- server$ functions: `const logger = getLogger(this.sharedMap)`
+- Client/util code: `import { logger } from "~/utils/logger"`
+
 ## How to build onto this project for your own use
 
 So you have the project running locally,
