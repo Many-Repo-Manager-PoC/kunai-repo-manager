@@ -2,7 +2,7 @@ import { routeLoader$ } from "@qwik.dev/router";
 import metadata from "./metadata.json";
 import type { Octokit } from "octokit";
 import { OCTOKIT_CLIENT } from "../routes/plugin@octokit";
-import { getLogger } from "~/utils/getLogger";
+import { getLogger } from "~/util/getLogger";
 
 /**
  * Gets the package.json content for all repositories specified in metadata.json

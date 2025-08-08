@@ -11,7 +11,7 @@ import { OCTOKIT_CLIENT } from "~/routes/plugin@octokit";
 import { zodForm$ } from "@modular-forms/qwik";
 import { formAction$ } from "@modular-forms/qwik";
 import { z } from "zod";
-import { getLogger } from "~/utils/getLogger";
+import { getLogger } from "~/util/getLogger";
 
 export const createRepositoryFromTemplateSchema = z.object({
   repoType: z.enum(["user", "org"]).default("user"),

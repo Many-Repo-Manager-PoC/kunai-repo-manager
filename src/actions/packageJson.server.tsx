@@ -5,7 +5,7 @@ import metadata from "../db/metadata.json";
 
 import * as queries from "../../dbschema/queries";
 import { getClient } from "~/actions/client";
-import { getLogger } from "~/utils/getLogger";
+import { getLogger } from "~/util/getLogger";
 
 export const useInsertOrUpdatePackageJson = server$(async function (
   repositoryName: string,

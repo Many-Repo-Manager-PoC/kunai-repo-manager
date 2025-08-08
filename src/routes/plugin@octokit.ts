@@ -18,7 +18,7 @@ import { Octokit } from "octokit";
 import type { RequestHandler } from "@qwik.dev/router";
 import type { Session } from "@auth/qwik";
 import { ApplicationError } from "~/util/errors";
-import { getLogger } from "~/utils/getLogger";
+import { getLogger } from "~/util/getLogger";
 
 export const OCTOKIT_CLIENT = "octokit_client";
 

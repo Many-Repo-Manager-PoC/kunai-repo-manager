@@ -4,7 +4,7 @@ import { OCTOKIT_CLIENT } from "../../routes/plugin@octokit";
 import metadata from "../../db/metadata.json";
 import * as queries from "../../../dbschema/queries";
 import { getClient } from "~/actions/client";
-import { getLogger } from "~/utils/getLogger";
+import { getLogger } from "~/util/getLogger";
 
 /**
  * Helper to ensure topics is a comma-separated string.

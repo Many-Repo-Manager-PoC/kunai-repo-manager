@@ -2,7 +2,7 @@ import { type RequestHandler } from "@qwik.dev/router";
 import { ServerError } from "@qwik.dev/router/middleware/request-handler";
 import { isDev } from "@qwik.dev/core/build";
 import { ApplicationError } from "~/util/errors";
-import { getLogger } from "~/utils/getLogger";
+import { getLogger } from "~/util/getLogger";
 
 export const onRequest: RequestHandler = async ({
   next,
