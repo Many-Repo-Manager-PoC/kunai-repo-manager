@@ -11,6 +11,7 @@ import { OCTOKIT_CLIENT } from "~/routes/plugin@octokit";
 import { zodForm$ } from "@modular-forms/qwik";
 import { formAction$ } from "@modular-forms/qwik";
 import { z } from "zod";
+import { getLogger } from "~/utils/getLogger";
 
 export const createRepositoryFromTemplateSchema = z.object({
   repoType: z.enum(["user", "org"]).default("user"),
@@ -61,10 +62,18 @@ export const useCreateRepository = formAction$<
   CreateRepositoryFormType,
   { url: string }
 >(async (formData, event) => {
+  const logger = getLogger(event.sharedMap);
+
   try {
     const octokit: Octokit = event.sharedMap.get(OCTOKIT_CLIENT);
     const isOrg = formData.repoType === "org";
     let url = "";
+
+    logger.info("Creating repository", {
+      name: formData.repoName,
+      type: formData.repoType,
+      visibility: formData.visibility,
+    });
 
     if (isOrg) {
       const repo = await octokit.rest.repos.createInOrg({
@@ -110,13 +119,19 @@ export const useCreateRepository = formAction$<
       });
       url = repo.data.html_url;
     }
+
+    logger.info("Repository created successfully", { url });
+
     return {
       data: { url },
       status: "success",
       message: "Repository created successfully",
     };
   } catch (error) {
-    console.error("Error creating repository:", error);
+    logger.error("Error creating repository", error as Error, {
+      repoName: formData.repoName,
+      repoType: formData.repoType,
+    });
     return {
       status: "error",
       message:

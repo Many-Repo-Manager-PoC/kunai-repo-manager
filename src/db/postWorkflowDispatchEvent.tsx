@@ -2,6 +2,7 @@ import metadata from "./metadata.json";
 import { routeAction$ } from "@qwik.dev/router";
 import type { Octokit } from "octokit";
 import { OCTOKIT_CLIENT } from "~/routes/plugin@octokit";
+import { getLogger } from "~/utils/getLogger";
 
 /**
  * Dispatches a workflow event to update a package to its latest version and create a pull request
@@ -17,10 +18,18 @@ import { OCTOKIT_CLIENT } from "~/routes/plugin@octokit";
  */
 // eslint-disable-next-line qwik/loader-location
 export const postWorkflowDispatchEvent = routeAction$(async (data, event) => {
+  const logger = getLogger(event.sharedMap);
   const session = event.sharedMap.get("session");
   const gh_access_token = session?.accessToken;
+
   try {
     const octokit: Octokit = event.sharedMap.get(OCTOKIT_CLIENT);
+
+    logger.info("Dispatching workflow", {
+      repoName: data.repo_name as string,
+      packageName: data.package_name as string,
+      packageVersion: data.package_version as string,
+    });
 
     await octokit.rest.actions.createWorkflowDispatch({
       owner: metadata.owner,
@@ -38,11 +47,19 @@ export const postWorkflowDispatchEvent = routeAction$(async (data, event) => {
       },
     });
 
+    logger.info("Workflow dispatched successfully", {
+      repoName: data.repo_name as string,
+      packageName: data.package_name as string,
+    });
+
     return {
       success: true,
     };
   } catch (error) {
-    console.error("Error dispatching workflow:", error);
+    logger.error("Error dispatching workflow", error as Error, {
+      repoName: data.repo_name as string,
+      packageName: data.package_name as string,
+    });
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error occurred",
