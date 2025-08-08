@@ -1,14 +1,14 @@
 import type { RequestHandler } from "@qwik.dev/router";
-import { createLogger, LOGGER_KEY } from "~/utils/logger";
-import { randomUUID } from "crypto";
+import { createLogger, LOGGER_KEY } from "~/util/logger";
+import { nanoid } from "nanoid/non-secure";
 
 export const onRequest: RequestHandler = async ({
   sharedMap,
   request,
   next,
 }) => {
-  // Generate a unique request ID
-  const requestId = randomUUID();
+  // Generate a unique request ID (no crypto dependency)
+  const requestId = nanoid();
 
   // Create a request-scoped logger with request metadata
   const logger = createLogger({

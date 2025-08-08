@@ -6,7 +6,7 @@ import {
   upsertRepository,
 } from "~/actions/repository/repository.service";
 import { OCTOKIT_CLIENT } from "~/routes/plugin@octokit";
-import { getLogger } from "~/utils/getLogger";
+import { getLogger } from "~/util/getLogger";
 
 /**
  * Replaces all topics for a single repository

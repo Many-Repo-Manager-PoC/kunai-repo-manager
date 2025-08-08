@@ -1,5 +1,5 @@
 import { createClient, type Executor } from "gel";
-import { logger } from "~/utils/logger";
+import { logger } from "~/util/logger";
 
 // Private state via closure
 let client: Executor | null = null;

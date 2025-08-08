@@ -13,7 +13,7 @@ import {
   useGetRepositories,
   useGetRepositoriesForAllTopics,
 } from "~/hooks/repository.hooks";
-import { logger } from "~/utils/logger";
+import { logger } from "~/util/logger";
 
 export default component$(() => {
   const searchQuery = useSignal("");

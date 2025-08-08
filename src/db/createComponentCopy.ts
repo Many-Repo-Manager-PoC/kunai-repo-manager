@@ -9,7 +9,7 @@ import {
   type GitHubTreeItem,
   type TreeItemInput,
 } from "~/db/types";
-import { getLogger } from "~/utils/getLogger";
+import { getLogger } from "~/util/getLogger";
 
 export const createComponentCopySchema = z.object({
   targetRepo: z.string().min(1, "Target repository is required"),

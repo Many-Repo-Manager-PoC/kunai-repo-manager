@@ -2,7 +2,7 @@ import metadata from "./metadata.json";
 import { routeAction$ } from "@qwik.dev/router";
 import type { Octokit } from "octokit";
 import { OCTOKIT_CLIENT } from "~/routes/plugin@octokit";
-import { getLogger } from "~/utils/getLogger";
+import { getLogger } from "~/util/getLogger";
 
 /**
  * Dispatches a workflow event to update a package to its latest version and create a pull request
