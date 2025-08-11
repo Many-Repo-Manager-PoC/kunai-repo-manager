@@ -26,19 +26,26 @@ export const onRequest: RequestHandler = async ({
   sharedMap.set(LOGGER_KEY, logger);
 
   // Log the incoming request
-  logger.info("Request started", {
-    method: request.method,
-    url: request.url,
-  });
+  logger.info(
+    {
+      method: request.method,
+      url: request.url,
+    },
+    "Request started",
+  );
 
   try {
     return await next();
   } catch (error) {
     // Log any errors that occur during request processing
-    logger.error("Request failed", error as Error, {
-      method: request.method,
-      url: request.url,
-    });
+    logger.error(
+      {
+        error: error as Error,
+        method: request.method,
+        url: request.url,
+      },
+      "Request failed",
+    );
 
     throw error;
   }

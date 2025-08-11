@@ -69,11 +69,14 @@ export const useCreateRepository = formAction$<
     const isOrg = formData.repoType === "org";
     let url = "";
 
-    logger.info("Creating repository", {
-      name: formData.repoName,
-      type: formData.repoType,
-      visibility: formData.visibility,
-    });
+    logger.info(
+      {
+        name: formData.repoName,
+        type: formData.repoType,
+        visibility: formData.visibility,
+      },
+      "Creating repository",
+    );
 
     if (isOrg) {
       const repo = await octokit.rest.repos.createInOrg({
@@ -120,7 +123,7 @@ export const useCreateRepository = formAction$<
       url = repo.data.html_url;
     }
 
-    logger.info("Repository created successfully", { url });
+    logger.info({ url }, "Repository created successfully");
 
     return {
       data: { url },
@@ -128,10 +131,14 @@ export const useCreateRepository = formAction$<
       message: "Repository created successfully",
     };
   } catch (error) {
-    logger.error("Error creating repository", error as Error, {
-      repoName: formData.repoName,
-      repoType: formData.repoType,
-    });
+    logger.error(
+      {
+        error: error as Error,
+        repoName: formData.repoName,
+        repoType: formData.repoType,
+      },
+      "Error creating repository",
+    );
     return {
       status: "error",
       message:

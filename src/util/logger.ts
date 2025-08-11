@@ -19,10 +19,10 @@ const baseLogger = pino({
 
 // Request-scoped logger type
 export interface RequestLogger {
-  info: (msg: string, data?: Record<string, any>) => void;
-  error: (msg: string, error?: Error | any, data?: Record<string, any>) => void;
-  warn: (msg: string, data?: Record<string, any>) => void;
-  debug: (msg: string, data?: Record<string, any>) => void;
+  info: (data?: Record<string, any>, msg?: string) => void;
+  error: (data?: Record<string, any>, msg?: string) => void;
+  warn: (data?: Record<string, any>, msg?: string) => void;
+  debug: (data?: Record<string, any>, msg?: string) => void;
   child: (bindings: Record<string, any>) => RequestLogger;
 }
 
@@ -33,31 +33,29 @@ export const createLogger = (
   const logger = baseLogger.child(bindings);
 
   return {
-    info: (msg: string, data?: Record<string, any>) => {
+    info: (data?: Record<string, any>, msg?: string) => {
       logger.info(data || {}, msg);
     },
-    error: (msg: string, error?: Error | any, data?: Record<string, any>) => {
-      const logData = { ...data };
-      if (error) {
-        logData.error =
-          error instanceof Error
-            ? {
-                message: error.message,
-                stack: error.stack,
-                name: error.name,
-              }
-            : error;
+    error: (data?: Record<string, any>, msg?: string) => {
+      const logData = { ...(data || {}) } as Record<string, any>;
+      if (logData.error && logData.error instanceof Error) {
+        const err = logData.error as Error;
+        logData.error = {
+          message: err.message,
+          stack: err.stack,
+          name: err.name,
+        };
       }
       logger.error(logData, msg);
     },
-    warn: (msg: string, data?: Record<string, any>) => {
+    warn: (data?: Record<string, any>, msg?: string) => {
       logger.warn(data || {}, msg);
     },
-    debug: (msg: string, data?: Record<string, any>) => {
+    debug: (data?: Record<string, any>, msg?: string) => {
       logger.debug(data || {}, msg);
     },
     child: (childBindings: Record<string, any>) => {
-      return createLogger({ ...bindings, ...childBindings });
+      return logger.child({ ...childBindings });
     },
   };
 };

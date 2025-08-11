@@ -41,12 +41,15 @@ export const useCreateComponentCopy = formAction$<
     } = data;
     const [targetRepoOwner, targetRepoName] = targetRepo.split("/");
 
-    logger.info("Creating component copy", {
-      sourceRepo: `${sourceRepoOwner}/${sourceRepoName}`,
-      targetRepo,
-      targetBranch: targetBranchName,
-      componentCount: componentPaths.length,
-    });
+    logger.info(
+      {
+        sourceRepo: `${sourceRepoOwner}/${sourceRepoName}`,
+        targetRepo,
+        targetBranch: targetBranchName,
+        componentCount: componentPaths.length,
+      },
+      "Creating component copy",
+    );
 
     // First get the SHA of the main branch for the target repo
     const mainBranch = await octokit.rest.repos.getBranch({
@@ -82,10 +85,10 @@ export const useCreateComponentCopy = formAction$<
       mainBranch.data.commit.sha,
     );
 
-    logger.info("Component copy created successfully", {
-      targetRepo,
-      prUrl: pr.data.html_url,
-    });
+    logger.info(
+      { targetRepo, prUrl: pr.data.html_url },
+      "Component copy created successfully",
+    );
 
     return {
       status: "success",
@@ -95,9 +98,10 @@ export const useCreateComponentCopy = formAction$<
       },
     };
   } catch (error) {
-    logger.error("Error creating component copy", error as Error, {
-      targetRepo: data.targetRepo,
-    });
+    logger.error(
+      { error: error as Error, targetRepo: data.targetRepo },
+      "Error creating component copy",
+    );
     return {
       status: "error",
       error: error instanceof Error ? error.message : "Unknown error occurred",

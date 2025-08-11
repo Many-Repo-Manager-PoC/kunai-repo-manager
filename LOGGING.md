@@ -17,7 +17,7 @@ This app uses Pino for structured logging with a request-scoped logger bound via
 
   // inside your handler
   const logger = getLogger(event.sharedMap);
-  logger.info("Doing work", { some: "context" });
+  logger.info({ some: "context" }, "Doing work");
   ```
 
 - `server$` functions:
@@ -27,7 +27,7 @@ This app uses Pino for structured logging with a request-scoped logger bound via
 
   export const myAction = server$(async function () {
     const logger = getLogger(this.sharedMap);
-    logger.debug("Handling server$ request");
+    logger.debug({}, "Handling server$ request");
   });
   ```
 
@@ -35,20 +35,20 @@ This app uses Pino for structured logging with a request-scoped logger bound via
 
   ```ts
   import { logger } from "~/utils/logger";
-  logger.debug("Component mounted");
+  logger.debug({}, "Component mounted");
   ```
 
 ### Best practices
 
 - Prefer structured fields over string interpolation:
   ```ts
-  logger.info("Created repository", { name, visibility });
+  logger.info({ name, visibility }, "Created repository");
   ```
 - Include useful identifiers early (e.g., `repositoryName`, `userId`, `jobId`).
 - Use appropriate levels: `debug` (verbose), `info` (normal ops), `warn` (recoverable), `error` (failures).
 - Log errors with the error object to preserve stack traces:
   ```ts
-  logger.error("Failed to update", err, { repositoryName });
+  logger.error({ error: err, repositoryName }, "Failed to update");
   ```
 - Create child loggers for module- or operation-specific context:
   ```ts

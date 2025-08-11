@@ -25,11 +25,14 @@ export const postWorkflowDispatchEvent = routeAction$(async (data, event) => {
   try {
     const octokit: Octokit = event.sharedMap.get(OCTOKIT_CLIENT);
 
-    logger.info("Dispatching workflow", {
-      repoName: data.repo_name as string,
-      packageName: data.package_name as string,
-      packageVersion: data.package_version as string,
-    });
+    logger.info(
+      {
+        repoName: data.repo_name as string,
+        packageName: data.package_name as string,
+        packageVersion: data.package_version as string,
+      },
+      "Dispatching workflow",
+    );
 
     await octokit.rest.actions.createWorkflowDispatch({
       owner: metadata.owner,
@@ -47,19 +50,26 @@ export const postWorkflowDispatchEvent = routeAction$(async (data, event) => {
       },
     });
 
-    logger.info("Workflow dispatched successfully", {
-      repoName: data.repo_name as string,
-      packageName: data.package_name as string,
-    });
+    logger.info(
+      {
+        repoName: data.repo_name as string,
+        packageName: data.package_name as string,
+      },
+      "Workflow dispatched successfully",
+    );
 
     return {
       success: true,
     };
   } catch (error) {
-    logger.error("Error dispatching workflow", error as Error, {
-      repoName: data.repo_name as string,
-      packageName: data.package_name as string,
-    });
+    logger.error(
+      {
+        error: error as Error,
+        repoName: data.repo_name as string,
+        packageName: data.package_name as string,
+      },
+      "Error dispatching workflow",
+    );
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error occurred",

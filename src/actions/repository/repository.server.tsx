@@ -46,9 +46,10 @@ export const useRefreshRepositories = server$(async function () {
   try {
     const octokit: Octokit = this.sharedMap.get(OCTOKIT_CLIENT);
 
-    logger.info("Starting repository refresh", {
-      repositoryCount: metadata.repositories.length,
-    });
+    logger.info(
+      { repositoryCount: metadata.repositories.length },
+      "Starting repository refresh",
+    );
 
     // Get all repositories from GitHub
     const repoPromises = await Promise.allSettled(
@@ -70,10 +71,13 @@ export const useRefreshRepositories = server$(async function () {
       )
       .map((promise) => promise.value);
 
-    logger.info("Retrieved repositories from GitHub", {
-      total: metadata.repositories.length,
-      successful: datarepositories.length,
-    });
+    logger.info(
+      {
+        total: metadata.repositories.length,
+        successful: datarepositories.length,
+      },
+      "Retrieved repositories from GitHub",
+    );
 
     // Loop through each repository and update/insert it in the database
     for (const repository of datarepositories) {
@@ -163,22 +167,24 @@ export const useRefreshRepositories = server$(async function () {
           forks_url: repository.forks_url ?? "",
         };
 
-        logger.debug("Processing repository", {
-          name: repository.name,
-          id: repository.id,
-        });
+        logger.debug(
+          { name: repository.name, id: repository.id },
+          "Processing repository",
+        );
 
         await queries.insertOrUpdateRepository(getClient(), repoArgs);
       } catch (error) {
-        logger.error("Error processing repository", error as Error, {
-          repositoryName: repository.name,
-        });
+        logger.error(
+          { error: error as Error, repositoryName: repository.name },
+          "Error processing repository",
+        );
       }
     }
 
-    logger.info("Repository refresh completed successfully", {
-      processedCount: datarepositories.length,
-    });
+    logger.info(
+      { processedCount: datarepositories.length },
+      "Repository refresh completed successfully",
+    );
 
     return {
       success: true,
@@ -188,7 +194,10 @@ export const useRefreshRepositories = server$(async function () {
       },
     };
   } catch (error) {
-    logger.error("Error getting and processing repositories", error as Error);
+    logger.error(
+      { error: error as Error },
+      "Error getting and processing repositories",
+    );
     return {
       success: false,
       message:

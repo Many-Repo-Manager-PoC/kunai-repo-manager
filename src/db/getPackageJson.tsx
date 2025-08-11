@@ -17,7 +17,7 @@ export const useGetPackageJson = routeLoader$(async (event) => {
     const octokit: Octokit = event.sharedMap.get(OCTOKIT_CLIENT);
     const paths = metadata.dependencyPaths;
 
-    logger.info("Fetching package.json files", { pathCount: paths.length });
+    logger.info({ pathCount: paths.length }, "Fetching package.json files");
 
     const packageJsons: Array<{
       repo: string;
@@ -42,11 +42,14 @@ export const useGetPackageJson = routeLoader$(async (event) => {
             error: null,
           };
         } catch (error) {
-          logger.warn("Failed to fetch package.json for repository", {
-            repo: path[0],
-            path: path[1],
-            error: error instanceof Error ? error.message : "Unknown error",
-          });
+          logger.warn(
+            {
+              repo: path[0],
+              path: path[1],
+              error: error instanceof Error ? error.message : "Unknown error",
+            },
+            "Failed to fetch package.json for repository",
+          );
           return {
             repo: path[0],
             packageJson: null,
@@ -57,14 +60,17 @@ export const useGetPackageJson = routeLoader$(async (event) => {
       }),
     );
 
-    logger.info("Package.json files fetched successfully", {
-      total: paths.length,
-      successful: packageJsons.filter((p) => p.error === null).length,
-    });
+    logger.info(
+      {
+        total: paths.length,
+        successful: packageJsons.filter((p) => p.error === null).length,
+      },
+      "Package.json files fetched successfully",
+    );
 
     return packageJsons;
   } catch (error) {
-    logger.error("Error fetching package.json", error as Error);
+    logger.error({ error: error as Error }, "Error fetching package.json");
     return [];
   }
 });

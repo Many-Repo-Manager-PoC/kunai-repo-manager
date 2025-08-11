@@ -24,7 +24,7 @@ export const usePutTopics = routeAction$(async (data, event) => {
     console.log(`Updating repo ${repo} with topics:`, topics);
     const octokit: Octokit = event.sharedMap.get(OCTOKIT_CLIENT);
 
-    logger.info("Updating repository topics", { repo, topics });
+    logger.info({ repo, topics }, "Updating repository topics");
 
     await octokit.rest.repos.replaceAllTopics({
       owner: metadata.owner,
@@ -33,11 +33,14 @@ export const usePutTopics = routeAction$(async (data, event) => {
     });
     await upsertRepository(repo, metadata.owner);
 
-    logger.info("Repository topics updated successfully", { repo });
+    logger.info({ repo }, "Repository topics updated successfully");
 
     return { success: true };
   } catch (error) {
-    logger.error("Error updating topics", error as Error, { repo, topics });
+    logger.error(
+      { error: error as Error, repo, topics },
+      "Error updating topics",
+    );
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error occurred",
@@ -60,17 +63,17 @@ export const usePutBulkTopics = routeAction$(async (data, event) => {
   try {
     const octokit: Octokit = event.sharedMap.get(OCTOKIT_CLIENT);
 
-    logger.info("Updating bulk repository topics", {
-      repoCount: repos.length,
-      repos,
-    });
+    logger.info(
+      { repoCount: repos.length, repos },
+      "Updating bulk repository topics",
+    );
 
     await Promise.all(
       repos.map(async (repo) => {
-        logger.debug("Updating repository topics", {
-          repo,
-          topics: reposTopics[repo],
-        });
+        logger.debug(
+          { repo, topics: reposTopics[repo] },
+          "Updating repository topics",
+        );
 
         await octokit.rest.repos.replaceAllTopics({
           owner: metadata.owner,
@@ -80,9 +83,10 @@ export const usePutBulkTopics = routeAction$(async (data, event) => {
       }),
     );
 
-    logger.info("Bulk repository topics updated successfully", {
-      repoCount: repos.length,
-    });
+    logger.info(
+      { repoCount: repos.length },
+      "Bulk repository topics updated successfully",
+    );
 
     const reposWithOwner = repos.map((x) => ({
       repo: x,
@@ -92,7 +96,10 @@ export const usePutBulkTopics = routeAction$(async (data, event) => {
 
     return { success: true };
   } catch (error) {
-    logger.error("Error updating repo topics", error as Error, { repos });
+    logger.error(
+      { error: error as Error, repos },
+      "Error updating repo topics",
+    );
 
     // Add more detailed error logging for debugging
     if (error && typeof error === "object" && "status" in error) {

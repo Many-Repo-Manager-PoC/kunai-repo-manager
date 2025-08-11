@@ -43,10 +43,13 @@ export const usePostNewOrgRepository = routeAction$(
     try {
       const octokit: Octokit = event.sharedMap.get(OCTOKIT_CLIENT);
 
-      logger.info("Creating new organization repository", {
-        repoName: form.repoName as string,
-        isPrivate: form.isPrivate as boolean,
-      });
+      logger.info(
+        {
+          repoName: form.repoName as string,
+          isPrivate: form.isPrivate as boolean,
+        },
+        "Creating new organization repository",
+      );
 
       await octokit.rest.repos.createInOrg({
         org: metadata.owner,
@@ -95,15 +98,17 @@ export const usePostNewOrgRepository = routeAction$(
           | undefined,
       });
 
-      logger.info("Organization repository created successfully", {
-        repoName: form.repoName as string,
-      });
+      logger.info(
+        { repoName: form.repoName as string },
+        "Organization repository created successfully",
+      );
 
       return { success: true };
     } catch (error) {
-      logger.error("Error creating repository", error as Error, {
-        repoName: form.repoName as string,
-      });
+      logger.error(
+        { error: error as Error, repoName: form.repoName as string },
+        "Error creating repository",
+      );
       return {
         success: false,
         error:
@@ -151,10 +156,13 @@ export const usePostNewUserRepository = routeAction$(
     try {
       const octokit: Octokit = event.sharedMap.get(OCTOKIT_CLIENT);
 
-      logger.info("Creating new user repository", {
-        repoName: form.repoName as string,
-        isPrivate: form.isPrivate as boolean,
-      });
+      logger.info(
+        {
+          repoName: form.repoName as string,
+          isPrivate: form.isPrivate as boolean,
+        },
+        "Creating new user repository",
+      );
 
       await octokit.rest.repos.createForAuthenticatedUser({
         name: form.repoName as string,
@@ -199,15 +207,17 @@ export const usePostNewUserRepository = routeAction$(
           | undefined,
       });
 
-      logger.info("User repository created successfully", {
-        repoName: form.repoName as string,
-      });
+      logger.info(
+        { repoName: form.repoName as string },
+        "User repository created successfully",
+      );
 
       return { success: true };
     } catch (error) {
-      logger.error("Error creating repository", error as Error, {
-        repoName: form.repoName as string,
-      });
+      logger.error(
+        { error: error as Error, repoName: form.repoName as string },
+        "Error creating repository",
+      );
       return {
         success: false,
         error:

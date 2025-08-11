@@ -26,18 +26,22 @@ export default component$(() => {
   useTask$(async () => {
     const result = await refreshResult;
     if (!result.success) {
-      logger.error("Failed to refresh repositories", null, {
-        message: result.message,
-      });
+      logger.error(
+        { message: result.message },
+        "Failed to refresh repositories",
+      );
     }
   });
   const queriedRepositories = useGetRepositories().value;
 
   const allTopics = useGetRepositoriesForAllTopics().value;
-  logger.debug("Repositories loaded", {
-    count: queriedRepositories.length,
-    topics: allTopics,
-  });
+  logger.debug(
+    {
+      count: queriedRepositories.length,
+      topics: allTopics,
+    },
+    "Repositories loaded",
+  );
 
   const repoTopicsMap = queriedRepositories.reduce(
     (acc: Record<string, string[]>, repo) => {

@@ -15,14 +15,14 @@ const isConnectionError = (error: unknown): boolean => {
 };
 
 const createNewClient = (): Executor => {
-  logger.info("Creating new database client");
+  logger.info({}, "Creating new database client");
   return createClient();
 };
 
 const closeClient = (): void => {
   if (client) {
     client = null;
-    logger.info("Database client closed");
+    logger.info({}, "Database client closed");
   }
 };
 
@@ -55,10 +55,10 @@ export const executeQuery = async <T, TArgs = void>(
       );
     }
   } catch (error) {
-    logger.error("Database query failed", error as Error);
+    logger.error({ error: error as Error }, "Database query failed");
 
     if (isConnectionError(error)) {
-      logger.info("Connection error detected, recreating client");
+      logger.info({}, "Connection error detected, recreating client");
       closeClient();
       const newClient = getClient();
       if (args === undefined) {
