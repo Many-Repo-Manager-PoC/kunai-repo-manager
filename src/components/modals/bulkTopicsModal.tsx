@@ -73,7 +73,7 @@ export const BulkTopicsModal = component$<BulkTopicsModalProps>(
               </div>
               {selectedRepos.value
                 .reduce((allTopics, repoName) => {
-                  const repoTopics = topicsMap?.[repoName] || [];
+                  const repoTopics = topicsMap[repoName] || [];
                   return [...new Set([...allTopics, ...repoTopics])];
                 }, [] as string[])
                 .map((topic) => (

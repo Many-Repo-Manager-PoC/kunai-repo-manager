@@ -2,7 +2,7 @@ import { $, component$ } from "@qwik.dev/core";
 import { BaseCard } from "./baseCard";
 import { Chip } from "@kunai-consulting/kunai-design-system";
 import { useGetDependenciesForRepo } from "~/hooks";
-import { useRefreshPackageJson } from "~/actions/packageJson.server";
+import { useInsertOrUpdatePackageJson } from "~/actions/packageJson.server";
 
 interface RepoDependencyCardProps {
   repository_id: number;
@@ -13,7 +13,7 @@ export const RepoDependencyCard = component$<RepoDependencyCardProps>(
   ({ repository_id, repository_name }) => {
     const allDependencies = useGetDependenciesForRepo(repository_id || 0);
 
-    const refreshPackageJson = useRefreshPackageJson;
+    const refreshPackageJson = useInsertOrUpdatePackageJson;
 
     const handleRefreshDependencies = $(async () => {
       if (repository_name) {
@@ -51,7 +51,7 @@ export const RepoDependencyCard = component$<RepoDependencyCardProps>(
                 Type
               </div>
             </div>
-            {allDependencies.value?.map((dependency) => {
+            {allDependencies.value.map((dependency) => {
               const dependency_type =
                 "dependency_type" in dependency
                   ? dependency.dependency_type

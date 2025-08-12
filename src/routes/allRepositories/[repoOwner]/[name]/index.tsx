@@ -19,7 +19,7 @@ export default component$(() => {
 
   const repo = useGetRepoByName(repoName);
   const packageJson = useGetPackageJson(repoName);
-  const repoTopics = repo.value?.topics?.map((topic: string) => topic.trim());
+  const repoTopics = repo.value?.topics.map((topic: string) => topic.trim());
   const isDesignSystem = repoTopics?.includes("design-system");
   if (!isDesignSystem) {
     tabList.pop();
