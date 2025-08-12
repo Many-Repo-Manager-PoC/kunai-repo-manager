@@ -12,6 +12,7 @@ import {
   DesignSystemSyncFormType,
   designSystemSyncSchema,
   getDesignSystemFiles,
+  useDesignSystemSync,
 } from "~/routes/designSystemSync";
 import { useGetRepositories } from "~/hooks/repository.hooks";
 import { FileTree } from "../tree/fileTree";
@@ -22,6 +23,7 @@ export interface DesignSystemSyncFormProps {}
 
 export const DesignSystemSyncForm = component$<DesignSystemSyncFormProps>(
   () => {
+    const designSystemSync = useDesignSystemSync();
     const repositories = useGetRepositories();
     const designSystemRepositories = useComputed$(() => {
       return repositories.value; // TODO: filter by design system
@@ -57,7 +59,7 @@ export const DesignSystemSyncForm = component$<DesignSystemSyncFormProps>(
         },
       },
       validate: zodForm$(designSystemSyncSchema),
-      //   action: designSystemSync,
+      action: designSystemSync,
     });
 
     const handleReset = $(() => {
@@ -90,61 +92,87 @@ export const DesignSystemSyncForm = component$<DesignSystemSyncFormProps>(
       <div>
         <Form>
           <div class="flex flex-col gap-6">
-            {formStep.value === "2" && (
-              <div>
-                <div class="grid grid-cols-2 gap-8">
-                  <Field name="filePaths" type="string[]">
-                    {(field) => (
-                      <FileTree
-                        error={field.error}
-                        value={field.value ?? []}
-                        defaultOpenKeys={["src", "components"]}
-                        treeData={treeData.value}
-                        onChange$={handleChange}
-                      />
-                    )}
-                  </Field>
-                </div>
-                <div class="flex gap-4 justify-end">
-                  <Button
-                    class="cursor-pointer"
-                    kind="secondary"
-                    onClick$={handleBack}
-                    type="button"
-                    disabled={form.submitting}
-                  >
-                    Back
-                  </Button>
-                  <Button
-                    class="cursor-pointer"
-                    type="submit"
-                    disabled={form.submitting}
-                  >
-                    Submit
-                  </Button>
-                </div>
+            <div class={formStep.value === "1" ? "hidden" : ""}>
+              <div class="grid grid-cols-2 gap-8">
+                <Field name="filePaths" type="string[]">
+                  {(field) => (
+                    <FileTree
+                      error={field.error}
+                      value={field.value ?? []}
+                      defaultOpenKeys={[]}
+                      treeData={treeData.value}
+                      onChange$={handleChange}
+                    />
+                  )}
+                </Field>
               </div>
-            )}
-            {formStep.value === "1" && (
-              <div>
-                <div class="grid grid-cols-2 gap-8">
-                  <Field name="sourceRepoFullName">
+              <div class="flex gap-4 justify-end">
+                <Button
+                  class="cursor-pointer"
+                  kind="secondary"
+                  onClick$={handleBack}
+                  type="button"
+                  disabled={form.submitting}
+                >
+                  Back
+                </Button>
+                <Button
+                  class="cursor-pointer"
+                  type="submit"
+                  disabled={form.submitting}
+                >
+                  Submit
+                </Button>
+              </div>
+            </div>
+
+            <div class={formStep.value === "2" ? "hidden" : ""}>
+              <div class="grid grid-cols-2 gap-8">
+                <Field name="sourceRepoFullName">
+                  {(field, props) => (
+                    <SelectInput
+                      {...props}
+                      label="Source Repository"
+                      value={field.value}
+                      error={field.error}
+                      options={[
+                        {
+                          label: "Select a source repository",
+                          value: "",
+                        },
+                        ...designSystemRepositories.value
+                          .filter(
+                            (repo) =>
+                              repo.full_name !==
+                              getValue(form, "targetRepoFullName"),
+                          )
+                          .map((repo) => ({
+                            label: repo.full_name,
+                            value: repo.full_name,
+                          })),
+                      ]}
+                    />
+                  )}
+                </Field>
+                {/* Left side: Form fields */}
+                <div class="flex flex-col gap-4">
+                  <Field name="targetRepoFullName">
                     {(field, props) => (
                       <SelectInput
                         {...props}
-                        label="Source Repository"
+                        label="Target Repository"
                         value={field.value}
                         error={field.error}
                         options={[
                           {
-                            label: "Select a source repository",
+                            label: "Select a target repository",
                             value: "",
                           },
                           ...designSystemRepositories.value
                             .filter(
                               (repo) =>
                                 repo.full_name !==
-                                getValue(form, "targetRepoFullName"),
+                                getValue(form, "sourceRepoFullName"),
                             )
                             .map((repo) => ({
                               label: repo.full_name,
@@ -154,59 +182,30 @@ export const DesignSystemSyncForm = component$<DesignSystemSyncFormProps>(
                       />
                     )}
                   </Field>
-                  {/* Left side: Form fields */}
-                  <div class="flex flex-col gap-4">
-                    <Field name="targetRepoFullName">
-                      {(field, props) => (
-                        <SelectInput
-                          {...props}
-                          label="Target Repository"
-                          value={field.value}
-                          error={field.error}
-                          options={[
-                            {
-                              label: "Select a target repository",
-                              value: "",
-                            },
-                            ...designSystemRepositories.value
-                              .filter(
-                                (repo) =>
-                                  repo.full_name !==
-                                  getValue(form, "sourceRepoFullName"),
-                              )
-                              .map((repo) => ({
-                                label: repo.full_name,
-                                value: repo.full_name,
-                              })),
-                          ]}
-                        />
-                      )}
-                    </Field>
-                  </div>
-                </div>
-
-                {/* Action buttons */}
-                <div class="flex gap-4 justify-end">
-                  <Button
-                    class="cursor-pointer"
-                    kind="secondary"
-                    onClick$={handleReset}
-                    type="button"
-                    disabled={form.submitting}
-                  >
-                    Clear
-                  </Button>
-                  <Button
-                    class="cursor-pointer"
-                    type="button"
-                    onClick$={handleNext}
-                    disabled={form.submitting}
-                  >
-                    Next
-                  </Button>
                 </div>
               </div>
-            )}
+
+              {/* Action buttons */}
+              <div class="flex gap-4 justify-end">
+                <Button
+                  class="cursor-pointer"
+                  kind="secondary"
+                  onClick$={handleReset}
+                  type="button"
+                  disabled={form.submitting}
+                >
+                  Clear
+                </Button>
+                <Button
+                  class="cursor-pointer"
+                  type="button"
+                  onClick$={handleNext}
+                  disabled={form.submitting}
+                >
+                  Next
+                </Button>
+              </div>
+            </div>
 
             {/* Status Messages */}
             <div class="flex gap-4 justify-end">

@@ -6,7 +6,7 @@ import { z } from "zod";
 import { BaseCard } from "~/components/cards/baseCard";
 import { DesignSystemSyncForm } from "~/components/forms/designSystemSyncForm";
 import { PageTitle } from "~/components/page/pageTitle";
-import { FileMode, FileType, GitHubTreeItem } from "~/db/types";
+import { FileMode, FileType, GitHubTreeItem, TreeItemInput } from "~/db/types";
 import { OCTOKIT_CLIENT } from "~/routes/plugin@octokit";
 export const designSystemSyncSchema = z.object({
   sourceRepoFullName: z.string().min(1, "Source repository is required"),
@@ -16,11 +16,12 @@ export const designSystemSyncSchema = z.object({
 
 export type DesignSystemSyncFormType = z.infer<typeof designSystemSyncSchema>;
 
-export const useCreateComponentCopy = formAction$<
+export const useDesignSystemSync = formAction$<
   DesignSystemSyncFormType,
   { url: string }
 >(async (data, { sharedMap, params }) => {
   try {
+    console.log("designSystemSync", data);
     const octokit: Octokit = sharedMap.get(OCTOKIT_CLIENT);
     const { sourceRepoFullName, targetRepoFullName } = data;
     const [targetRepoOwner, targetRepoName] = targetRepoFullName.split("/");
@@ -33,37 +34,35 @@ export const useCreateComponentCopy = formAction$<
       branch: "main",
     });
 
-    // get the config files from the source repo
-    const sourceTree = await octokit.rest.git.getTree({
-      owner: sourceRepoOwner,
-      repo: sourceRepoName,
-      tree_sha: "main",
-      recursive: "true",
+    const sourceConfigFiles = await getRepoConfigFiles(
+      octokit,
+      sourceRepoOwner,
+      sourceRepoName,
+      data.filePaths,
+    );
+    const newTree = await octokit.rest.git.createTree({
+      owner: targetRepoOwner,
+      repo: targetRepoName,
+      tree: sourceConfigFiles,
+      base_tree: mainBranch.data.commit.sha,
     });
 
-    // const newTree = await octokit.rest.git.createTree({
-    //   owner: targetRepoOwner,
-    //   repo: targetRepoName,
-    //   tree: componentTreeList,
-    //   base_tree: mainBranch.data.commit.sha,
-    // });
-
     // // create the new PR for the target repo with the new tree and the main branch as the base
-    // const pr = await createPullRequest(
-    //   octokit,
-    //   sourceRepoOwner,
-    //   sourceRepoName,
-    //   targetRepo,
-    //   targetBranchName,
-    //   newTree.data.sha,
-    //   mainBranch.data.commit.sha,
-    // );
+    const pr = await createPullRequest(
+      octokit,
+      sourceRepoOwner,
+      sourceRepoName,
+      targetRepoFullName,
+      "feature/sync-files",
+      newTree.data.sha,
+      mainBranch.data.commit.sha,
+    );
 
     return {
       status: "success",
-      message: "Component copy created",
+      message: "Files synced successfully",
       data: {
-        url: "",
+        url: pr.data.html_url,
       },
     };
   } catch (error) {
@@ -90,13 +89,16 @@ export const getDesignSystemFiles = server$(async function (
     recursive: "true",
   });
 
-  console.log(tree);
+  // console.log(tree);
 
   const files: GitHubTreeItem[] = tree.data.tree.filter(
-    (item) => item.type === FileType.blob && item.mode === FileMode.blob,
+    (item) =>
+      item.type === FileType.blob &&
+      item.mode === FileMode.blob &&
+      !item.path.includes("src"),
   );
 
-  console.log(files);
+  // console.log(files);
 
   return files;
 });
@@ -128,6 +130,7 @@ const getRepoConfigFiles = async (
   octokit: Octokit,
   repoOwner: string,
   repoName: string,
+  filePaths: string[],
 ) => {
   const tree = await octokit.rest.git.getTree({
     owner: repoOwner,
@@ -140,8 +143,77 @@ const getRepoConfigFiles = async (
     (item) =>
       item.type === FileType.blob &&
       item.mode === FileMode.blob &&
-      !item.path.endsWith(".tsx"),
+      filePaths.some((path) => item.path.startsWith(path)),
   );
 
-  return configFiles;
+  // create the tree items for the new tree by copying the tsx files from the source repo
+  const treeItems = await Promise.all(
+    configFiles.map(async (item) => {
+      // get the file content from the source repo
+      const fileContent = await octokit.rest.repos.getContent({
+        owner: repoOwner,
+        repo: repoName,
+        path: item.path,
+      });
+
+      if (
+        !Array.isArray(fileContent.data) &&
+        fileContent.data.type === "file" &&
+        "content" in fileContent.data
+      ) {
+        return {
+          path: item.path,
+          type: item.type as FileType,
+          content: Buffer.from(fileContent.data.content, "base64").toString(), // Decode the base64 content
+          mode: item.mode as FileMode,
+        } satisfies TreeItemInput;
+      }
+    }),
+  );
+
+  const filteredTreeItems = treeItems.filter(
+    (item): item is TreeItemInput => item !== undefined,
+  );
+  return filteredTreeItems;
+};
+
+const createPullRequest = async (
+  octokit: Octokit,
+  sourceRepoOwner: string,
+  sourceRepoName: string,
+  targetRepo: string,
+  targetBranchName: string,
+  treeSha: string,
+  mainTargetBranchSha: string,
+) => {
+  const [targetRepoOwner, targetRepoName] = targetRepo.split("/");
+
+  // Create a commit with the new tree
+  const commit = await octokit.rest.git.createCommit({
+    owner: targetRepoOwner,
+    repo: targetRepoName,
+    message: `Sync files from ${sourceRepoOwner}/${sourceRepoName}`,
+    tree: treeSha,
+    parents: [mainTargetBranchSha],
+  });
+
+  // Then create a new branch using that SHA for the target repo
+  const targetBranch = await octokit.rest.git.createRef({
+    owner: targetRepoOwner,
+    repo: targetRepoName,
+    ref: `refs/heads/${targetBranchName}`,
+    sha: commit.data.sha,
+  });
+
+  // create a new PR for the target repo
+  const pr = await octokit.rest.pulls.create({
+    owner: targetRepoOwner,
+    repo: targetRepoName,
+    head: targetBranch.data.ref,
+    base: "main",
+    title: `Sync files: ${sourceRepoOwner}/${sourceRepoName} -> ${targetRepoOwner}/${targetRepoName}`,
+    body: "",
+  });
+
+  return pr;
 };
