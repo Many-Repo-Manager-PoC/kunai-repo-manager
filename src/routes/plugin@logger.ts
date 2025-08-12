@@ -1,5 +1,5 @@
 import type { RequestHandler } from "@qwik.dev/router";
-import { createLogger, LOGGER_KEY } from "~/util/logger";
+import { logger, LOGGER_KEY } from "~/util/logger";
 import { nanoid } from "nanoid/non-secure";
 
 export const onRequest: RequestHandler = async ({
@@ -11,7 +11,7 @@ export const onRequest: RequestHandler = async ({
   const requestId = nanoid();
 
   // Create a request-scoped logger with request metadata
-  const logger = createLogger({
+  const requestLogger = logger.child({
     requestId,
     method: request.method,
     url: request.url,
@@ -23,7 +23,7 @@ export const onRequest: RequestHandler = async ({
   });
 
   // Store the logger in the shared map for the duration of the request
-  sharedMap.set(LOGGER_KEY, logger);
+  sharedMap.set(LOGGER_KEY, requestLogger);
 
   // Log the incoming request
   logger.info(
