@@ -4,6 +4,7 @@ import { OCTOKIT_CLIENT } from "../../routes/plugin@octokit";
 import metadata from "../../db/metadata.json";
 import * as queries from "../../../dbschema/queries";
 import { getClient } from "~/actions/client";
+import { upsertRepositories } from "./repository.service";
 
 /**
  * Helper to ensure topics is a comma-separated string.
@@ -23,6 +24,20 @@ function normalizeTopics(topics: any): string {
   }
   return "";
 }
+
+export const useRefreshRepositoriesV2 = server$(async function () {
+  const octokit: Octokit = this.sharedMap.get(OCTOKIT_CLIENT);
+  const res = await octokit.rest.repos.listForOrg({
+    org: metadata.owner,
+  });
+  await upsertRepositories(
+    res.data.map((repo) => ({ repo: repo.name, owner: repo.owner.login })),
+  );
+  return {
+    success: true,
+    message: "Repositories refreshed",
+  };
+});
 
 export const useRefreshRepositories = server$(async function () {
   try {
@@ -119,7 +134,6 @@ export const useRefreshRepositories = server$(async function () {
           pulls_url: repository.pulls_url ?? "",
           pushed_at: repository.pushed_at ?? "",
           releases_url: repository.releases_url ?? "",
-          // role_type: repository.owner?.role_type ?? "", // Remove, not in InsertOrUpdateRepositoryArgs
           size: repository.size ?? 0,
           ssh_url: repository.ssh_url ?? "",
           stargazers_count: repository.stargazers_count ?? 0,
@@ -136,8 +150,6 @@ export const useRefreshRepositories = server$(async function () {
           watchers_count: repository.watchers_count ?? 0,
           forks_url: repository.forks_url ?? "",
         };
-
-        console.log(repoArgs);
 
         await queries.insertOrUpdateRepository(getClient(), repoArgs);
       } catch (error) {
