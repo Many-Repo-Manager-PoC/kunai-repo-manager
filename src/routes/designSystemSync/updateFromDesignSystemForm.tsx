@@ -15,7 +15,7 @@ import {
   useDesignSystemSync,
 } from "~/routes/designSystemSync";
 import { useGetRepositories } from "~/hooks/repository.hooks";
-import { FileTree } from "../tree/fileTree";
+import { FileTree } from "../../components/tree/fileTree";
 import { buildTree } from "~/util/tree";
 import { GitHubTreeItem } from "~/db/types";
 
@@ -35,6 +35,7 @@ export const DesignSystemSyncForm = component$<DesignSystemSyncFormProps>(
     const sourceFiles = useSignal<GitHubTreeItem[]>([]);
 
     const treeData = useComputed$(() => {
+      console.log(sourceFiles.value);
       return buildTree(
         sourceFiles.value.map((item) => {
           if (item.path) {
@@ -80,6 +81,7 @@ export const DesignSystemSyncForm = component$<DesignSystemSyncFormProps>(
       const files = await getDesignSystemFiles(
         getValue(form, "sourceRepoFullName") as string,
       );
+      console.log(files);
       sourceFiles.value = files;
       formStep.value = "2";
     });
@@ -89,11 +91,12 @@ export const DesignSystemSyncForm = component$<DesignSystemSyncFormProps>(
     });
 
     return (
-      <div>
+      <div class="w-full">
         <Form>
-          <div class="flex flex-col gap-6">
-            <div class={formStep.value === "1" ? "hidden" : ""}>
-              <div class="grid grid-cols-2 gap-8">
+          <div class="flex flex-col gap-8">
+            {/* Step 2: File Selection */}
+            <div class={formStep.value === "1" ? "hidden" : "space-y-6"}>
+              <div class="space-y-4">
                 <Field name="filePaths" type="string[]">
                   {(field) => (
                     <FileTree
@@ -106,7 +109,8 @@ export const DesignSystemSyncForm = component$<DesignSystemSyncFormProps>(
                   )}
                 </Field>
               </div>
-              <div class="flex gap-4 justify-end">
+
+              <div class="flex gap-4 justify-end pt-4">
                 <Button
                   class="cursor-pointer"
                   kind="secondary"
@@ -126,7 +130,8 @@ export const DesignSystemSyncForm = component$<DesignSystemSyncFormProps>(
               </div>
             </div>
 
-            <div class={formStep.value === "2" ? "hidden" : ""}>
+            {/* Step 1: Repository Selection */}
+            <div class={formStep.value === "2" ? "hidden" : "space-y-6"}>
               <div class="grid grid-cols-2 gap-8">
                 <Field name="sourceRepoFullName">
                   {(field, props) => (
@@ -140,53 +145,39 @@ export const DesignSystemSyncForm = component$<DesignSystemSyncFormProps>(
                           label: "Select a source repository",
                           value: "",
                         },
-                        ...designSystemRepositories.value
-                          .filter(
-                            (repo) =>
-                              repo.full_name !==
-                              getValue(form, "targetRepoFullName"),
-                          )
-                          .map((repo) => ({
-                            label: repo.full_name,
-                            value: repo.full_name,
-                          })),
+                        ...designSystemRepositories.value.map((repo) => ({
+                          label: repo.full_name,
+                          value: repo.full_name,
+                        })),
                       ]}
                     />
                   )}
                 </Field>
-                {/* Left side: Form fields */}
-                <div class="flex flex-col gap-4">
-                  <Field name="targetRepoFullName">
-                    {(field, props) => (
-                      <SelectInput
-                        {...props}
-                        label="Target Repository"
-                        value={field.value}
-                        error={field.error}
-                        options={[
-                          {
-                            label: "Select a target repository",
-                            value: "",
-                          },
-                          ...designSystemRepositories.value
-                            .filter(
-                              (repo) =>
-                                repo.full_name !==
-                                getValue(form, "sourceRepoFullName"),
-                            )
-                            .map((repo) => ({
-                              label: repo.full_name,
-                              value: repo.full_name,
-                            })),
-                        ]}
-                      />
-                    )}
-                  </Field>
-                </div>
+
+                <Field name="targetRepoFullName">
+                  {(field, props) => (
+                    <SelectInput
+                      {...props}
+                      label="Target Repository"
+                      value={field.value}
+                      error={field.error}
+                      options={[
+                        {
+                          label: "Select a target repository",
+                          value: "",
+                        },
+                        ...designSystemRepositories.value.map((repo) => ({
+                          label: repo.full_name,
+                          value: repo.full_name,
+                        })),
+                      ]}
+                    />
+                  )}
+                </Field>
               </div>
 
               {/* Action buttons */}
-              <div class="flex gap-4 justify-end">
+              <div class="flex gap-4 justify-end pt-4">
                 <Button
                   class="cursor-pointer"
                   kind="secondary"
@@ -200,7 +191,11 @@ export const DesignSystemSyncForm = component$<DesignSystemSyncFormProps>(
                   class="cursor-pointer"
                   type="button"
                   onClick$={handleNext}
-                  disabled={form.submitting}
+                  disabled={
+                    form.submitting ||
+                    !getValue(form, "sourceRepoFullName") ||
+                    !getValue(form, "targetRepoFullName")
+                  }
                 >
                   Next
                 </Button>
@@ -208,30 +203,35 @@ export const DesignSystemSyncForm = component$<DesignSystemSyncFormProps>(
             </div>
 
             {/* Status Messages */}
-            <div class="flex gap-4 justify-end">
-              {form.submitting && (
-                <span class="text-sm text-gray-500">Submitting...</span>
-              )}
-              {form.response.status === "success" && (
-                <>
-                  <div class="text-sm text-green-500">
-                    {form.response.message}
+            {(form.submitting || form.response.status) && (
+              <div class="flex flex-col gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+                {form.submitting && (
+                  <span class="text-sm text-gray-500">Submitting...</span>
+                )}
+                {form.response.status === "success" && (
+                  <div class="flex flex-col gap-2">
+                    <div class="text-sm text-green-600 dark:text-green-400">
+                      {form.response.message}
+                    </div>
+                    {form.response.data?.url && (
+                      <a
+                        href={form.response.data.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                      >
+                        View on GitHub
+                      </a>
+                    )}
                   </div>
-                  <a
-                    href={form.response.data?.url}
-                    target="_blank"
-                    class="dark:text-white"
-                  >
-                    View on GitHub
-                  </a>
-                </>
-              )}
-              {form.response.status === "error" && (
-                <span class="text-sm text-red-500">
-                  {form.response.message}
-                </span>
-              )}
-            </div>
+                )}
+                {form.response.status === "error" && (
+                  <span class="text-sm text-red-600 dark:text-red-400">
+                    {form.response.message}
+                  </span>
+                )}
+              </div>
+            )}
           </div>
         </Form>
       </div>

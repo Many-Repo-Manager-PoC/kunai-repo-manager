@@ -1,13 +1,159 @@
 import { formAction$, zodForm$ } from "@modular-forms/qwik";
-import { component$ } from "@qwik.dev/core";
+import { component$, useSignal } from "@qwik.dev/core";
 import { server$, type DocumentHead } from "@qwik.dev/router";
 import { Octokit } from "octokit";
 import { z } from "zod";
 import { BaseCard } from "~/components/cards/baseCard";
-import { DesignSystemSyncForm } from "~/components/forms/designSystemSyncForm";
+import { DesignSystemSyncForm } from "~/routes/designSystemSync/updateFromDesignSystemForm";
+import { CreateRepositoryForm } from "~/routes/designSystemSync/createFromDesignSystemForm";
 import { PageTitle } from "~/components/page/pageTitle";
 import { FileMode, FileType, GitHubTreeItem, TreeItemInput } from "~/db/types";
 import { OCTOKIT_CLIENT } from "~/routes/plugin@octokit";
+import metadata from "~/db/metadata.json";
+import { Button } from "@kunai-consulting/kunai-design-system";
+
+export const createRepositorySchema = z
+  .object({
+    repoType: z.enum(["user", "org"]).default("user"),
+    repoName: z.string().min(1, "Repository name is required"),
+    repoDescription: z.string().optional(),
+    homepage: z.string().url().optional(),
+    visibility: z.enum(["public", "private"]).default("public").optional(),
+    hasIssues: z.boolean().default(true).optional(),
+    hasProjects: z.boolean().default(true).optional(),
+    hasWiki: z.boolean().default(true).optional(),
+    hasDownloads: z.boolean().default(true).optional(),
+    isTemplate: z.boolean().default(false).optional(),
+    autoInit: z.boolean().default(false).optional(),
+    gitignoreTemplate: z.string().optional(),
+    licenseTemplate: z.string().optional(),
+    allowSquashMerge: z.boolean().default(true).optional(),
+    allowMergeCommit: z.boolean().default(true).optional(),
+    allowRebaseMerge: z.boolean().default(true).optional(),
+    allowAutoMerge: z.boolean().default(false).optional(),
+    deleteBranchOnMerge: z.boolean().default(false).optional(),
+    sourceRepoFullName: z.string().min(1, "Source repository is required"),
+    filePaths: z.array(z.string()).min(1, "At least one file path is required"),
+  })
+  .refine(
+    ({ allowMergeCommit, allowSquashMerge, allowRebaseMerge }) => {
+      if (!allowMergeCommit && !allowSquashMerge && !allowRebaseMerge) {
+        return false;
+      }
+      return true;
+    },
+    { message: "At least one merge method must be enabled" },
+  );
+
+export type CreateRepositoryFormType = z.infer<typeof createRepositorySchema>;
+
+export const useCreateRepository = formAction$<
+  CreateRepositoryFormType,
+  { url: string }
+>(async (formData, event) => {
+  try {
+    console.log("createRepository", formData);
+    const octokit: Octokit = event.sharedMap.get(OCTOKIT_CLIENT);
+    const isOrg = formData.repoType === "org";
+    let url = "";
+    let targetRepoName = "";
+    let targetRepoOwner = "";
+    const [sourceRepoOwner, sourceRepoName] =
+      formData.sourceRepoFullName.split("/");
+
+    if (isOrg) {
+      const repo = await octokit.rest.repos.createInOrg({
+        org: metadata.owner,
+        name: formData.repoName,
+        description: formData.repoDescription,
+        homepage: formData.homepage,
+        private: formData.visibility === "private",
+        visibility: formData.visibility,
+        has_issues: formData.hasIssues,
+        has_projects: formData.hasProjects,
+        has_wiki: formData.hasWiki,
+        has_downloads: formData.hasDownloads,
+        is_template: formData.isTemplate,
+        auto_init: formData.autoInit,
+        gitignore_template: formData.gitignoreTemplate,
+        license_template: formData.licenseTemplate,
+        allow_squash_merge: formData.allowSquashMerge,
+        allow_merge_commit: formData.allowMergeCommit,
+        allow_rebase_merge: formData.allowRebaseMerge,
+      });
+      targetRepoName = repo.data.name;
+      targetRepoOwner = repo.data.owner.login;
+    } else {
+      const repo = await octokit.rest.repos.createForAuthenticatedUser({
+        name: formData.repoName,
+        description: formData.repoDescription,
+        homepage: formData.homepage,
+        private: formData.visibility === "private",
+        visibility: formData.visibility,
+        has_issues: formData.hasIssues,
+        has_projects: formData.hasProjects,
+        has_wiki: formData.hasWiki,
+        has_downloads: formData.hasDownloads,
+        is_template: formData.isTemplate,
+        auto_init: formData.autoInit,
+        gitignore_template: formData.gitignoreTemplate,
+        license_template: formData.licenseTemplate,
+        allow_squash_merge: formData.allowSquashMerge,
+        allow_merge_commit: formData.allowMergeCommit,
+        allow_rebase_merge: formData.allowRebaseMerge,
+        allow_auto_merge: formData.allowAutoMerge,
+        delete_branch_on_merge: formData.deleteBranchOnMerge,
+      });
+      targetRepoName = repo.data.name;
+      targetRepoOwner = repo.data.owner.login;
+    }
+
+    // First get the SHA of the main branch for the target repo
+    const mainBranch = await octokit.rest.repos.getBranch({
+      owner: targetRepoOwner,
+      repo: targetRepoName,
+      branch: "main",
+    });
+
+    const sourceConfigFiles = await getRepoConfigFiles(
+      octokit,
+      sourceRepoOwner,
+      sourceRepoName,
+      formData.filePaths,
+    );
+    const newTree = await octokit.rest.git.createTree({
+      owner: targetRepoOwner,
+      repo: targetRepoName,
+      tree: sourceConfigFiles,
+      base_tree: mainBranch.data.commit.sha,
+    });
+
+    // // create the new PR for the target repo with the new tree and the main branch as the base
+    const pr = await createPullRequest(
+      octokit,
+      sourceRepoOwner,
+      sourceRepoName,
+      `${targetRepoOwner}/${targetRepoName}`,
+      "feature/sync-files",
+      newTree.data.sha,
+      mainBranch.data.commit.sha,
+    );
+
+    return {
+      data: { url: pr.data.html_url },
+      status: "success",
+      message: "Repository successfully created and files synced",
+    };
+  } catch (error) {
+    console.error("Error creating repository:", error);
+    return {
+      status: "error",
+      message:
+        error instanceof Error ? error.message : "An unknown error occurred",
+    };
+  }
+}, zodForm$(createRepositorySchema));
+
 export const designSystemSyncSchema = z.object({
   sourceRepoFullName: z.string().min(1, "Source repository is required"),
   targetRepoFullName: z.string().min(1, "Target repository is required"),
@@ -92,10 +238,7 @@ export const getDesignSystemFiles = server$(async function (
   // console.log(tree);
 
   const files: GitHubTreeItem[] = tree.data.tree.filter(
-    (item) =>
-      item.type === FileType.blob &&
-      item.mode === FileMode.blob &&
-      !item.path.includes("src"),
+    (item) => item.type === FileType.blob && item.mode === FileMode.blob,
   );
 
   // console.log(files);
@@ -104,6 +247,8 @@ export const getDesignSystemFiles = server$(async function (
 });
 
 export default component$(() => {
+  const selectedForm = useSignal<"update" | "create">("update");
+
   return (
     <div class="container container-center">
       <PageTitle />
@@ -112,10 +257,42 @@ export default component$(() => {
         rootClassNames="bg-white/50 dark:bg-kunai-blue-600/50"
       >
         <div q:slot="header">
-          <h4>Design System Sync</h4>
+          <div class="flex items-center justify-between py-2">
+            <h4 class="text-lg font-semibold text-gray-900 dark:text-white">
+              {selectedForm.value === "update"
+                ? "Update Design System Files"
+                : "Create Repository from Design System"}
+            </h4>
+            <div class="flex gap-3 ml-8">
+              {selectedForm.value === "update" ? (
+                <Button
+                  class="cursor-pointer bg-gray-200 text-gray-700 hover:bg-gray-300"
+                  kind="secondary"
+                  onClick$={() => (selectedForm.value = "create")}
+                  type="button"
+                >
+                  Create New
+                </Button>
+              ) : (
+                <Button
+                  class="cursor-pointer bg-gray-200 text-gray-700 hover:bg-gray-300"
+                  kind="secondary"
+                  onClick$={() => (selectedForm.value = "update")}
+                  type="button"
+                >
+                  Update Existing
+                </Button>
+              )}
+            </div>
+          </div>
         </div>
         <div q:slot="body">
-          <DesignSystemSyncForm />
+          <div class={selectedForm.value === "update" ? "" : "hidden"}>
+            <DesignSystemSyncForm />
+          </div>
+          <div class={selectedForm.value === "create" ? "" : "hidden"}>
+            <CreateRepositoryForm />
+          </div>
         </div>
       </BaseCard>
     </div>
