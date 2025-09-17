@@ -1,143 +1,198 @@
 import { formAction$, zodForm$ } from "@modular-forms/qwik";
 import { component$, useSignal } from "@qwik.dev/core";
 import { server$, type DocumentHead } from "@qwik.dev/router";
-import { Octokit } from "octokit";
 import { z } from "zod";
 import { BaseCard } from "~/components/cards/baseCard";
 import { DesignSystemSyncForm } from "~/routes/designSystemSync/updateFromDesignSystemForm";
 import { CreateRepositoryForm } from "~/routes/designSystemSync/createFromDesignSystemForm";
 import { PageTitle } from "~/components/page/pageTitle";
-import { FileMode, FileType, GitHubTreeItem, TreeItemInput } from "~/db/types";
-import { OCTOKIT_CLIENT } from "~/routes/plugin@octokit";
-import metadata from "~/db/metadata.json";
 import { Button } from "@kunai-consulting/kunai-design-system";
+import {
+  getBranch,
+  getRepositoryTreeItems,
+  createTree,
+  getRepositoryFileTree,
+  FileFilterOptions,
+  CreateRepositoryRequest,
+  createRepository,
+} from "~/actions/services/github";
+import { createPullRequestWorkflow } from "~/actions/services/github/pull-requests";
+import { parseRepositoryFullName } from "~/actions/services/github/utils";
+import { getRepoByName } from "~/actions/repository/queries";
 
-export const createRepositorySchema = z
-  .object({
-    repoType: z.enum(["user", "org"]).default("user"),
-    repoName: z.string().min(1, "Repository name is required"),
-    repoDescription: z.string().optional(),
-    homepage: z.string().url().optional(),
-    visibility: z.enum(["public", "private"]).default("public").optional(),
-    hasIssues: z.boolean().default(true).optional(),
-    hasProjects: z.boolean().default(true).optional(),
-    hasWiki: z.boolean().default(true).optional(),
-    hasDownloads: z.boolean().default(true).optional(),
-    isTemplate: z.boolean().default(false).optional(),
-    autoInit: z.boolean().default(false).optional(),
-    gitignoreTemplate: z.string().optional(),
-    licenseTemplate: z.string().optional(),
-    allowSquashMerge: z.boolean().default(true).optional(),
-    allowMergeCommit: z.boolean().default(true).optional(),
-    allowRebaseMerge: z.boolean().default(true).optional(),
-    allowAutoMerge: z.boolean().default(false).optional(),
-    deleteBranchOnMerge: z.boolean().default(false).optional(),
-    sourceRepoFullName: z.string().min(1, "Source repository is required"),
-    filePaths: z.array(z.string()).min(1, "At least one file path is required"),
-  })
-  .refine(
-    ({ allowMergeCommit, allowSquashMerge, allowRebaseMerge }) => {
-      if (!allowMergeCommit && !allowSquashMerge && !allowRebaseMerge) {
-        return false;
-      }
-      return true;
+// Helper function to sync files between repositories
+const syncRepoFiles = async ({
+  sourceRepoOwner,
+  sourceRepoName,
+  targetRepoOwner,
+  targetRepoName,
+  filePaths,
+  excludeDirectories = "",
+  excludeFileTypes = "",
+  treeSha = "main",
+}: {
+  sourceRepoOwner: string;
+  sourceRepoName: string;
+  targetRepoOwner: string;
+  targetRepoName: string;
+  filePaths: string[];
+  excludeDirectories?: string;
+  excludeFileTypes?: string;
+  treeSha?: string;
+}) => {
+  // Parse comma-separated exclusion values
+  const excludeDirs = excludeDirectories
+    ? excludeDirectories
+        .split(",")
+        .map((dir) => dir.trim())
+        .filter(Boolean)
+    : [];
+  const excludeTypes = excludeFileTypes
+    ? excludeFileTypes
+        .split(",")
+        .map((type) => type.trim())
+        .filter(Boolean)
+    : [];
+
+  // Get the SHA of the main branch for the target repo
+  const mainBranch = await getBranch({
+    owner: targetRepoOwner,
+    repo: targetRepoName,
+    branch: "main",
+  });
+
+  // Get source config files using service layer
+  const treeItems = await getRepositoryTreeItems({
+    owner: sourceRepoOwner,
+    repo: sourceRepoName,
+    tree_sha: treeSha,
+    filters: {
+      includeFilePaths: filePaths,
+      excludeFilePaths: excludeDirs,
+      excludeFileExtensions: excludeTypes,
     },
-    { message: "At least one merge method must be enabled" },
-  );
+  });
+
+  // Create tree using service layer
+  const newTree = await createTree({
+    owner: targetRepoOwner,
+    repo: targetRepoName,
+    tree: treeItems,
+    base_tree: mainBranch.data.commit.sha,
+  });
+
+  // Create pull request workflow
+  const pr = await createPullRequestWorkflow({
+    sourceRepoOwner,
+    sourceRepoName,
+    targetRepoName,
+    targetRepoOwner,
+    targetBranchName: "feature/sync-files",
+    treeSha: newTree.data.sha,
+    mainTargetBranchSha: mainBranch.data.commit.sha,
+  });
+
+  return { pr };
+};
+
+export const createRepositorySchema = z.object({
+  repoName: z.string().min(1, "Repository name is required"),
+  repoDescription: z.string().optional(),
+  sourceRepoFullName: z.string().min(1, "Source repository is required"),
+  filePaths: z.array(z.string()).min(1, "At least one file path is required"),
+  excludeDirectories: z.string().optional(),
+  excludeFileTypes: z.string().optional(),
+});
 
 export type CreateRepositoryFormType = z.infer<typeof createRepositorySchema>;
 
 export const useCreateRepository = formAction$<
   CreateRepositoryFormType,
   { url: string }
->(async (formData, event) => {
+>(async (formData) => {
   try {
-    console.log("createRepository", formData);
-    const octokit: Octokit = event.sharedMap.get(OCTOKIT_CLIENT);
-    const isOrg = formData.repoType === "org";
-    let url = "";
     let targetRepoName = "";
     let targetRepoOwner = "";
-    const [sourceRepoOwner, sourceRepoName] =
-      formData.sourceRepoFullName.split("/");
+    const { owner: sourceRepoOwner, name: sourceRepoName } =
+      parseRepositoryFullName(formData.sourceRepoFullName);
+    const sourceRepository = await getRepoByName(formData.sourceRepoFullName);
 
-    if (isOrg) {
-      const repo = await octokit.rest.repos.createInOrg({
-        org: metadata.owner,
-        name: formData.repoName,
-        description: formData.repoDescription,
-        homepage: formData.homepage,
-        private: formData.visibility === "private",
-        visibility: formData.visibility,
-        has_issues: formData.hasIssues,
-        has_projects: formData.hasProjects,
-        has_wiki: formData.hasWiki,
-        has_downloads: formData.hasDownloads,
-        is_template: formData.isTemplate,
-        auto_init: formData.autoInit,
-        gitignore_template: formData.gitignoreTemplate,
-        license_template: formData.licenseTemplate,
-        allow_squash_merge: formData.allowSquashMerge,
-        allow_merge_commit: formData.allowMergeCommit,
-        allow_rebase_merge: formData.allowRebaseMerge,
-      });
-      targetRepoName = repo.data.name;
-      targetRepoOwner = repo.data.owner.login;
-    } else {
-      const repo = await octokit.rest.repos.createForAuthenticatedUser({
-        name: formData.repoName,
-        description: formData.repoDescription,
-        homepage: formData.homepage,
-        private: formData.visibility === "private",
-        visibility: formData.visibility,
-        has_issues: formData.hasIssues,
-        has_projects: formData.hasProjects,
-        has_wiki: formData.hasWiki,
-        has_downloads: formData.hasDownloads,
-        is_template: formData.isTemplate,
-        auto_init: formData.autoInit,
-        gitignore_template: formData.gitignoreTemplate,
-        license_template: formData.licenseTemplate,
-        allow_squash_merge: formData.allowSquashMerge,
-        allow_merge_commit: formData.allowMergeCommit,
-        allow_rebase_merge: formData.allowRebaseMerge,
-        allow_auto_merge: formData.allowAutoMerge,
-        delete_branch_on_merge: formData.deleteBranchOnMerge,
-      });
-      targetRepoName = repo.data.name;
-      targetRepoOwner = repo.data.owner.login;
+    if (!sourceRepository) {
+      throw new Error("Source repository not found");
     }
 
-    // First get the SHA of the main branch for the target repo
-    const mainBranch = await octokit.rest.repos.getBranch({
-      owner: targetRepoOwner,
-      repo: targetRepoName,
-      branch: "main",
-    });
+    const isOrg = sourceRepository.owner.role_type === "Organization";
+    const request = {
+      name: formData.repoName,
+      description:
+        formData.repoDescription ?? sourceRepository.description ?? undefined,
+      homepage: sourceRepository.homepage ?? undefined,
+      private: sourceRepository.private || false,
+      visibility: sourceRepository.visibility ?? undefined,
+      has_issues: sourceRepository.has_issues || true,
+      has_projects: sourceRepository.has_projects || true,
+      has_wiki: sourceRepository.has_wiki || true,
+      has_downloads: sourceRepository.has_downloads || true,
+      has_discussions: sourceRepository.has_discussions || false,
+      is_template: sourceRepository.is_template || false,
+      auto_init: false,
+      license_template: sourceRepository.license?.name || undefined,
+      allow_squash_merge: sourceRepository.allow_squash_merge || true,
+      allow_merge_commit: sourceRepository.allow_merge_commit || true,
+      allow_rebase_merge: sourceRepository.allow_rebase_merge || true,
+      allow_auto_merge: sourceRepository.allow_auto_merge || false,
+      allow_forking: sourceRepository.allow_forking ?? undefined,
+      delete_branch_on_merge: sourceRepository.delete_branch_on_merge || false,
+      squash_merge_commit_title: sourceRepository.squash_merge_commit_title as
+        | "PR_TITLE"
+        | "COMMIT_OR_PR_TITLE"
+        | undefined,
+      squash_merge_commit_message:
+        sourceRepository.squash_merge_commit_message as
+          | "PR_BODY"
+          | "COMMIT_MESSAGES"
+          | "BLANK"
+          | undefined,
+      merge_commit_title: sourceRepository.merge_commit_title as
+        | "PR_TITLE"
+        | "MERGE_MESSAGE"
+        | undefined,
+      merge_commit_message: sourceRepository.merge_commit_message as
+        | "PR_TITLE"
+        | "PR_BODY"
+        | "BLANK"
+        | undefined,
+      team_id: sourceRepository.team_id ?? undefined,
+    };
 
-    const sourceConfigFiles = await getRepoConfigFiles(
-      octokit,
+    const createRequest: CreateRepositoryRequest = isOrg
+      ? {
+          type: "org",
+          request: { ...request, org: sourceRepoOwner },
+        }
+      : {
+          type: "user",
+          request: request,
+        };
+
+    // Create repo in github
+    const repo = await createRepository(createRequest);
+
+    // TODO: Add repo to database or sync data
+
+    targetRepoName = repo.data.name;
+    targetRepoOwner = repo.data.owner.login;
+
+    // Use the helper function to sync files
+    const { pr } = await syncRepoFiles({
       sourceRepoOwner,
       sourceRepoName,
-      formData.filePaths,
-    );
-    const newTree = await octokit.rest.git.createTree({
-      owner: targetRepoOwner,
-      repo: targetRepoName,
-      tree: sourceConfigFiles,
-      base_tree: mainBranch.data.commit.sha,
+      targetRepoOwner,
+      targetRepoName,
+      filePaths: formData.filePaths,
+      excludeDirectories: formData.excludeDirectories,
+      excludeFileTypes: formData.excludeFileTypes,
     });
-
-    // // create the new PR for the target repo with the new tree and the main branch as the base
-    const pr = await createPullRequest(
-      octokit,
-      sourceRepoOwner,
-      sourceRepoName,
-      `${targetRepoOwner}/${targetRepoName}`,
-      "feature/sync-files",
-      newTree.data.sha,
-      mainBranch.data.commit.sha,
-    );
 
     return {
       data: { url: pr.data.html_url },
@@ -158,6 +213,8 @@ export const designSystemSyncSchema = z.object({
   sourceRepoFullName: z.string().min(1, "Source repository is required"),
   targetRepoFullName: z.string().min(1, "Target repository is required"),
   filePaths: z.array(z.string()).min(1, "At least one file path is required"),
+  excludeDirectories: z.string().optional(),
+  excludeFileTypes: z.string().optional(),
 });
 
 export type DesignSystemSyncFormType = z.infer<typeof designSystemSyncSchema>;
@@ -165,44 +222,25 @@ export type DesignSystemSyncFormType = z.infer<typeof designSystemSyncSchema>;
 export const useDesignSystemSync = formAction$<
   DesignSystemSyncFormType,
   { url: string }
->(async (data, { sharedMap, params }) => {
+>(async (data) => {
   try {
     console.log("designSystemSync", data);
-    const octokit: Octokit = sharedMap.get(OCTOKIT_CLIENT);
     const { sourceRepoFullName, targetRepoFullName } = data;
-    const [targetRepoOwner, targetRepoName] = targetRepoFullName.split("/");
-    const [sourceRepoOwner, sourceRepoName] = sourceRepoFullName.split("/");
+    const { owner: sourceRepoOwner, name: sourceRepoName } =
+      parseRepositoryFullName(sourceRepoFullName);
+    const { owner: targetRepoOwner, name: targetRepoName } =
+      parseRepositoryFullName(targetRepoFullName);
 
-    // First get the SHA of the main branch for the target repo
-    const mainBranch = await octokit.rest.repos.getBranch({
-      owner: targetRepoOwner,
-      repo: targetRepoName,
-      branch: "main",
-    });
-
-    const sourceConfigFiles = await getRepoConfigFiles(
-      octokit,
+    // Use the helper function to sync files
+    const { pr } = await syncRepoFiles({
       sourceRepoOwner,
       sourceRepoName,
-      data.filePaths,
-    );
-    const newTree = await octokit.rest.git.createTree({
-      owner: targetRepoOwner,
-      repo: targetRepoName,
-      tree: sourceConfigFiles,
-      base_tree: mainBranch.data.commit.sha,
+      targetRepoOwner,
+      targetRepoName,
+      filePaths: data.filePaths,
+      excludeDirectories: data.excludeDirectories,
+      excludeFileTypes: data.excludeFileTypes,
     });
-
-    // // create the new PR for the target repo with the new tree and the main branch as the base
-    const pr = await createPullRequest(
-      octokit,
-      sourceRepoOwner,
-      sourceRepoName,
-      targetRepoFullName,
-      "feature/sync-files",
-      newTree.data.sha,
-      mainBranch.data.commit.sha,
-    );
 
     return {
       status: "success",
@@ -220,31 +258,18 @@ export const useDesignSystemSync = formAction$<
   }
 }, zodForm$(designSystemSyncSchema));
 
-export const getDesignSystemFiles = server$(async function (
-  repoFullName: string,
-) {
-  const [repoOwner, repoName] = repoFullName.split("/");
-  const octokit: Octokit = this.sharedMap.get(OCTOKIT_CLIENT);
-  if (!octokit) {
-    throw new Error("Octokit not found");
-  }
-  const tree = await octokit.rest.git.getTree({
-    owner: repoOwner,
-    repo: repoName,
-    tree_sha: "main",
-    recursive: "true",
-  });
-
-  // console.log(tree);
-
-  const files: GitHubTreeItem[] = tree.data.tree.filter(
-    (item) => item.type === FileType.blob && item.mode === FileMode.blob,
-  );
-
-  // console.log(files);
-
-  return files;
-});
+export const getDesignSystemFiles = server$(
+  async (repoFullName: string, filters: FileFilterOptions) => {
+    const { owner, name } = parseRepositoryFullName(repoFullName);
+    const files = await getRepositoryFileTree({
+      owner,
+      repo: name,
+      filters,
+    });
+    console.log(files);
+    return files;
+  },
+);
 
 export default component$(() => {
   const selectedForm = useSignal<"update" | "create">("update");
@@ -301,96 +326,4 @@ export default component$(() => {
 
 export const head: DocumentHead = {
   title: "Design System Sync",
-};
-
-const getRepoConfigFiles = async (
-  octokit: Octokit,
-  repoOwner: string,
-  repoName: string,
-  filePaths: string[],
-) => {
-  const tree = await octokit.rest.git.getTree({
-    owner: repoOwner,
-    repo: repoName,
-    tree_sha: "main",
-    recursive: "true",
-  });
-
-  const configFiles: GitHubTreeItem[] = tree.data.tree.filter(
-    (item) =>
-      item.type === FileType.blob &&
-      item.mode === FileMode.blob &&
-      filePaths.some((path) => item.path.startsWith(path)),
-  );
-
-  // create the tree items for the new tree by copying the tsx files from the source repo
-  const treeItems = await Promise.all(
-    configFiles.map(async (item) => {
-      // get the file content from the source repo
-      const fileContent = await octokit.rest.repos.getContent({
-        owner: repoOwner,
-        repo: repoName,
-        path: item.path,
-      });
-
-      if (
-        !Array.isArray(fileContent.data) &&
-        fileContent.data.type === "file" &&
-        "content" in fileContent.data
-      ) {
-        return {
-          path: item.path,
-          type: item.type as FileType,
-          content: Buffer.from(fileContent.data.content, "base64").toString(), // Decode the base64 content
-          mode: item.mode as FileMode,
-        } satisfies TreeItemInput;
-      }
-    }),
-  );
-
-  const filteredTreeItems = treeItems.filter(
-    (item): item is TreeItemInput => item !== undefined,
-  );
-  return filteredTreeItems;
-};
-
-const createPullRequest = async (
-  octokit: Octokit,
-  sourceRepoOwner: string,
-  sourceRepoName: string,
-  targetRepo: string,
-  targetBranchName: string,
-  treeSha: string,
-  mainTargetBranchSha: string,
-) => {
-  const [targetRepoOwner, targetRepoName] = targetRepo.split("/");
-
-  // Create a commit with the new tree
-  const commit = await octokit.rest.git.createCommit({
-    owner: targetRepoOwner,
-    repo: targetRepoName,
-    message: `Sync files from ${sourceRepoOwner}/${sourceRepoName}`,
-    tree: treeSha,
-    parents: [mainTargetBranchSha],
-  });
-
-  // Then create a new branch using that SHA for the target repo
-  const targetBranch = await octokit.rest.git.createRef({
-    owner: targetRepoOwner,
-    repo: targetRepoName,
-    ref: `refs/heads/${targetBranchName}`,
-    sha: commit.data.sha,
-  });
-
-  // create a new PR for the target repo
-  const pr = await octokit.rest.pulls.create({
-    owner: targetRepoOwner,
-    repo: targetRepoName,
-    head: targetBranch.data.ref,
-    base: "main",
-    title: `Sync files: ${sourceRepoOwner}/${sourceRepoName} -> ${targetRepoOwner}/${targetRepoName}`,
-    body: "",
-  });
-
-  return pr;
 };
