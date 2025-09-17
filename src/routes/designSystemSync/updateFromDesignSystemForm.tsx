@@ -18,6 +18,7 @@ import { useGetRepositories } from "~/hooks/repository.hooks";
 import { FileTree } from "../../components/tree/fileTree";
 import { buildTree } from "~/util/tree";
 import { GitHubTreeItem } from "~/db/types";
+import { TextInput } from "~/components/formInputs/textInput";
 
 export interface DesignSystemSyncFormProps {}
 
@@ -57,6 +58,8 @@ export const DesignSystemSyncForm = component$<DesignSystemSyncFormProps>(
           sourceRepoFullName: "",
           targetRepoFullName: "",
           filePaths: [],
+          excludeDirectories: "",
+          excludeFileTypes: "",
         },
       },
       validate: zodForm$(designSystemSyncSchema),
@@ -80,8 +83,21 @@ export const DesignSystemSyncForm = component$<DesignSystemSyncFormProps>(
     const handleNext = $(async () => {
       const files = await getDesignSystemFiles(
         getValue(form, "sourceRepoFullName") as string,
+        {
+          excludeFilePaths: getValue(form, "excludeDirectories")
+            ? (getValue(form, "excludeDirectories") as string)
+                .split(",")
+                .map((dir) => dir.trim())
+                .filter(Boolean)
+            : undefined,
+          excludeFileExtensions: getValue(form, "excludeFileTypes")
+            ? (getValue(form, "excludeFileTypes") as string)
+                .split(",")
+                .map((type) => type.trim())
+                .filter(Boolean)
+            : undefined,
+        },
       );
-      console.log(files);
       sourceFiles.value = files;
       formStep.value = "2";
     });
@@ -171,6 +187,35 @@ export const DesignSystemSyncForm = component$<DesignSystemSyncFormProps>(
                           value: repo.full_name,
                         })),
                       ]}
+                    />
+                  )}
+                </Field>
+              </div>
+
+              {/* Exclusion fields */}
+              <div class="grid grid-cols-2 gap-8">
+                <Field name="excludeDirectories">
+                  {(field, props) => (
+                    <TextInput
+                      {...props}
+                      type="text"
+                      label="Directories to Exclude"
+                      value={field.value}
+                      error={field.error}
+                      placeholder="e.g., node_modules, .git, dist (comma-separated)"
+                    />
+                  )}
+                </Field>
+
+                <Field name="excludeFileTypes">
+                  {(field, props) => (
+                    <TextInput
+                      {...props}
+                      type="text"
+                      label="File Types to Exclude"
+                      value={field.value}
+                      error={field.error}
+                      placeholder="e.g., .log, .tmp, .cache (comma-separated)"
                     />
                   )}
                 </Field>

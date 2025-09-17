@@ -5,23 +5,20 @@ import {
   reset,
   getValue,
   setValue,
-  validate,
 } from "@modular-forms/qwik";
 import { TextInput } from "~/components/formInputs/textInput";
 import { SelectInput } from "~/components/formInputs/selectInput";
-import { CheckboxInput } from "~/components/formInputs/checkboxInput";
-import { GithubLicenses } from "~/db/constants";
 import { Button } from "@kunai-consulting/kunai-design-system";
 import {
   type CreateRepositoryFormType,
   createRepositorySchema,
+  getDesignSystemFiles,
   useCreateRepository,
 } from "./index";
 import { useGetRepositories } from "~/hooks/repository.hooks";
 import { FileTree } from "~/components/tree/fileTree";
 import { buildTree } from "~/util/tree";
 import { GitHubTreeItem } from "~/db/types";
-import { getDesignSystemFiles } from "./index";
 
 export const CreateRepositoryForm = component$(() => {
   const createRepository = useCreateRepository();
@@ -52,26 +49,12 @@ export const CreateRepositoryForm = component$(() => {
   >({
     loader: {
       value: {
-        repoType: "user",
         repoName: "",
-        visibility: "public",
         repoDescription: "",
-        homepage: "",
-        hasIssues: true,
-        hasProjects: true,
-        hasWiki: true,
-        hasDownloads: true,
-        isTemplate: false,
-        autoInit: false,
-        gitignoreTemplate: "",
-        licenseTemplate: "",
-        allowSquashMerge: true,
-        allowMergeCommit: true,
-        allowRebaseMerge: true,
-        allowAutoMerge: false,
-        deleteBranchOnMerge: false,
         sourceRepoFullName: "",
         filePaths: [],
+        excludeDirectories: "",
+        excludeFileTypes: "",
       },
     },
     validate: zodForm$(createRepositorySchema),
@@ -85,7 +68,22 @@ export const CreateRepositoryForm = component$(() => {
   const handleNext = $(async () => {
     const files = await getDesignSystemFiles(
       getValue(form, "sourceRepoFullName") as string,
+      {
+        excludeFilePaths: getValue(form, "excludeDirectories")
+          ? (getValue(form, "excludeDirectories") as string)
+              .split(",")
+              .map((dir) => dir.trim())
+              .filter(Boolean)
+          : undefined,
+        excludeFileExtensions: getValue(form, "excludeFileTypes")
+          ? (getValue(form, "excludeFileTypes") as string)
+              .split(",")
+              .map((type) => type.trim())
+              .filter(Boolean)
+          : undefined,
+      },
     );
+    console.log("files", files);
     sourceFiles.value = files;
     formStep.value = "2";
   });
@@ -142,22 +140,6 @@ export const CreateRepositoryForm = component$(() => {
               <h5 class="text-lg dark:text-white font-semibold col-span-2">
                 General Information
               </h5>
-              <Field name="repoType">
-                {(field, props) => {
-                  return (
-                    <SelectInput
-                      {...props}
-                      label="Repository Type"
-                      value={field.value}
-                      error={field.error}
-                      options={[
-                        { value: "user", label: "User" },
-                        { value: "org", label: "Organization" },
-                      ]}
-                    />
-                  );
-                }}
-              </Field>
               <Field name="repoName">
                 {(field, props) => {
                   return (
@@ -172,223 +154,47 @@ export const CreateRepositoryForm = component$(() => {
                   );
                 }}
               </Field>
-              {/* <div class="col-span-2">
-                <Field name="repoDescription">
-                  {(field, props) => {
-                    return (
-                      <TextInput
-                        {...props}
-                        type="text"
-                        label="Repository Description"
-                        value={field.value}
-                        error={field.error}
-                      />
-                    );
-                  }}
-                </Field>
-              </div>
-              <Field name="homepage">
+
+              <Field name="repoDescription">
                 {(field, props) => {
                   return (
                     <TextInput
                       {...props}
-                      type="url"
-                      label="Homepage URL"
+                      type="text"
+                      label="Repository Description"
                       value={field.value}
                       error={field.error}
+                      placeholder="Optional description for the repository"
                     />
                   );
                 }}
               </Field>
-              <Field name="visibility">
+
+              <Field name="excludeDirectories">
                 {(field, props) => {
                   return (
-                    <SelectInput
+                    <TextInput
                       {...props}
-                      label="Visibility"
+                      type="text"
+                      label="Directories to Exclude"
                       value={field.value}
                       error={field.error}
-                      options={[
-                        { value: "public", label: "Public" },
-                        { value: "private", label: "Private" },
-                      ]}
+                      placeholder="e.g., node_modules, .git, dist (comma-separated)"
                     />
                   );
                 }}
               </Field>
-              <h5 class="text-lg dark:text-white font-semibold col-span-2">
-                Features
-              </h5>
-              <Field name="hasIssues" type="boolean">
+
+              <Field name="excludeFileTypes">
                 {(field, props) => {
                   return (
-                    <CheckboxInput
+                    <TextInput
                       {...props}
-                      label="Has Issues"
+                      type="text"
+                      label="File Types to Exclude"
                       value={field.value}
                       error={field.error}
-                    />
-                  );
-                }}
-              </Field>
-              <Field name="hasProjects" type="boolean">
-                {(field, props) => {
-                  return (
-                    <CheckboxInput
-                      {...props}
-                      label="Has Projects"
-                      value={field.value}
-                      error={field.error}
-                    />
-                  );
-                }}
-              </Field>
-              <Field name="hasWiki" type="boolean">
-                {(field, props) => {
-                  return (
-                    <CheckboxInput
-                      {...props}
-                      label="Create Wiki"
-                      value={field.value}
-                      error={field.error}
-                    />
-                  );
-                }}
-              </Field>
-              <Field name="hasDownloads" type="boolean">
-                {(field, props) => {
-                  return (
-                    <CheckboxInput
-                      {...props}
-                      label="Has Downloads"
-                      value={field.value}
-                      error={field.error}
-                    />
-                  );
-                }}
-              </Field> */}
-              <h5 class="text-lg dark:text-white font-semibold col-span-2">
-                Initialize Repository
-              </h5>
-              <Field name="autoInit" type="boolean">
-                {(field, props) => {
-                  return (
-                    <CheckboxInput
-                      {...props}
-                      label="Add README file"
-                      value={field.value}
-                      error={field.error}
-                    />
-                  );
-                }}
-              </Field>
-              <Field name="isTemplate" type="boolean">
-                {(field, props) => {
-                  return (
-                    <CheckboxInput
-                      {...props}
-                      label="Is this a template repository?"
-                      value={field.value}
-                      error={field.error}
-                    />
-                  );
-                }}
-              </Field>
-              <Field name="gitignoreTemplate">
-                {(field, props) => {
-                  return (
-                    <SelectInput
-                      {...props}
-                      label="Gitignore Template"
-                      value={field.value}
-                      error={field.error}
-                      options={[
-                        { value: "Python", label: "Python" },
-                        { value: "Node", label: "Node" },
-                        { value: "Ruby", label: "Ruby" },
-                        { value: "Go", label: "Go" },
-                        { value: "Rust", label: "Rust" },
-                        { value: "Java", label: "Java" },
-                      ]}
-                    />
-                  );
-                }}
-              </Field>
-              <Field name="licenseTemplate">
-                {(field, props) => {
-                  return (
-                    <SelectInput
-                      {...props}
-                      label="License"
-                      value={field.value}
-                      error={field.error}
-                      options={GithubLicenses.map((license) => ({
-                        value: license.keyword,
-                        label: license.name,
-                      }))}
-                    />
-                  );
-                }}
-              </Field>
-              <h5 class="text-lg dark:text-white font-semibold col-span-2">
-                Merge Settings
-              </h5>
-              <Field name="allowSquashMerge" type="boolean">
-                {(field, props) => {
-                  return (
-                    <CheckboxInput
-                      {...props}
-                      label="Allow squash merge"
-                      value={field.value}
-                      error={field.error}
-                    />
-                  );
-                }}
-              </Field>
-              <Field name="allowRebaseMerge" type="boolean">
-                {(field, props) => {
-                  return (
-                    <CheckboxInput
-                      {...props}
-                      label="Allow rebase merging"
-                      value={field.value}
-                      error={field.error}
-                    />
-                  );
-                }}
-              </Field>
-              <Field name="allowMergeCommit" type="boolean">
-                {(field, props) => {
-                  return (
-                    <CheckboxInput
-                      {...props}
-                      label="Allow merge commits"
-                      value={field.value}
-                      error={field.error}
-                    />
-                  );
-                }}
-              </Field>
-              <Field name="allowAutoMerge" type="boolean">
-                {(field, props) => {
-                  return (
-                    <CheckboxInput
-                      {...props}
-                      label="Allow auto-merge"
-                      value={field.value}
-                      error={field.error}
-                    />
-                  );
-                }}
-              </Field>
-              <Field name="deleteBranchOnMerge" type="boolean">
-                {(field, props) => {
-                  return (
-                    <CheckboxInput
-                      {...props}
-                      label="Delete branch on merge"
-                      value={field.value}
-                      error={field.error}
+                      placeholder="e.g., .log, .tmp, .cache (comma-separated)"
                     />
                   );
                 }}
