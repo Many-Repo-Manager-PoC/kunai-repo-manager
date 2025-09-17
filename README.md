@@ -4,23 +4,61 @@
 
 This project utilizes [Gel Data](https://www.geldata.com/) as its Database layer. Follow these simple instructions to get your team setup with Gel!
 
-Step 1: Create A Gel Account
+##### Step 1: Create A Gel Account
 
-- Easiest way to do this is to create one through "sign in with github"
+- Easiest way to do this is to create one through "sign in with github" [sign in here](https://cloud.geldata.com/)
 
-* Make sure to Authorize geldata to have Organization access
-  Step 2: Add your Organization to gel Cloud
+** Make sure to Authorize geldata to have Organization access
+  
+##### Step 2: Add your Organization to gel Cloud
 
 - On the top of the webpage, you will see that it initially instantiates a personal cloud, but you want to create one for the Organization
-- Click on that and then click "Add Organization"
 
-  Step 3: Make sure you have gel on your machine
+- Click on that and then click "Add Organization"
+  - there should be ones easily linked from your companies github
+
+##### Step 3: Make sure you have gel on your machine
 
   `pnpm gel --version`
 
-  Step 4: ...
+  * If this fails, please install pnpm (node/npm is required for this) . 
+
+ ```
+# Download and install nvm:
+
+> curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+
+# in lieu of restarting the shell
+
+> \. "$HOME/.nvm/nvm.sh"
+
+# Download and install Node.js:
+
+> nvm install 22
+
+# Verify the Node.js version:
+> node -v # Should print "v22.19.0".
+
+# Download and install pnpm:
+> corepack enable pnpm
+
+# Verify pnpm version:
+> pnpm -v
+
+```
+
+  [install node](https://nodejs.org/en/download)
+  [install pnpm](https://pnpm.io/installation)
 
   \*\*Random notes: when in gel GUI, to get out `\q + enter`
+
+##### Step 4: install dependencies
+
+` pnpm install `
+
+** You will run into an issue if you do not have an NPM token in your enviornment variables because there are private packages used that you need granted access for. (Kunai-Design-System)
+
+- To add the NPM token to env variables, Add a new file `.env.local` 
 
   ### Submitting new query requests!
 
