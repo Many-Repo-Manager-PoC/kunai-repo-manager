@@ -12,13 +12,18 @@ import {
   getRepositoryTreeItems,
   createTree,
   getRepositoryFileTree,
-  FileFilterOptions,
-  CreateRepositoryRequest,
+  type FileFilterOptions,
   createRepository,
 } from "~/actions/services/github";
 import { createPullRequestWorkflow } from "~/actions/services/github/pull-requests";
-import { parseRepositoryFullName } from "~/actions/services/github/utils";
+import {
+  parseRepositoryFullName,
+  mapGelDataToGithubCreateRepoRequest,
+  mapGithubResponseToGelData,
+} from "~/actions/services/github/utils";
 import { getRepoByName } from "~/actions/repository/queries";
+import { getClient } from "~/actions/client";
+import * as queries from "@dbschema/queries";
 
 // Helper function to sync files between repositories
 const syncRepoFiles = async ({
@@ -121,64 +126,23 @@ export const useCreateRepository = formAction$<
       throw new Error("Source repository not found");
     }
 
-    const isOrg = sourceRepository.owner.role_type === "Organization";
-    const request = {
+    // Create a modified source repository with the new name and description
+    const modifiedSourceRepo = {
+      ...sourceRepository,
       name: formData.repoName,
-      description:
-        formData.repoDescription ?? sourceRepository.description ?? undefined,
-      homepage: sourceRepository.homepage ?? undefined,
-      private: sourceRepository.private || false,
-      visibility: sourceRepository.visibility ?? undefined,
-      has_issues: sourceRepository.has_issues || true,
-      has_projects: sourceRepository.has_projects || true,
-      has_wiki: sourceRepository.has_wiki || true,
-      has_downloads: sourceRepository.has_downloads || true,
-      has_discussions: sourceRepository.has_discussions || false,
-      is_template: sourceRepository.is_template || false,
-      auto_init: false,
-      license_template: sourceRepository.license?.name || undefined,
-      allow_squash_merge: sourceRepository.allow_squash_merge || true,
-      allow_merge_commit: sourceRepository.allow_merge_commit || true,
-      allow_rebase_merge: sourceRepository.allow_rebase_merge || true,
-      allow_auto_merge: sourceRepository.allow_auto_merge || false,
-      allow_forking: sourceRepository.allow_forking ?? undefined,
-      delete_branch_on_merge: sourceRepository.delete_branch_on_merge || false,
-      squash_merge_commit_title: sourceRepository.squash_merge_commit_title as
-        | "PR_TITLE"
-        | "COMMIT_OR_PR_TITLE"
-        | undefined,
-      squash_merge_commit_message:
-        sourceRepository.squash_merge_commit_message as
-          | "PR_BODY"
-          | "COMMIT_MESSAGES"
-          | "BLANK"
-          | undefined,
-      merge_commit_title: sourceRepository.merge_commit_title as
-        | "PR_TITLE"
-        | "MERGE_MESSAGE"
-        | undefined,
-      merge_commit_message: sourceRepository.merge_commit_message as
-        | "PR_TITLE"
-        | "PR_BODY"
-        | "BLANK"
-        | undefined,
-      team_id: sourceRepository.team_id ?? undefined,
+      description: formData.repoDescription ?? "",
     };
 
-    const createRequest: CreateRepositoryRequest = isOrg
-      ? {
-          type: "org",
-          request: { ...request, org: sourceRepoOwner },
-        }
-      : {
-          type: "user",
-          request: request,
-        };
+    // Use the type mapper to create the GitHub request
+    const createRequest =
+      mapGelDataToGithubCreateRepoRequest(modifiedSourceRepo);
 
     // Create repo in github
     const repo = await createRepository(createRequest);
 
-    // TODO: Add repo to database or sync data
+    // Insert the newly created repository into the database
+    const repoData = mapGithubResponseToGelData(repo.data);
+    await queries.insertOrUpdateRepository(getClient(), repoData);
 
     targetRepoName = repo.data.name;
     targetRepoOwner = repo.data.owner.login;

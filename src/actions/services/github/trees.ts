@@ -1,8 +1,13 @@
 import { server$ } from "@qwik.dev/router";
 import { OCTOKIT_CLIENT } from "~/routes/plugin@octokit";
-import { Octokit } from "octokit";
-import { GetRepositoryFilesRequest, CreateTreeRequest } from "./types";
-import { FileMode, FileType, GitHubTreeItem, TreeItemInput } from "~/db/types";
+import type { Octokit } from "octokit";
+import type { GetRepositoryFilesRequest, CreateTreeRequest } from "./types";
+import {
+  FileMode,
+  FileType,
+  type GitHubTreeItem,
+  type TreeItemInput,
+} from "~/db/types";
 
 export const getRepositoryFileTree = server$(async function ({
   filters,

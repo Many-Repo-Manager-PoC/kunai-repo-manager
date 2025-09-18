@@ -1,5 +1,5 @@
-import { Octokit } from "octokit";
-import { FileMode, FileType, TreeItemInput } from "~/db/types";
+import type { Octokit } from "octokit";
+import type { TreeItemInput } from "~/db/types";
 
 export type RepositoryResponse<T extends keyof Octokit["rest"]["repos"]> =
   Awaited<ReturnType<InstanceType<typeof Octokit>["rest"]["repos"][T]>>;

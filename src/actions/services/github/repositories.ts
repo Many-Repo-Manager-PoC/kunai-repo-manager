@@ -1,12 +1,7 @@
 import { server$ } from "@qwik.dev/router";
 import { OCTOKIT_CLIENT } from "~/routes/plugin@octokit";
-import { Octokit } from "octokit";
-import {
-  CreateRepositoryRequest,
-  GetRepositoryFilesRequest,
-  RepositoryRequest,
-} from "./types";
-import { FileMode, FileType, GitHubTreeItem, TreeItemInput } from "~/db/types";
+import type { Octokit } from "octokit";
+import type { CreateRepositoryRequest, RepositoryRequest } from "./types";
 
 export const createRepository = server$(async function (
   input: CreateRepositoryRequest,
