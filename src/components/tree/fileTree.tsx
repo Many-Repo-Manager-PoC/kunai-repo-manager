@@ -76,18 +76,20 @@ const TreeBranch = component$<TreeBranchProps>(
               <LuChevronRight class="h-4 w-4 text-gray-600 dark:text-gray-300 transition-transform duration-200 group-data-[open]:rotate-90" />
             </Tree.ItemTrigger>
           </div>
-          <Tree.ItemContent>
-            {item.children.map((child) => (
-              <TreeBranch
-                key={child.path}
-                item={child}
-                level={level + 1}
-                onChange$={onChange$}
-                defaultOpenKeys={defaultOpenKeys}
-                value={value}
-              />
-            ))}
-          </Tree.ItemContent>
+          {isOpen.value && (
+            <Tree.ItemContent>
+              {item.children.map((child) => (
+                <TreeBranch
+                  key={child.path}
+                  item={child}
+                  level={level + 1}
+                  onChange$={onChange$}
+                  defaultOpenKeys={defaultOpenKeys}
+                  value={value}
+                />
+              ))}
+            </Tree.ItemContent>
+          )}
         </Tree.Item>
       );
     }
