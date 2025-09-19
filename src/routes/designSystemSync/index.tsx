@@ -24,6 +24,7 @@ import {
 import { getRepoByName } from "~/actions/repository/queries";
 import { getClient } from "~/actions/client";
 import * as queries from "@dbschema/queries";
+import { upsertRepository } from "~/actions/repository/repository.service";
 
 // Helper function to sync files between repositories
 const syncRepoFiles = async ({
@@ -125,24 +126,23 @@ export const useCreateRepository = formAction$<
     if (!sourceRepository) {
       throw new Error("Source repository not found");
     }
-
     // Create a modified source repository with the new name and description
     const modifiedSourceRepo = {
       ...sourceRepository,
       name: formData.repoName,
       description: formData.repoDescription ?? "",
+      auto_init: true,
     };
 
     // Use the type mapper to create the GitHub request
-    const createRequest =
-      mapGelDataToGithubCreateRepoRequest(modifiedSourceRepo);
+    const createRequest = mapGelDataToGithubCreateRepoRequest({
+      ...modifiedSourceRepo,
+    });
 
     // Create repo in github
     const repo = await createRepository(createRequest);
 
-    // Insert the newly created repository into the database
-    const repoData = mapGithubResponseToGelData(repo.data);
-    await queries.insertOrUpdateRepository(getClient(), repoData);
+    await upsertRepository(repo.data.name, repo.data.owner.login);
 
     targetRepoName = repo.data.name;
     targetRepoOwner = repo.data.owner.login;

@@ -7,8 +7,7 @@
     "mock-repo-with-also-one-dependency",
     "mock-repo-with-one-dependency",
     "mock-web-app-repo",
-    "tester-test3",
-    "kunai-repo-manager"
+    "tester-test3"
   ],
   "owner": "Many-Repo-Manager-PoC",
   "dependencyPaths": [
