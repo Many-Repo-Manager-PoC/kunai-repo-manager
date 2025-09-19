@@ -298,6 +298,7 @@ export namespace $default {
     "forks_url"?: string | null;
     "full_name": string;
     "description"?: string | null;
+    "blobs_url"?: string | null;
     "has_discussions": boolean;
     "has_pages": boolean;
     "hooks_url": string;
@@ -323,18 +324,16 @@ export namespace $default {
     "updated_at": string;
     "url": string;
     "watchers_count": number;
+    "is_template"?: boolean | null;
     "has_downloads"?: boolean | null;
-    "git_url"?: string | null;
     "has_issues"?: boolean | null;
     "has_projects"?: boolean | null;
     "has_wiki"?: boolean | null;
     "homepage"?: string | null;
-    "is_template"?: boolean | null;
     "private"?: boolean | null;
     "visibility"?: Visibility | null;
     "archive_url"?: string | null;
     "assignees_url"?: string | null;
-    "blobs_url"?: string | null;
     "branches_url"?: string | null;
     "clone_url"?: string | null;
     "collaborators_url"?: string | null;
@@ -344,6 +343,7 @@ export namespace $default {
     "git_commits_url"?: string | null;
     "git_refs_url"?: string | null;
     "git_tags_url"?: string | null;
+    "git_url"?: string | null;
     "merges_url"?: string | null;
     "milestones_url"?: string | null;
     "mirror_url"?: string | null;
