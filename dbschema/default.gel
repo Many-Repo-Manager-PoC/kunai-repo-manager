@@ -185,9 +185,13 @@ type Organization extending Timestamped {
       required site_admin: bool;
       starred_at: str;
       user_view_type: str;
+      webhook_id: int64;
+      webhook_url: str;
+      Users := (.<organization[is User]);
 
     index on (.login);
     index on (.organization_id);
+    index on (.webhook_id);
 }
 
  type SecurityAndAnalysis extending Timestamped {
@@ -258,6 +262,7 @@ type Organization extending Timestamped {
     subscriptions_url: str;
     url: str;
     user_view_type: str;
+    organization: Organization;
 
     index on (.login);
     index on (.user_id);
