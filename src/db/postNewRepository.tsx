@@ -2,6 +2,7 @@ import type { Octokit } from "octokit";
 import metadata from "./metadata.json";
 import { routeAction$, type JSONObject } from "@qwik.dev/router";
 import { OCTOKIT_CLIENT } from "~/routes/plugin@octokit";
+import { getLogger } from "~/util/getLogger";
 
 /**
  * Creates a new repository in the organization
@@ -37,8 +38,18 @@ import { OCTOKIT_CLIENT } from "~/routes/plugin@octokit";
 // eslint-disable-next-line qwik/loader-location
 export const usePostNewOrgRepository = routeAction$(
   async (form: JSONObject, event) => {
+    const logger = getLogger(event.sharedMap);
+
     try {
       const octokit: Octokit = event.sharedMap.get(OCTOKIT_CLIENT);
+
+      logger.info(
+        {
+          repoName: form.repoName as string,
+          isPrivate: form.isPrivate as boolean,
+        },
+        "Creating new organization repository",
+      );
 
       await octokit.rest.repos.createInOrg({
         org: metadata.owner,
@@ -87,9 +98,17 @@ export const usePostNewOrgRepository = routeAction$(
           | undefined,
       });
 
+      logger.info(
+        { repoName: form.repoName as string },
+        "Organization repository created successfully",
+      );
+
       return { success: true };
     } catch (error) {
-      console.error("Error creating repository:", error);
+      logger.error(
+        { error: error as Error, repoName: form.repoName as string },
+        "Error creating repository",
+      );
       return {
         success: false,
         error:
@@ -132,8 +151,18 @@ export const usePostNewOrgRepository = routeAction$(
 // eslint-disable-next-line qwik/loader-location
 export const usePostNewUserRepository = routeAction$(
   async (form: JSONObject, event) => {
+    const logger = getLogger(event.sharedMap);
+
     try {
       const octokit: Octokit = event.sharedMap.get(OCTOKIT_CLIENT);
+
+      logger.info(
+        {
+          repoName: form.repoName as string,
+          isPrivate: form.isPrivate as boolean,
+        },
+        "Creating new user repository",
+      );
 
       await octokit.rest.repos.createForAuthenticatedUser({
         name: form.repoName as string,
@@ -178,9 +207,17 @@ export const usePostNewUserRepository = routeAction$(
           | undefined,
       });
 
+      logger.info(
+        { repoName: form.repoName as string },
+        "User repository created successfully",
+      );
+
       return { success: true };
     } catch (error) {
-      console.error("Error creating repository:", error);
+      logger.error(
+        { error: error as Error, repoName: form.repoName as string },
+        "Error creating repository",
+      );
       return {
         success: false,
         error:

@@ -5,12 +5,17 @@ import metadata from "../db/metadata.json";
 
 import * as queries from "../../dbschema/queries";
 import { getClient } from "~/actions/client";
+import { getLogger } from "~/util/getLogger";
 
 export const useInsertOrUpdatePackageJson = server$(async function (
   repositoryName: string,
 ) {
+  const logger = getLogger(this.sharedMap);
+
   try {
     const octokit: Octokit = this.sharedMap.get(OCTOKIT_CLIENT);
+
+    logger.info({ repositoryName }, "Getting package.json for repository");
 
     // Find the dependency path for the specified repository
     const dependencyPath = metadata.dependencyPaths.find(
@@ -61,6 +66,15 @@ export const useInsertOrUpdatePackageJson = server$(async function (
     };
     await queries.insertOrUpdatePackageJson(getClient(), insertArgs);
 
+    logger.info(
+      {
+        repositoryName,
+        dependenciesCount: dependencies.length,
+        devDependenciesCount: devDependencies.length,
+      },
+      "Package.json inserted successfully",
+    );
+
     return {
       success: true,
       message: `Package.json for ${repositoryName} successfully inserted`,
@@ -73,7 +87,10 @@ export const useInsertOrUpdatePackageJson = server$(async function (
       },
     };
   } catch (error) {
-    console.error("Error getting and inserting package.json:", error);
+    logger.error(
+      { error: error as Error, repositoryName },
+      "Error getting and inserting package.json",
+    );
     return {
       success: false,
       message:
@@ -83,21 +100,37 @@ export const useInsertOrUpdatePackageJson = server$(async function (
   }
 });
 
-export const useDeletePackageJson = server$(async (formData: FormData) => {
+export const useDeletePackageJson = server$(async function (
+  formData: FormData,
+) {
+  const logger = getLogger(this.sharedMap);
+
   try {
     const repository_id = Number(formData.get("repository_id"));
     if (!repository_id) {
       throw new Error("Repository ID is required");
     }
+
+    logger.info({ repository_id }, "Deleting package.json");
+
     await queries.deletePackageJson(getClient(), {
       repository_id: repository_id,
     });
+
+    logger.info({ repository_id }, "Package.json deleted successfully");
+
     return {
       success: true,
       message: "Package.json successfully deleted",
     };
   } catch (error) {
-    console.error("Error deleting package.json:", error);
+    logger.error(
+      {
+        error: error as Error,
+        repository_id: Number(formData.get("repository_id")),
+      },
+      "Error deleting package.json",
+    );
     return {
       success: false,
       message:

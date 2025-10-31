@@ -2,24 +2,38 @@ import { type RequestHandler } from "@qwik.dev/router";
 import { ServerError } from "@qwik.dev/router/middleware/request-handler";
 import { isDev } from "@qwik.dev/core/build";
 import { ApplicationError } from "~/util/errors";
+import { getLogger } from "~/util/getLogger";
 
-export const onRequest: RequestHandler = async ({ next, error, redirect }) => {
+export const onRequest: RequestHandler = async ({
+  next,
+  error,
+  redirect,
+  sharedMap,
+}) => {
+  const logger = getLogger(sharedMap);
+
   try {
     return await next();
   } catch (err) {
     if (isDev) {
       if (err instanceof ApplicationError) {
-        console.log("Application error...", err);
+        logger.error(
+          { error: err as Error, errorType: err.name },
+          "Application error",
+        );
         if (err.name === "UNAUTHORIZED") {
           throw redirect(302, "/home/login/");
         }
       }
 
-      console.error("Development error...", err);
+      logger.error({ error: err as Error }, "Development error");
       throw err;
     } else {
       if (isApplicationError(err)) {
-        console.log("Application error...", err);
+        logger.error(
+          { error: err as Error, errorType: err.name },
+          "Application error",
+        );
         if (err.name === "UNAUTHORIZED") {
           throw redirect(302, "/home/login/");
         }
@@ -28,11 +42,11 @@ export const onRequest: RequestHandler = async ({ next, error, redirect }) => {
 
         throw error(500, err.message);
       } else if (isServerError(err)) {
-        console.log("Server error...", err);
+        logger.error({ error: err as Error }, "Server error");
         throw error(500, { message: "An error occurred" });
       } else {
         // Fallback to 500 error
-        console.log("Unknown error...", err);
+        logger.error({ error: err as Error }, "Unknown error");
         throw error(500, { message: "An error occurred" });
       }
     }
